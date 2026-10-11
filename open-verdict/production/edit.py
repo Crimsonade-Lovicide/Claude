@@ -279,7 +279,7 @@ def mix(ctx, mod):
         S.place(fx, gain(x / (np.abs(x).max() + 1e-9) * 0.5, db), ctx.start[sid] + when)
     out = vo + music + fx
     out /= max(1.0, np.abs(out).max() / 0.98)
-    path = os.path.join(ctx.prod, "mix.wav")
+    path = os.path.join(ctx.prod, "mix_" + mod.OUT_NAME.replace(".mp4", ".wav"))
     import wave
     with wave.open(path, "wb") as w:
         w.setnchannels(1)
@@ -343,17 +343,35 @@ def chapters(ctx, mod, path):
 
 # ---------------------------------------------------------------- final
 
-def final(ctx, mod, jobs):
-    render_shots(mod.__name__, ctx.prod, ctx.order, jobs=jobs)
-    lst = os.path.join(ctx.prod, "shots.txt")
+# Gentle bus compression and a limiter tame the effect hits so normalisation can reach target.
+MASTER_PRE = "acompressor=threshold=-20dB:ratio=2.5:attack=8:release=250:makeup=2,alimiter=limit=0.7:attack=3:release=60"
+
+
+def loudnorm_filter(audio, target=-14.0, ceiling_db=-1.5):
+    """Measure the integrated loudness after MASTER_PRE, then apply the exact gain to reach
+    target and catch the peaks with a final limiter at the ceiling."""
+    out = subprocess.run(["ffmpeg", "-hide_banner", "-i", audio, "-af",
+                          f"{MASTER_PRE},loudnorm=print_format=json", "-f", "null", "-"],
+                         capture_output=True, text=True).stderr
+    m = json.loads(out[out.rindex("{"):out.rindex("}") + 1])
+    gain_db = target - float(m["input_i"])
+    limit = 10 ** (ceiling_db / 20)
+    return f"{MASTER_PRE},volume={gain_db:.2f}dB,alimiter=limit={limit:.3f}:attack=2:release=50:level=false"
+
+
+def final(ctx, mod, jobs, render=True):
+    if render:
+        render_shots(mod.__name__, ctx.prod, ctx.order, jobs=jobs)
+    tag = "_" + mod.OUT_NAME.replace(".mp4", "")
+    lst = os.path.join(ctx.prod, f"shots{tag}.txt")
     open(lst, "w").write("".join(f"file 'shots/{sid}.mp4'\n" for sid in ctx.order))
-    video = os.path.join(ctx.prod, "video.mp4")
+    video = os.path.join(ctx.prod, f"video{tag}.mp4")
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-f", "concat", "-safe", "0", "-i", lst,
                     "-c", "copy", video], check=True, cwd=ctx.prod)
     audio = mix(ctx, mod)
     out = os.path.join(ctx.prod, mod.OUT_NAME)
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", video, "-i", audio,
-                    "-af", "loudnorm=I=-14:TP=-1.5:LRA=11", "-ar", "48000",
+                    "-af", loudnorm_filter(audio), "-ar", "48000",
                     "-c:v", "copy", "-c:a", "aac", "-b:a", "256k", "-shortest",
                     "-metadata", f"title={mod.TITLE}", out], check=True)
     captions(ctx, mod, out.replace(".mp4", ".srt"))
@@ -378,4 +396,6 @@ def main(mod):
         mix(ctx, mod)
     elif "--final" in argv:
         final(ctx, mod, jobs)
+    elif "--remux" in argv:  # shots already rendered: concat, mix, mux only
+        final(ctx, mod, jobs, render=False)
     print(f"total {ctx.total / 60:.2f} min")

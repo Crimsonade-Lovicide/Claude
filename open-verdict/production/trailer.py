@@ -136,11 +136,12 @@ def build(ctx):
         "V04": G.title_shot("OPEN VERDICT", "Case 01 · full episode on the channel"),
     }
     if VERTICAL:
-        s = {k: vertical(ctx, k, fn) for k, fn in s.items() if k.startswith("V")}
+        fit = {"V03"}  # full-width graphics: scale to fit instead of centre-cropping
+        s = {k: vertical(ctx, k, fn, fit=k in fit) for k, fn in s.items() if k.startswith("V")}
     return s
 
 
-def vertical(ctx, sid, fn):
+def vertical(ctx, sid, fn, fit=False):
     """Reframe a 16:9 frame into 1080x1920: centre crop scaled up, captions word by word."""
     VW, VH = 1080, 1920
     words = ctx.text[sid].split()
@@ -149,12 +150,16 @@ def vertical(ctx, sid, fn):
 
     def frame(t, dur):
         src = fn(t, dur)
-        h = 1240
-        w = int(src.width * h / src.height)
-        big = src.resize((w, h), Image.LANCZOS)
-        x = (w - VW) // 2
         out = Image.new("RGB", (VW, VH), G.BG)
-        out.paste(big.crop((x, 0, x + VW, h)), (0, 160))
+        if fit:
+            small = src.resize((VW, int(src.height * VW / src.width)), Image.LANCZOS)
+            out.paste(small, (0, 780 - small.height // 2))
+        else:
+            h = 1240
+            w = int(src.width * h / src.height)
+            big = src.resize((w, h), Image.LANCZOS)
+            x = (w - VW) // 2
+            out.paste(big.crop((x, 0, x + VW, h)), (0, 160))
         # current word index by time
         k = 0
         for i, w_ in enumerate(ws):
