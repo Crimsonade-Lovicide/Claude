@@ -316,13 +316,14 @@ def document(lines, header=None, width=1400, typed=1.0, font_fn=TYPE, size=40,
 
 
 def document_shot(lines, header=None, footer=None, type_secs=None, highlight=None,
-                  hi_at=None, size=40, width=1400, tag="RECONSTRUCTION", drift=0.05):
+                  hi_at=None, size=40, width=1400, tag="RECONSTRUCTION", drift=0.05,
+                  font_fn=TYPE):
     """Page on the desk with a slow push; optional typing and marker sweep."""
     def frame(t, dur):
         typed = 1.0 if not type_secs else clamp(t / type_secs)
         hi = 0.0 if hi_at is None else clamp((t - hi_at) / 0.8)
-        page = document(lines, header, width, typed, size=size, highlight=highlight,
-                        hi_amount=hi, footer=footer)
+        page = document(lines, header, width, typed, font_fn=font_fn, size=size,
+                        highlight=highlight, hi_amount=hi, footer=footer)
         page = page.rotate(-0.6, resample=Image.BICUBIC, expand=True)
         z = 0.92 + drift * ease(t / max(dur, 0.01))
         page = page.resize((int(page.width * z), int(page.height * z)), Image.LANCZOS)
@@ -425,15 +426,17 @@ def verdict_meter(img, pct, fill=1.0, y=760, alpha=1.0, label="CONFIDENCE"):
     return img
 
 
-def verdict_shot(verdict, pct, change=None, meter_at=1.6, change_at=None):
+def verdict_shot(verdict, pct, change=None, meter_at=1.6, change_at=None, offset=0.0,
+                 kicker="VERDICT"):
     """VERDICT (one sentence) / CONFIDENCE meter / WHAT WOULD CHANGE OUR MIND."""
     vf = SERIF(58)
     vl = wrap(verdict, vf, 1300)
 
     def frame(t, dur):
         img = canvas()
-        a = fade(t, dur, 0.5, 0.6)
-        k = text_layer("VERDICT", MONO(28, bold=True), fill=RED, spacing=0.35)
+        a = fade(t, dur, 0.5 if not offset else 0.01, 0.6)
+        t = t + offset
+        k = text_layer(kicker, MONO(28, bold=True), fill=RED, spacing=0.35)
         paste_alpha(img, k, ((W - k.width) // 2, 170), a * ramp(t, 0.0, 0.5))
         for i, ln in enumerate(vl):
             layer = text_layer(ln, vf, fill=INK)
@@ -454,11 +457,21 @@ def verdict_shot(verdict, pct, change=None, meter_at=1.6, change_at=None):
 
 def still_shot(path, zoom=(1.0, 1.08), pan=(0.0, 0.0), tag=None, darken_to=1.0, overlay=None):
     """Ken Burns on a rendered still. pan is the drift in fractions of the frame."""
-    src = Image.open(path).convert("RGB")
-    if src.size != (W, H):
-        src = src.resize((W, H), Image.LANCZOS)
+    cache = {}
+
+    def load():
+        if "img" not in cache:
+            if os.path.exists(path):
+                im = Image.open(path).convert("RGB")
+                cache["img"] = im if im.size == (W, H) else im.resize((W, H), Image.LANCZOS)
+            else:  # placeholder so the edit always renders
+                im = canvas((20, 22, 26))
+                centered(im, text_layer(f"[{os.path.basename(path)}]", MONO(30), fill=DIM), H // 2)
+                cache["img"] = im
+        return cache["img"]
 
     def frame(t, dur):
+        src = load()
         u = ease(t / max(dur, 0.01))
         z = zoom[0] + (zoom[1] - zoom[0]) * u
         cw, ch = W / z, H / z
@@ -495,8 +508,9 @@ def seq(*parts):
 def render(frame_fn, dur, out_path, fps=FPS, audio=None):
     """Pipe frames into ffmpeg (H.264, yuv420p). Optional audio file muxed in."""
     import subprocess
+    w, h = frame_fn(0.0, dur).size  # 16:9 by default; the vertical cut renders 9:16
     cmd = ["ffmpeg", "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24",
-           "-s", f"{W}x{H}", "-r", str(fps), "-i", "-"]
+           "-s", f"{w}x{h}", "-r", str(fps), "-i", "-"]
     if audio:
         cmd += ["-i", audio, "-c:a", "aac", "-b:a", "192k", "-shortest"]
     cmd += ["-c:v", "libx264", "-preset", "medium", "-crf", "18", "-pix_fmt", "yuv420p", out_path]

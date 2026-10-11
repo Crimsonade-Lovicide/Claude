@@ -41,7 +41,7 @@ pronunciation table at the bottom.
 
 ### S06 · Back
 **Picture:** `3D: brain` The tumor glows back in. Hard cut on "grown back." [A13]
-> Ten months later, the headaches came back. So did the secret collecting. They scanned him again. The tumor had grown back.
+> Then, ten months after the surgery, the headaches came back. So did the secret collecting. They scanned him again. The tumor had grown back.
 
 ### S07 · The question
 **Picture:** `3D: scale` The Scale, empty and level, in a black void. Slow push.
@@ -114,7 +114,7 @@ pronunciation table at the bottom.
 
 ### S23 · 1843
 **Picture:** `GFX: document` Recreated 1843 law-report page, letterpress serif. [B1]
-> So, is he guilty? In most American courts, the answer starts with a rule written in England in 1843. A man named Daniel M'Naghten shot Edward Drummond, the private secretary of the Prime Minister, Robert Peel. Drummond died days later. He's generally believed to have mistaken Drummond for Peel himself. He was acquitted as insane, Queen Victoria was furious, and the judges were called before the House of Lords to explain themselves. What they wrote still decides cases today.
+> So, is he guilty? In most American courts, the answer starts with a rule written in England in 1843. A man named Daniel M'Naghten shot Edward Drummond, the private secretary of the Prime Minister, Robert Peel. Drummond died days later. M'Naghten is generally believed to have mistaken him for Peel himself. He was acquitted as insane, Queen Victoria was furious, and the judges were called before the House of Lords to explain themselves. What they wrote still decides cases today.
 
 ### S24 · The rule
 **Picture:** `GFX: document` The test, marker sweeping "did not know he was doing what was wrong." [B2]
@@ -280,16 +280,12 @@ pronunciation table at the bottom.
 
 ## Pronunciation (applied to narration text only)
 
+Model: eleven_multilingual_v2. Medical terms are real words it reads correctly; only respell
+what it can't guess.
+
 | Written | Spoken as |
 |---|---|
 | M'Naghten | McNaughton |
-| hemangiopericytoma | hee-man-jee-oh-pair-ih-sigh-TOE-muh |
-| orbitofrontal | orbito-frontal |
-| Swerdlow | Swerd-low |
-| Sapolsky | Sapolsky |
-| astrocytoma | astro-sigh-TOE-muh |
-| glioblastoma | glee-oh-blast-OH-muh |
-| Kahler | Kay-ler |
 
 ## Sources on screen (description box)
 

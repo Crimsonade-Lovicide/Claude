@@ -337,10 +337,11 @@ def scene_brain(kv, f0, f1):
     glow = float(kv.get("glow", 1.0))
     if size > 0:
         tm = mat_principled("Tumor", (0.9, 0.35, 0.12), rough=0.6, emission=(1.0, 0.45, 0.15),
-                            strength=6.0 * glow)
+                            strength=1.6 * glow)
         # Front (-Y), low (-Z), the patient's right (+X when facing the camera at -Y... the
         # camera sits in front, so the patient's right appears on screen left: x < 0).
-        t = smooth(add("uv_sphere", "Tumor", radius=0.17 * size, location=(-0.24, -0.58, -0.22),
+        site = (0.03, 0.05, -0.12) if kv.get("site") == "deep" else (-0.24, -0.58, -0.22)
+        t = smooth(add("uv_sphere", "Tumor", radius=0.17 * size, location=site,
                        segments=48, ring_count=24))
         d = t.modifiers.new("Lumpy", "DISPLACE")
         d.texture = bpy.data.textures.new("Lump", "CLOUDS")
@@ -349,22 +350,22 @@ def scene_brain(kv, f0, f1):
         assign(t, tm)
         t.parent = root
         pl = bpy.data.lights.new("TumorGlow", "POINT")
-        pl.energy = 60 * glow * size
+        pl.energy = 12 * glow * size
         pl.color = (1.0, 0.5, 0.2)
         pl.shadow_soft_size = 0.2
         po = bpy.data.objects.new("TumorGlow", pl)
         bpy.context.scene.collection.objects.link(po)
-        po.location = (-0.24, -0.58, -0.22)
+        po.location = site
         po.parent = root
 
     view = kv.get("view", "three_q")
-    base = {"front": 0, "three_q": 35, "side": 90}[view]
+    base = {"front": 0, "three_q": 50, "side": 90}[view]
     orbit = float(kv.get("orbit", 30))
     cam = camera((0, -4.6, 0.6), (0, 0, -0.05), lens=55)
     for f in range(f0, f1 + 1):
         u = (f - f0) / max(1, f1 - f0)
         ang = math.radians(base - orbit / 2 + orbit * u)
-        cam.location = (-4.6 * math.sin(ang), -4.6 * math.cos(ang), 0.7)
+        cam.location = (-4.6 * math.sin(ang), -4.6 * math.cos(ang), 1.3)
         look_at(cam, (0, 0, -0.05))
         cam.keyframe_insert("location", frame=f)
         cam.keyframe_insert("rotation_euler", frame=f)
@@ -422,23 +423,24 @@ def scene_tower(kv, f0, f1):
     sc = bpy.context.scene
     sky = sc.world.node_tree
     sky.nodes.clear()
+    tc = sky.nodes.new("ShaderNodeTexCoord")
+    sep = sky.nodes.new("ShaderNodeSeparateXYZ")
+    rmp = sky.nodes.new("ShaderNodeValToRGB")
     bg = sky.nodes.new("ShaderNodeBackground")
-    sk = sky.nodes.new("ShaderNodeTexSky")
-    try:
-        sk.sky_type = "NISHITA"
-        sk.sun_elevation = math.radians(2.5)
-        sk.sun_rotation = math.radians(110)
-        sk.air_density = 1.4
-        sk.dust_density = 3.0
-    except Exception:
-        pass
     o = sky.nodes.new("ShaderNodeOutputWorld")
-    bg.inputs["Strength"].default_value = 0.35
-    sky.links.new(sk.outputs[0], bg.inputs[0])
+    el = rmp.color_ramp.elements
+    el[0].position, el[0].color = 0.0, (0.55, 0.22, 0.08, 1)   # horizon ember
+    el[1].position, el[1].color = 0.35, (0.012, 0.02, 0.06, 1)  # high, still night
+    mid = el.new(0.08)
+    mid.color = (0.22, 0.12, 0.14, 1)
+    sky.links.new(tc.outputs["Normal"], sep.inputs[0])
+    sky.links.new(sep.outputs["Z"], rmp.inputs["Fac"])
+    sky.links.new(rmp.outputs["Color"], bg.inputs[0])
+    bg.inputs["Strength"].default_value = 1.0
     sky.links.new(bg.outputs[0], o.inputs[0])
     sun = bpy.data.lights.new("Sun", "SUN")
-    sun.energy = 1.4
-    sun.color = (1.0, 0.62, 0.38)
+    sun.energy = 0.9
+    sun.color = (1.0, 0.55, 0.32)
     sun.angle = math.radians(1.5)
     so = bpy.data.objects.new("Sun", sun)
     sc.collection.objects.link(so)
@@ -454,7 +456,8 @@ def scene_tower(kv, f0, f1):
         look_at(cam, (0, 0, 52))
         cam.keyframe_insert("location", frame=f)
         cam.keyframe_insert("rotation_euler", frame=f)
-    sc.view_settings.look = "AgX - Base Contrast"
+    sc.view_settings.look = "AgX - Medium High Contrast"
+    sc.view_settings.exposure = -0.3
 
 
 # ---------------------------------------------------------------- THE CORRIDOR
