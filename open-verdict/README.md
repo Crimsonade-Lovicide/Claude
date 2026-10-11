@@ -66,7 +66,7 @@ shot.
 
 | # | Question | Status |
 |---|---|---|
-| 01 | If a tumor made him do it, is he guilty? | Script v1 |
+| 01 | If a tumor made him do it, is he guilty? | Produced: 19:05, captions, chapters, thumbnails |
 | 02 | Who's guilty when the car drives itself? (Tempe, 2018) | Planned |
 | 03 | Is killing to survive murder? (The Mignonette, 1884) | Planned |
 | 04 | Should surgeons use the Pernkopf Atlas? | Planned |

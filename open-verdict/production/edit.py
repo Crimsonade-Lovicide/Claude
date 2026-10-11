@@ -300,7 +300,7 @@ def srt_time(t):
 
 def captions(ctx, mod, path):
     """Script text (not recogniser text), chunked to two short lines, timed by word index."""
-    out, k = [], 1
+    cues = []
     for sid in ctx.order:
         if sid in mod.SILENT:
             continue
@@ -327,9 +327,11 @@ def captions(ctx, mod, path):
                 mid = len(line) // 2
                 cut = line.rfind(" ", 0, mid + 6)
                 line = line[:cut] + "\n" + line[cut + 1:]
-            out.append(f"{k}\n{srt_time(base + a)} --> {srt_time(base + b + 0.15)}\n{line}\n")
-            k += 1
+            cues.append([base + a, base + b + 0.15, line])
             i = j
+    for c, nxt in zip(cues, cues[1:]):  # never overlap the next cue
+        c[1] = min(c[1], nxt[0] - 0.02)
+    out = [f"{k}\n{srt_time(a)} --> {srt_time(b)}\n{line}\n" for k, (a, b, line) in enumerate(cues, 1)]
     open(path, "w").write("\n".join(out))
 
 
