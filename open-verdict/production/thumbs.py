@@ -28,10 +28,12 @@ def hero(prod, name, scene, args):
     return Image.open(out).convert("RGB")
 
 
-def setup(img, shift):
-    """Push the subject left to leave the right third for type."""
-    canvas = Image.new("RGB", img.size, G.BG)
-    canvas.paste(img, (-shift, 0))
+def setup(img, shift, zoom=1.0):
+    """Push the subject left (and optionally shrink it) to leave the right third for type."""
+    canvas = Image.new("RGB", img.size, img.getpixel((4, 4)))  # match the render's own black
+    if zoom != 1.0:
+        img = img.resize((int(img.width * zoom), int(img.height * zoom)), Image.LANCZOS)
+    canvas.paste(img, (-shift, (canvas.height - img.height) // 2))
     return canvas
 
 
@@ -56,10 +58,13 @@ def thumb(base, lines, out):
 def main(prod):
     G.FONT_DIR = os.environ.get("OV_FONTS", os.path.join(prod, "fonts"))
     brain = hero(prod, "thumb_brain", "brain", ["tumor=1.2", "glow=1.4", "view=three_q", "orbit=0"])
+    clean = hero(prod, "thumb_brain_clean", "brain", ["tumor=0", "view=three_q", "orbit=0"])
+    import edit as E  # same tumor glow as the episode: difference of the two passes
+    brain = E.tumor_glow(brain, clean, strength=1.8)
     scale = hero(prod, "thumb_scale", "scale", ["tilt=-12", "left=1", "right=0"])
     print(thumb(setup(brain, 260), [("IS HE", 190, G.INK), ("GUILTY?", 190, G.BRASS)],
                 os.path.join(prod, "thumb_a.jpg")))
-    print(thumb(setup(scale, 300), [("A TUMOR", 150, G.INK), ("MADE HIM", 150, G.INK), ("DO IT.", 150, G.BRASS)],
+    print(thumb(setup(scale, 120, zoom=0.82), [("A TUMOR", 150, G.INK), ("MADE HIM", 150, G.INK), ("DO IT.", 150, G.BRASS)],
                 os.path.join(prod, "thumb_b.jpg")))
 
 
