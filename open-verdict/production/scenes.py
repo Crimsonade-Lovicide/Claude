@@ -433,7 +433,7 @@ def scene_tower(kv, f0, f1):
     el[1].position, el[1].color = 0.35, (0.012, 0.02, 0.06, 1)  # high, still night
     mid = el.new(0.08)
     mid.color = (0.22, 0.12, 0.14, 1)
-    sky.links.new(tc.outputs["Normal"], sep.inputs[0])
+    sky.links.new(tc.outputs["Generated"], sep.inputs[0])  # world: view direction
     sky.links.new(sep.outputs["Z"], rmp.inputs["Fac"])
     sky.links.new(rmp.outputs["Color"], bg.inputs[0])
     bg.inputs["Strength"].default_value = 1.0
@@ -520,8 +520,11 @@ def main():
     os.makedirs(out, exist_ok=True)
     tag = kv.get("name", scene)
     for f in range(f0, f1 + 1, int(opts.get("step", 1))):
+        path = os.path.join(out, f"{tag}_{f:04d}.png")
+        if os.path.exists(path) and os.path.getsize(path) > 0:  # resume an interrupted clip
+            continue
         sc.frame_set(f)
-        sc.render.filepath = os.path.join(out, f"{tag}_{f:04d}.png")
+        sc.render.filepath = path
         bpy.ops.render.render(write_still=True)
         print("frame", f, flush=True)
 
