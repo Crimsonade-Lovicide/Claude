@@ -417,7 +417,7 @@ def verdict_meter(img, pct, fill=1.0, y=760, alpha=1.0, label="CONFIDENCE"):
         d.line([xx, y + 24, xx, y + 32], fill=col(FAINT), width=2)
     cur = pct * ease(fill)
     xf = x0 + (x1 - x0) * cur / 100
-    if cur > 0:
+    if xf - 3 > x0 + 3:
         d.rectangle([x0 + 3, y + 3, xf - 3, y + 15], fill=col(BRASS))
     lab = text_layer(label, MONO(24), fill=col(DIM), spacing=0.3)
     img.paste(lab, (x0, y - 52), lab)
