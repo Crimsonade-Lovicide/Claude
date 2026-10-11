@@ -624,8 +624,8 @@ def build(ctx):
                                "RECORD", "Burns & Swerdlow, Archives of Neurology, 2003")
     shots["S03"] = E.clip_shot(C("brain_clean"), tag="ILLUSTRATION")
     shots["S04"] = scan_shot(ctx, "S04", mass_at=at("S04", "a tumor"))
-    shots["S05"] = E.xfade_shot(C("brain_tumor", start=6), C("brain_clean", start=6), at("S05", "removed it"), 1.6)
-    shots["S06"] = E.xfade_shot(C("brain_clean", start=9), C("brain_tumor", start=9), at("S06", "grown back"), hard=True)
+    shots["S05"] = E.xfade_shot(C("brain_tumor", start=6), C("brain_clean", start=6), at("S05", "removed it"), 1.6, glow="a")
+    shots["S06"] = E.xfade_shot(C("brain_clean", start=9), C("brain_tumor", start=9), at("S06", "grown back"), hard=True, glow="b")
     shots["S07"] = E.clip_shot(C("scale_empty"), tag=None)
     shots["S08"] = G.words_shot("Hold on to your answer. The same logic, followed all the way down, could set almost everyone free.",
                                 size=62, emphasis={"almost", "everyone"}, per_word=0.32, start=at("S08", "Hold on"))
@@ -641,7 +641,7 @@ def build(ctx):
     shots["S14"] = E.clip_shot(C("corridor", start=1, speed=0.75))
     shots["S15"] = scan_shot(ctx, "S15", mass_at=0.0, outline_at=at("S15", "pushing into"), label="RIGHT ORBITOFRONTAL CORTEX")
     shots["S16"] = E.xfade_shot(C("brain_tumor", start=2, speed=0.7), C("brain_clean", start=2, speed=0.7),
-                                at("S16", "removed in December"), 1.6,
+                                at("S16", "removed in December"), 1.6, glow="a",
                                 overlay=caption_overlay("DECEMBER 2000 · REMOVED", at("S16", "removed in December")))
     shots["S17"] = timeline_shot(ctx, "S17", {"collect", "removed", "choice", "expelled", "er", "surg1", "home"},
                                  {"relapse": at("S17", "In October"), "surg2": at("S17", "removed again")})

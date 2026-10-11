@@ -26,7 +26,7 @@ import sys
 from multiprocessing import Pool
 
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageFilter
 
 import gfx as G
 import score as S
@@ -147,10 +147,35 @@ def clip_shot(clip, tag="RECONSTRUCTION", overlay=None, fin=0.4, fout=0.4, darke
     return frame
 
 
-def xfade_shot(a, b, at, length=0.8, tag="ILLUSTRATION", overlay=None, hard=False):
-    """Clip a, then clip b from time `at` (same camera path, so it reads as one shot)."""
+def tumor_glow(with_tumor, without, strength=1.6):
+    """The two brain passes share a camera, so their difference is the tumor alone. Use it
+    as a mask: warm the core and add a soft orange bloom around it."""
+    ta = np.asarray(with_tumor.resize((480, 270), Image.BILINEAR)).astype(np.float32)
+    tb = np.asarray(without.resize((480, 270), Image.BILINEAR)).astype(np.float32)
+    m = np.clip((np.abs(ta - tb).sum(-1) - 18) / 120, 0, 1)
+    core = Image.fromarray((m * 255).astype(np.uint8))
+    bloom = core.filter(ImageFilter.GaussianBlur(10))
+    core = core.resize((G.W, G.H), Image.BILINEAR)
+    bloom = bloom.resize((G.W, G.H), Image.BILINEAR)
+    c = np.asarray(core).astype(np.float32)[..., None] / 255
+    bl = np.asarray(bloom).astype(np.float32)[..., None] / 255
+    base = np.asarray(with_tumor).astype(np.float32)
+    warm = np.array([255, 105, 35], np.float32)
+    c = np.clip(c * 1.6, 0, 1)
+    shade = 0.55 + 0.45 * (base.mean(-1, keepdims=True) / 255)  # keep the glass texture
+    out = base * (1 - 0.92 * c) + warm * shade * 0.92 * c + warm * bl * 0.55 * strength
+    return Image.fromarray(np.clip(out, 0, 255).astype(np.uint8))
+
+
+def xfade_shot(a, b, at, length=0.8, tag="ILLUSTRATION", overlay=None, hard=False, glow=None):
+    """Clip a, then clip b from time `at` (same camera path, so it reads as one shot).
+    glow="a" or "b" names the pass that contains the tumor; it gets tumor_glow()."""
     def frame(t, dur):
         fa, fb = a.frame(t, dur), b.frame(t, dur)
+        if glow == "a":
+            fa = tumor_glow(fa, fb)
+        elif glow == "b":
+            fb = tumor_glow(fb, fa)
         k = (1.0 if t >= at else 0.0) if hard else G.ease((t - at) / length)
         img = Image.blend(fa, fb, k) if 0 < k < 1 else (fb if k >= 1 else fa)
         f = G.fade(t, dur, 0.4, 0.4)

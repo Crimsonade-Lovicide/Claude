@@ -121,7 +121,7 @@ def build(ctx):
     cap = lambda text: (lambda img, t, d: G.lower_third(img, text, None, G.ramp(t, 0.4, 0.5) * G.fade(t, d, 0.01, 0.4)))
     s = {
         "T01": E.clip_shot(C("scale_empty"), tag=None, fin=1.0),
-        "T02": E.clip_shot(C("brain_tumor", start=3), tag="ILLUSTRATION", overlay=cap("CASE 01 · VIRGINIA, 2000")),
+        "T02": E.xfade_shot(C("brain_tumor", start=3), C("brain_clean", start=3), 999, glow="a", overlay=cap("CASE 01 · VIRGINIA, 2000")),
         "T03": road_words("TEMPE, ARIZONA · MARCH 18, 2018", 0.2),
         "T04": sea_words("The Mignonette · 1884", 0.3),
         "T05": book_words("THE PERNKOPF ATLAS", 0.3),
@@ -130,7 +130,7 @@ def build(ctx):
         "T07": meter_shot(at("T07", "We tell you how sure")),
         "T08": E.clip_shot(C("scale_swing"), tag=None),
         "T09": G.title_shot("OPEN VERDICT", "One question. The evidence. A verdict.", "CASE 01 · THE TUMOR DEFENSE · OUT NOW"),
-        "V01": E.clip_shot(C("brain_tumor", start=3), tag=None),
+        "V01": E.xfade_shot(C("brain_tumor", start=3), C("brain_clean", start=3), 999, glow="a", tag=None),
         "V02": E.clip_shot(C("scale_tip_right"), tag=None),
         "V03": meter_shot(at("V03", "We gave a verdict")),
         "V04": G.title_shot("OPEN VERDICT", "Case 01 · full episode on the channel"),
