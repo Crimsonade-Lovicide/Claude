@@ -372,7 +372,10 @@ def final(ctx, mod, jobs, render=True):
     out = os.path.join(ctx.prod, mod.OUT_NAME)
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", video, "-i", audio,
                     "-af", loudnorm_filter(audio), "-ar", "48000",
-                    "-c:v", "copy", "-c:a", "aac", "-b:a", "256k", "-shortest",
+                    # delivery encode: grain makes the CRF 18 intermediates ~30 Mbps; cap for upload
+                    "-c:v", "libx264", "-preset", "medium", "-crf", "21", "-maxrate", "16M",
+                    "-bufsize", "32M", "-pix_fmt", "yuv420p", "-movflags", "+faststart",
+                    "-c:a", "aac", "-b:a", "256k", "-shortest",
                     "-metadata", f"title={mod.TITLE}", out], check=True)
     captions(ctx, mod, out.replace(".mp4", ".srt"))
     if getattr(mod, "CHAPTERS", None):
