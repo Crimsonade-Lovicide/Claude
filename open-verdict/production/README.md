@@ -14,6 +14,7 @@ image or video generation, no stock footage and no music licence.
 | Edit, mix, captions, chapters | Pillow → ffmpeg; mix in numpy; `loudnorm` to −14 LUFS | `edit.py` |
 | Trailer + 30 s vertical cut | same engine, Case 01 assets only | `trailer.py` |
 | Thumbnails | Cycles hero still + Pillow type | `thumbs.py` |
+| Channel art (profile picture, banner, watermark) | same Scale render + Pillow | `channel_art.py` |
 
 Cost of Case 01 + trailer: about 16,600 ElevenLabs credits (≈ $3.00). Nothing else is paid.
 
@@ -32,6 +33,7 @@ $OV_PY ep01.py $P --prepare              # Whitman brain still + map layers
 $OV_PY ep01.py $P --stills               # one review frame per shot → stills/
 $OV_PY ep01.py $P --final -j 2           # shots → mix → open_verdict_case01.mp4 + .srt + chapters
 $OV_PY thumbs.py $P
+$OV_PY channel_art.py $P <out>          # avatar_800.png, banner_2048.jpg, watermark_150.png
 # trailer: own prod dir with the trailer narration, anim/ linked to Case 01's
 $OV_PY trailer.py $T --final ; $OV_PY trailer.py $T --final --vertical
 ```
