@@ -1,15 +1,16 @@
-# Open Verdict: YouTube channel setup
+# Weight of Evidence: YouTube channel setup
 
 One-time setup, then a checklist for every episode. Checked against YouTube Help in October 2026.
 YouTube renames menus often, so if a label doesn't match, search for it in YouTube Help.
 
 ## 1. Before you click anything
 
-- **Lock the name and handle.** "Open Verdict" is still a working title. When you create the
-  channel, YouTube suggests a handle. Try `@OpenVerdict` first. If it's taken, choose from your
-  backup names now, because changing the name later means redoing the art (`channel_art.py`)
-  and the end cards.
-- **Pick the account.** Use the same Google account as UNBUILT and create Open Verdict as a
+- **Name and handle: Weight of Evidence, `@WeightOfEvidence`.** No channel held the handle on
+  12 Oct 2026; confirm in the create screen. If it's blocked, fall back to Due Weight /
+  `@DueWeight` rather than a suffixed handle. (The working title, Open Verdict, was dropped:
+  @OpenVerdict is a dormant 2007 account, and two unrelated mystery channels launched under
+  the name in Sep–Oct 2026.)
+- **Pick the account.** Use the same Google account as UNBUILT and create Weight of Evidence as a
   *separate channel* (a Brand Account). Don't open a new Gmail for it. You keep one login, and
   the channel still has its own analytics, audience, monetization and managers. It can also be
   transferred or sold on its own later.
@@ -19,6 +20,8 @@ YouTube renames menus often, so if a label doesn't match, search for it in YouTu
 
 1. Sign in to YouTube with the UNBUILT Google account.
 2. Go to <https://www.youtube.com/channel_switcher> → **Create a channel**.
+   (Not the **+ Create** button in the top bar: that's for uploading, and it only lists the
+   channels you already have.)
 3. Enter the name and accept or edit the handle. Then choose **Create**.
 4. Switch into the new channel (profile picture → *Switch account*) before you change anything
    else, so the settings below don't land on UNBUILT.
@@ -27,7 +30,7 @@ YouTube renames menus often, so if a label doesn't match, search for it in YouTu
 
 Check **YouTube Studio → Settings → Channel → Feature eligibility**.
 
-| Tier | How to get it | What Open Verdict needs from it |
+| Tier | How to get it | What Weight of Evidence needs from it |
 |---|---|---|
 | Intermediate | Phone verification (<https://www.youtube.com/verify>) | Uploads over 15 minutes (Case 01 runs 19:05) and custom thumbnails |
 | Advanced | Channel history, or **ID or video verification** | Clickable source links in the description, chapters, pinning the verdict comment, linking the vertical Short to the full episode, A/B testing title and thumbnail, applying for YPP |
@@ -57,14 +60,14 @@ To regenerate the art after a rename, change the strings in `production/channel_
 
 **Layout**
 
-- Channel trailer for people who haven't subscribed: `open_verdict_trailer.mp4` (it has to be
+- Channel trailer for people who haven't subscribed: `weight_of_evidence_trailer.mp4` (it has to be
   uploaded first; public or unlisted both work).
 - Featured video for returning subscribers: the latest case.
 
 ## 5. Channel-wide defaults (Studio → Settings)
 
 - **Channel → Advanced settings → Audience:** "No, set this channel as not made for kids."
-- **Channel → Basic info:** country (needed for YPP), keywords (open verdict, insanity defense,
+- **Channel → Basic info:** country (needed for YPP), keywords (weight of evidence, insanity defense,
   ethics, law, history, neuroscience).
 - **Upload defaults → Basic info:**
   - Category: Education.
@@ -119,7 +122,7 @@ from Feb 2027. Check the Studio notice when it arrives.
 
 **The real risk is the inauthentic-content rule** (renamed from "repetitious content" in July
 2025). Faceless channels with synthetic narration get the closest review, because mass-produced
-AI channels look like that. What protects Open Verdict:
+AI channels look like that. What protects Weight of Evidence:
 - original research with cited sources;
 - original visuals built for each case;
 - a different question every episode.
@@ -134,11 +137,11 @@ Cheapest insurance: **narrate in your own voice**, or clone it in ElevenLabs. Th
 unchanged (`align.py` doesn't care whose voice it is), the voice is distinctive, and a clone of
 your own voice is explicitly exempt from disclosure.
 
-## 8. UNBUILT and Open Verdict
+## 8. UNBUILT and Weight of Evidence
 
 Keep the brands separate: no shared art, no "from the makers of UNBUILT", and no channel link in
 either About section. Cross-promotion is a separate decision. One UNBUILT community post at
-launch is the cheapest audience you'll get. Its downside: YouTube may seed Open Verdict to
+launch is the cheapest audience you'll get. Its downside: YouTube may seed Weight of Evidence to
 UNBUILT's audience at first, which skews early analytics. Recommendation: do one post at launch
 and nothing structural.
 
@@ -146,11 +149,11 @@ and nothing structural.
 
 UNBUILT already uploads through the Make scenario **"UNBUILT · YouTube API (uploads)"**. It is a
 YouTube *universal* module that starts resumable uploads, and its connection is authorised for
-the UNBUILT channel only. For Open Verdict:
+the UNBUILT channel only. For Weight of Evidence:
 
 1. In Make → Connections, **add a new YouTube connection**. On Google's account picker, choose
-   the **Open Verdict** channel, not UNBUILT.
-2. Claude clones the scenario as "Open Verdict · YouTube API (uploads)" on that connection.
+   the **Weight of Evidence** channel, not UNBUILT.
+2. Claude clones the scenario as "Weight of Evidence · YouTube API (uploads)" on that connection.
 
 After that, Claude can upload straight from the production container:
 - the **full-quality master** (2.28 GB). The browser-link copy had to be squeezed to 476 MB.

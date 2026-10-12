@@ -21,7 +21,7 @@ def hero(prod, name, scene, args):
     out = os.path.join(prod, "renders", f"{name}.png")
     if not os.path.exists(out):
         tmp = os.path.join(prod, "renders", "tmp")
-        py = os.environ.get("OV_PY", sys.executable)
+        py = os.environ.get("WOE_PY", sys.executable)
         subprocess.run([py, os.path.join(HERE, "scenes.py"), scene, tmp, "--res", "1920x1080",
                         "--samples", "32", f"name={name}", *args], check=True, stdout=subprocess.DEVNULL)
         os.replace(os.path.join(tmp, f"{name}_0000.png"), out)
@@ -56,7 +56,7 @@ def thumb(base, lines, out):
 
 
 def main(prod):
-    G.FONT_DIR = os.environ.get("OV_FONTS", os.path.join(prod, "fonts"))
+    G.FONT_DIR = os.environ.get("WOE_FONTS", os.path.join(prod, "fonts"))
     brain = hero(prod, "thumb_brain", "brain", ["tumor=1.2", "glow=1.4", "view=three_q", "orbit=0"])
     clean = hero(prod, "thumb_brain_clean", "brain", ["tumor=0", "view=three_q", "orbit=0"])
     import edit as E  # same tumor glow as the episode: difference of the two passes

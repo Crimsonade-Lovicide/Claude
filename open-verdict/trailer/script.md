@@ -43,8 +43,8 @@ Narration is the `>` lines. Shot IDs are prefixed T.
 > Because the verdict stays open. New evidence, or a better argument from you, can move it.
 
 ### T09 · Title
-**Picture:** `GFX: title` OPEN VERDICT / *One question. The evidence. A verdict.* Then "CASE 01 · THE TUMOR DEFENSE · OUT NOW."
-> Open Verdict. Case one is out now.
+**Picture:** `GFX: title` WEIGHT OF EVIDENCE / *One question. The evidence. A verdict.* Then "CASE 01 · THE TUMOR DEFENSE · OUT NOW."
+> Weight of Evidence. Case one is out now.
 
 ---
 
@@ -67,4 +67,4 @@ from this script, not from speech recognition.
 
 ### V04
 **Picture:** Title card.
-> Open Verdict. Case one. Full episode on the channel.
+> Weight of Evidence. Case one. Full episode on the channel.

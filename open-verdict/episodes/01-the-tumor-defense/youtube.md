@@ -74,6 +74,6 @@ Determined, ethics documentary
 
 - Not made for kids. Age restriction not required (no graphic content) but review the
   content note placement.
-- Captions: upload `open_verdict_case01.srt` (script text, not auto-captions).
+- Captions: upload `weight_of_evidence_case01.srt` (script text, not auto-captions).
 - End screen: the two slots on the end card (300,470) and (1020,470), 600×338 px.
 - Category: Education.

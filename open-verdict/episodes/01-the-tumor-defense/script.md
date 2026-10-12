@@ -52,7 +52,7 @@ pronunciation table at the bottom.
 > Most people answer that fast. Hold on to your answer. By the end of this episode, we'll show you why the same logic, followed all the way down, could set almost everyone free.
 
 ### S09 · Title
-**Picture:** `GFX: title` OPEN VERDICT · CASE 01 / THE TUMOR DEFENSE / *If a tumor made him do it, is he guilty?* No narration; music hit.
+**Picture:** `GFX: title` WEIGHT OF EVIDENCE · CASE 01 / THE TUMOR DEFENSE / *If a tumor made him do it, is he guilty?* No narration; music hit.
 
 ---
 

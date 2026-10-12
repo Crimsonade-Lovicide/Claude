@@ -7,7 +7,7 @@
 # share an identical camera path.
 set -euo pipefail
 PROD=${1:?prod dir}; shift || true
-PY=${OV_PY:-python}
+PY=${WOE_PY:-python}
 HERE=$(cd "$(dirname "$0")" && pwd)
 OUT=$PROD/anim
 mkdir -p "$OUT"

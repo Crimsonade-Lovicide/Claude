@@ -1,10 +1,13 @@
-# OPEN VERDICT (working title)
+# WEIGHT OF EVIDENCE
 
 A faceless documentary series on YouTube. Each episode takes one hard question, anchored
 in one real case, follows the evidence, and ends with a verdict and a stated confidence.
 
-The title is a placeholder. It appears only in the title card, the end card and the
-trailer, so a rename only touches those three places.
+The name is a standard from law and science: the weight of evidence is how much the
+evidence counts once it's in, which is what every episode measures before it rules. It
+appears only in the title card, the end card, the trailer and the channel art. (Working
+title until October 2026: Open Verdict, dropped after two unrelated channels launched
+under it.)
 
 ## The promise (one sentence)
 
@@ -22,8 +25,8 @@ trailer, so a rename only touches those three places.
    - **CONFIDENCE:** a percentage, read aloud.
    - **WHAT WOULD CHANGE OUR MIND:** the specific evidence that would flip it.
 4. **The case stays open.** If new evidence or a strong viewer argument moves us, we say
-   so in a pinned comment or a follow-up video and change the number. That's the title's
-   meaning: a verdict that can be revised.
+   so in a pinned comment or a follow-up video and change the number. New weight on the
+   scale moves the verdict.
 5. **Evidence labels on screen.** Every claim card carries one of:
    - `RECORD`: in a primary source (court record, paper, official report)
    - `INFERENCE`: our reasoning from the record

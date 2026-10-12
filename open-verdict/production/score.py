@@ -1,4 +1,4 @@
-"""Open Verdict score and sound effects, synthesized in numpy. No samples, no credits.
+"""Weight of Evidence score and sound effects, synthesized in numpy. No samples, no credits.
 
 Every function returns a mono float32 array at SR. The edit (ep01.py) places cues per act,
 ducks them under the narration, and drops effects on narration words.

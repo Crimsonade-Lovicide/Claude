@@ -1,4 +1,4 @@
-# Open Verdict production pipeline
+# Weight of Evidence production pipeline
 
 Everything on screen is built by code. ElevenLabs is used only for narration. There's no
 image or video generation, no stock footage and no music licence.
@@ -21,21 +21,21 @@ Cost of Case 01 + trailer: about 16,600 ElevenLabs credits (≈ $3.00). Nothing 
 ## Run
 
 ```bash
-python3.11 -m venv ~/.ovenv && ~/.ovenv/bin/pip install bpy faster-whisper geopandas matplotlib scipy pillow numpy
-export OV_PY=~/.ovenv/bin/python OV_FONTS=<prod>/fonts   # IBM Plex + Courier Prime (OFL, google/fonts)
+python3.11 -m venv ~/.woeenv && ~/.woeenv/bin/pip install bpy faster-whisper geopandas matplotlib scipy pillow numpy
+export WOE_PY=~/.woeenv/bin/python WOE_FONTS=<prod>/fonts   # IBM Plex + Courier Prime (OFL, google/fonts)
 P=<prod>   # media dir outside git: vo_acts/, anim/, renders/, src/, fonts/
 
 python narration.py ../episodes/01-the-tumor-defense/script.md $P/narration.json
 #   record one ElevenLabs take per act → $P/vo_acts/act0.mp3 … act5.mp3
-$OV_PY align.py $P                       # vo/<shot>.wav, words.json, timing.json, align_report.txt
+$WOE_PY align.py $P                       # vo/<shot>.wav, words.json, timing.json, align_report.txt
 ./render_ep01.sh $P                      # 3D clips → anim/*.mp4 (~3 h on 4 CPU cores)
-$OV_PY ep01.py $P --prepare              # Whitman brain still + map layers
-$OV_PY ep01.py $P --stills               # one review frame per shot → stills/
-$OV_PY ep01.py $P --final -j 2           # shots → mix → open_verdict_case01.mp4 + .srt + chapters
-$OV_PY thumbs.py $P
-$OV_PY channel_art.py $P <out>          # avatar_800.png, banner_2048.jpg, watermark_150.png
+$WOE_PY ep01.py $P --prepare              # Whitman brain still + map layers
+$WOE_PY ep01.py $P --stills               # one review frame per shot → stills/
+$WOE_PY ep01.py $P --final -j 2           # shots → mix → weight_of_evidence_case01.mp4 + .srt + chapters
+$WOE_PY thumbs.py $P
+$WOE_PY channel_art.py $P <out>          # avatar_800.png, banner_2048.jpg, watermark_150.png
 # trailer: own prod dir with the trailer narration, anim/ linked to Case 01's
-$OV_PY trailer.py $T --final ; $OV_PY trailer.py $T --final --vertical
+$WOE_PY trailer.py $T --final ; $WOE_PY trailer.py $T --final --vertical
 ```
 
 ## How the edit holds together

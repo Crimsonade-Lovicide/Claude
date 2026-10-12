@@ -1,4 +1,4 @@
-"""Open Verdict edit engine: timing, 3D clip playback, shot rendering, mix, mux, captions.
+"""Weight of Evidence edit engine: timing, 3D clip playback, shot rendering, mix, mux, captions.
 
 A video module (ep01.py, trailer.py) defines:
   SILENT  {shot_id: seconds}         shots with no narration (titles, end card)
@@ -387,8 +387,8 @@ def final(ctx, mod, jobs, render=True):
 
 def main(mod):
     prod = sys.argv[1]
-    os.environ.setdefault("OV_FONTS", os.path.join(prod, "fonts"))
-    G.FONT_DIR = os.environ["OV_FONTS"]
+    os.environ.setdefault("WOE_FONTS", os.path.join(prod, "fonts"))
+    G.FONT_DIR = os.environ["WOE_FONTS"]
     ctx = Ctx(prod, mod)
     argv = sys.argv[2:]
     jobs = int(argv[argv.index("-j") + 1]) if "-j" in argv else 1

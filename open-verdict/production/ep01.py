@@ -1,4 +1,4 @@
-"""Open Verdict, Case 01: The Tumor Defense. Shot definitions for edit.py.
+"""Weight of Evidence, Case 01: The Tumor Defense. Shot definitions for edit.py.
 
     python ep01.py <prod_dir> --stills | --only S04,S28 | --final -j 2
 
@@ -21,8 +21,8 @@ import edit as E  # noqa: E402
 import gfx as G  # noqa: E402
 import score as S  # noqa: E402
 
-OUT_NAME = "open_verdict_case01.mp4"
-TITLE = "Open Verdict, Case 01: The Tumor Defense"
+OUT_NAME = "weight_of_evidence_case01.mp4"
+TITLE = "Weight of Evidence, Case 01: The Tumor Defense"
 
 SILENT = {"S09": 6.5, "S10": 3.4, "S22": 3.4, "S32": 3.4, "S44": 3.4, "S52": 3.4, "S61": 20.0}
 LEAD = {"S01": 1.6, "S11": 0.4, "S23": 0.4, "S33": 1.2, "S45": 0.4, "S53": 0.6, "S60": 0.8}
@@ -577,7 +577,7 @@ def endcard_shot():
     def frame(t, dur):
         img = G.canvas()
         a = G.fade(t, dur, 1.0, 1.5)
-        G.centered(img, G.text_layer("OPEN VERDICT", G.SANS(84, "SemiBold"), fill=G.INK, spacing=0.12), 230, a)
+        G.centered(img, G.text_layer("WEIGHT OF EVIDENCE", G.SANS(84, "SemiBold"), fill=G.INK, spacing=0.12), 230, a)
         G.centered(img, G.text_layer("One question. The evidence. A verdict.", G.SERIF_I(40), fill=G.DIM), 320, a)
         d = ImageDraw.Draw(img)
         for x in (300, 1020):  # end-screen slots
@@ -629,7 +629,7 @@ def build(ctx):
     shots["S07"] = E.clip_shot(C("scale_empty"), tag=None)
     shots["S08"] = G.words_shot("Hold on to your answer. The same logic, followed all the way down, could set almost everyone free.",
                                 size=62, emphasis={"almost", "everyone"}, per_word=0.32, start=at("S08", "Hold on"))
-    shots["S09"] = G.title_shot("THE TUMOR DEFENSE", "If a tumor made him do it, is he guilty?", "OPEN VERDICT · CASE 01")
+    shots["S09"] = G.title_shot("THE TUMOR DEFENSE", "If a tumor made him do it, is he guilty?", "WEIGHT OF EVIDENCE · CASE 01")
     shots["S10"] = G.title_shot("I · THE PATIENT")
     shots["S11"] = doc(["ARCHIVES OF NEUROLOGY · VOL. 60 · MARCH 2003", "",
                         "Right Orbitofrontal Tumor With Pedophilia", "Symptom and Constructional Apraxia Sign", "",
@@ -800,7 +800,7 @@ def prepare(prod):
         return
     import subprocess
     tmp = os.path.join(prod, "renders", "tmp")
-    py = os.environ.get("OV_PY", sys.executable)
+    py = os.environ.get("WOE_PY", sys.executable)
     subprocess.run([py, os.path.join(HERE, "scenes.py"), "brain", tmp, "--res", "1920x1080", "--samples", "24",
                     "tumor=0.55", "site=deep", "view=side", "orbit=0", "name=brain_deep"], check=True,
                    stdout=subprocess.DEVNULL)

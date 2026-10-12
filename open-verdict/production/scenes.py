@@ -1,4 +1,4 @@
-"""Open Verdict 3D scenes, built and rendered entirely from Python (Blender 5 bpy + Cycles).
+"""Weight of Evidence 3D scenes, built and rendered entirely from Python (Blender 5 bpy + Cycles).
 
     python scenes.py <scene> <out_dir> [--frames A:B] [--res 1920x1080] [--samples 32] [k=v ...]
 

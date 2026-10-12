@@ -1,9 +1,9 @@
-"""Open Verdict graphics kit: one look for every motion-graphics shot.
+"""Weight of Evidence graphics kit: one look for every motion-graphics shot.
 
 A shot is a function frame(t, dur) -> PIL.Image (1920x1080 RGB). These helpers keep
 type, colour, motion and the evidence labels consistent across episodes.
 
-Fonts (OFL, from google/fonts) live in $OV_FONTS (default: ./fonts):
+Fonts (OFL, from google/fonts) live in $WOE_FONTS (default: ./fonts):
 PlexSans.ttf (variable), PlexSerif*.ttf, PlexMono*.ttf, CourierPrime.ttf.
 """
 
@@ -32,7 +32,7 @@ RED = (214, 84, 64)
 LABEL_COLOURS = {"RECORD": BRASS, "INFERENCE": CYAN, "ARGUMENT": (176, 150, 214),
                  "RECONSTRUCTION": DIM}
 
-FONT_DIR = os.environ.get("OV_FONTS", "fonts")
+FONT_DIR = os.environ.get("WOE_FONTS", "fonts")
 _fonts = {}
 
 

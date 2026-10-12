@@ -1,4 +1,4 @@
-"""Open Verdict channel trailer (T shots, 16:9) and its 30-second vertical cut (V shots, 9:16).
+"""Weight of Evidence channel trailer (T shots, 16:9) and its 30-second vertical cut (V shots, 9:16).
 
     python trailer.py <prod_dir> --final            16:9 trailer
     python trailer.py <prod_dir> --final --vertical  9:16 cut with word-by-word captions
@@ -21,8 +21,8 @@ import score as S  # noqa: E402
 
 VERTICAL = "--vertical" in sys.argv
 SHOT_PREFIX = "V" if VERTICAL else "T"
-OUT_NAME = "open_verdict_trailer_vertical.mp4" if VERTICAL else "open_verdict_trailer.mp4"
-TITLE = "Open Verdict: trailer"
+OUT_NAME = "weight_of_evidence_trailer_vertical.mp4" if VERTICAL else "weight_of_evidence_trailer.mp4"
+TITLE = "Weight of Evidence: trailer"
 SILENT = {}
 LEAD = {"T01": 1.2, "V01": 0.3}
 PAD = {"T05": 0.8, "T07": 0.8, "T08": 0.8, "T09": 3.5, "V04": 2.0}
@@ -129,14 +129,14 @@ def build(ctx):
                            at("T06", "only an argument", end=True) + 0.2),
         "T07": meter_shot(at("T07", "We tell you how sure")),
         "T08": E.clip_shot(C("scale_swing"), tag=None),
-        "T09": G.title_shot("OPEN VERDICT", "One question. The evidence. A verdict.", "CASE 01 · THE TUMOR DEFENSE · OUT NOW"),
+        "T09": G.title_shot("WEIGHT OF EVIDENCE", "One question. The evidence. A verdict.", "CASE 01 · THE TUMOR DEFENSE · OUT NOW"),
         "V01": E.xfade_shot(C("brain_tumor", start=3), C("brain_clean", start=3), 999, glow="a", tag=None),
         "V02": E.clip_shot(C("scale_tip_right"), tag=None),
         "V03": meter_shot(at("V03", "We gave a verdict")),
-        "V04": G.title_shot("OPEN VERDICT", "Case 01 · full episode on the channel"),
+        "V04": G.title_shot("WEIGHT OF EVIDENCE", "Case 01 · full episode on the channel"),
     }
     if VERTICAL:
-        fit = {"V03"}  # full-width graphics: scale to fit instead of centre-cropping
+        fit = {"V03", "V04"}  # full-width graphics: scale to fit instead of centre-cropping
         s = {k: vertical(ctx, k, fn, fit=k in fit) for k, fn in s.items() if k.startswith("V")}
     return s
 
