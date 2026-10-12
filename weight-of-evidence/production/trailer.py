@@ -141,6 +141,13 @@ def build(ctx):
     return s
 
 
+def feather(size, edge=140):
+    """Alpha mask fading the top and bottom edges, so a fitted 16:9 frame has no visible seam."""
+    w, h = size
+    col = [int(255 * min(1.0, y / edge, (h - 1 - y) / edge)) for y in range(h)]
+    return Image.frombytes("L", (1, h), bytes(col)).resize((w, h))
+
+
 def vertical(ctx, sid, fn, fit=False):
     """Reframe a 16:9 frame into 1080x1920: centre crop scaled up, captions word by word."""
     VW, VH = 1080, 1920
@@ -153,7 +160,7 @@ def vertical(ctx, sid, fn, fit=False):
         out = Image.new("RGB", (VW, VH), G.BG)
         if fit:
             small = src.resize((VW, int(src.height * VW / src.width)), Image.LANCZOS)
-            out.paste(small, (0, 780 - small.height // 2))
+            out.paste(small, (0, 780 - small.height // 2), feather(small.size))
         else:
             h = 1240
             w = int(src.width * h / src.height)

@@ -202,7 +202,7 @@ def _render_one(args):
     def framed(t, d):
         img = fn(t, d)
         k = min(G.clamp(t / fi) if fi else 1.0, G.clamp((d - t) / fo) if fo else 1.0)
-        return img if k >= 1 else Image.blend(G.canvas((0, 0, 0)), img, k)
+        return img if k >= 1 else Image.blend(Image.new("RGB", img.size), img, k)
     if stills:
         os.makedirs(os.path.join(prod, "stills"), exist_ok=True)
         t = min(dur * 0.6, dur - 0.1)
