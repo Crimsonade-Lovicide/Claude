@@ -77,3 +77,13 @@ Determined, ethics documentary
 - Captions: upload `weight_of_evidence_case01.srt` (script text, not auto-captions).
 - End screen: the two slots on the end card (300,470) and (1020,470), 600×338 px.
 - Category: Education.
+
+## On YouTube (uploaded 12 Oct 2026 via Make scenario 6603120, all private until published)
+
+| Item | ID |
+|---|---|
+| Channel | `UCfkRnf_qdD8Ccn0TE_etTyA` (@WeightOfEvidence) |
+| Case 01 (master, thumbnail A, English captions) | `FC6vrd1cB0o` |
+| Trailer (16:9, title-card thumbnail) | `eAZXxwX4b2E` |
+| Short (vertical cut) | `T5RjIL720gw` |
+| Playlist "Cases" | `PLJOCHSM8krBA` |
