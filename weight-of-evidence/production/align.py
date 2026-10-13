@@ -32,6 +32,9 @@ def main(prod):
     words_out, timing, report = {}, {}, []
     for ai, act in enumerate(nar["acts"]):
         src = os.path.join(prod, "vo_acts", f"act{ai}.mp3")
+        if not os.path.exists(src):  # take not recorded yet: the edit estimates these shots
+            print(f"act{ai}: no take, skipped", flush=True)
+            continue
         segs, info = model.transcribe(src, word_timestamps=True, beam_size=5)
         heard = [(w.word.strip(), w.start, w.end) for s in segs for w in s.words]
         total = info.duration

@@ -10,6 +10,9 @@ Scenes:
   tower     Stylized tower silhouette at dawn (reconstruction, simplified massing).
             k=v: push (0..1 dolly over the clip)
   corridor  Hospital corridor at night, one failing light. k=v: flicker=1
+  road      (Case 02) A divided arterial at night, simplified. k=v: view=push|top|median,
+            dist (m, push), orbit (deg, top), exposure
+  car       (Case 02) A generic test SUV with a roof lidar, black void. k=v: orbit (deg)
 Each frame is written as <out_dir>/<scene>_####.png. Single stills: --frames 0:0.
 Everything here is a reconstruction or a symbol and is tagged as such in the edit.
 """
@@ -509,6 +512,256 @@ def scene_corridor(kv, f0, f1):
         bad_l.data.keyframe_insert("energy", frame=f)
 
 
+# ---------------------------------------------------------------- THE ROAD (Case 02)
+
+def night_sky(sc, low=(0.035, 0.03, 0.05), high=(0.002, 0.003, 0.008)):
+    sky = sc.world.node_tree
+    sky.nodes.clear()
+    tc = sky.nodes.new("ShaderNodeTexCoord")
+    sep = sky.nodes.new("ShaderNodeSeparateXYZ")
+    rmp = sky.nodes.new("ShaderNodeValToRGB")
+    bg = sky.nodes.new("ShaderNodeBackground")
+    o = sky.nodes.new("ShaderNodeOutputWorld")
+    el = rmp.color_ramp.elements
+    el[0].position, el[0].color = 0.0, (*low, 1)   # city glow at the horizon
+    el[1].position, el[1].color = 0.25, (*high, 1)
+    sky.links.new(tc.outputs["Generated"], sep.inputs[0])
+    sky.links.new(sep.outputs["Z"], rmp.inputs["Fac"])
+    sky.links.new(rmp.outputs["Color"], bg.inputs[0])
+    bg.inputs["Strength"].default_value = 1.0
+    sky.links.new(bg.outputs[0], o.inputs[0])
+
+
+def build_road():
+    """A divided four-lane arterial at night, simplified: two lanes each way, a bike lane,
+    a raised landscaped median with an X-shaped paved path and a sign pointing pedestrians to
+    the crosswalk, LED streetlights on the median. Generic massing; tagged RECONSTRUCTION.
+    +Y is the direction of travel; northbound lanes are x in [0.5, 8.5]."""
+    asphalt = mat_principled("Asphalt", (0.035, 0.035, 0.038), rough=0.55, coat=0.15)
+    paint = mat_principled("Paint", (0.75, 0.74, 0.70), rough=0.6)
+    yellow = mat_principled("Yellow", (0.75, 0.55, 0.12), rough=0.6)
+    curb = mat_principled("Curb", (0.32, 0.31, 0.29), rough=0.8)
+    brick = mat_principled("Brick", (0.34, 0.13, 0.08), rough=0.85)
+    gravel = mat_principled("Gravel", (0.20, 0.17, 0.13), rough=0.95)
+    shrub = mat_principled("Shrub", (0.03, 0.05, 0.03), rough=0.9)
+    pole = mat_principled("Pole", (0.25, 0.26, 0.27), metallic=0.7, rough=0.4)
+    L0, L1 = -120, 260
+
+    def box(name, cx, cy, cz, sx, sy, sz, m):
+        o = add("cube", name, size=1, location=(cx, cy, cz))
+        o.scale = (sx, sy, sz)
+        assign(o, m)
+        return o
+
+    MX0, MX1 = -21.1, 0.5  # median edges: 71 ft (21.6 m) wide
+    MC = (MX0 + MX1) / 2
+    box("Road", -11, (L0 + L1) / 2, -0.05, 44, L1 - L0, 0.1, asphalt)
+    box("Verge", 0, (L0 + L1) / 2, -0.12, 220, L1 - L0, 0.1, mat_principled("Dirt", (0.05, 0.045, 0.04), rough=0.95))
+    # median: raised 15 cm, decorative rock with shrubs; an X of brick paving around y=40
+    box("Median", MC, (L0 + L1) / 2, 0.075, MX1 - MX0, L1 - L0, 0.15, gravel)
+    for k, ang in enumerate((35.8, -35.8)):
+        p = box(f"Path{k}", MC, 40, 0.16, 2.4, 36.5, 0.02, brick)
+        p.rotation_euler = (0, 0, math.radians(ang))
+    for k in range(70):
+        y = L0 + 5 + (k * 37) % (L1 - L0 - 10)
+        x = MX0 + 1.5 + ((k * 53) % 100) / 100 * (MX1 - MX0 - 3)
+        if 18 < y < 62:
+            continue
+        sz = 0.5 + ((k * 17) % 10) / 20
+        sh = smooth(add("uv_sphere", f"Shrub{k}", radius=sz, location=(x, y, 0.15 + sz * 0.5), segments=12, ring_count=8))
+        sh.scale = (1, 1.2, 0.65)
+        assign(sh, shrub)
+    # curbs and lane paint (northbound side gets full detail; it is what the camera sees)
+    box("CurbE", 9.0, (L0 + L1) / 2, 0.08, 0.3, L1 - L0, 0.16, curb)
+    box("Edge", 8.4, (L0 + L1) / 2, 0.005, 0.12, L1 - L0, 0.01, paint)       # bike lane line
+    box("YellowN", MX1 + 0.15, (L0 + L1) / 2, 0.005, 0.1, L1 - L0, 0.01, yellow)
+    box("YellowS", MX0 - 0.15, (L0 + L1) / 2, 0.005, 0.1, L1 - L0, 0.01, yellow)
+    for y in range(L0, L1, 12):
+        box(f"Dash{y}", 4.5, y, 0.005, 0.12, 3.0, 0.01, paint)
+        box(f"DashS{y}", MX0 - 4.2, y, 0.005, 0.12, 3.0, 0.01, paint)
+    # sign at the path, facing the northbound lanes: "USE CROSSWALK" and an arrow
+    SX, SY = -0.9, 33.0
+    box("SignPost", SX, SY, 1.1, 0.06, 0.06, 2.2, pole)
+    box("SignPlate", SX, SY, 2.0, 0.04, 1.15, 0.8, mat_principled("SignWhite", (0.85, 0.85, 0.82), rough=0.5))
+    ink = mat_principled("SignInk", (0.02, 0.02, 0.02), rough=0.6)
+    for txt, z, size in (("USE", 2.2, 0.17), ("CROSSWALK", 1.98, 0.17), ("\u2192", 1.74, 0.26)):
+        bpy.ops.object.text_add(location=(SX + 0.03, SY, z))
+        t = bpy.context.active_object
+        t.data.body = txt
+        t.data.align_x = "CENTER"
+        t.data.align_y = "CENTER"
+        t.data.size = size
+        t.rotation_euler = (math.radians(90), 0, math.radians(90))
+        assign(t, ink)
+    # streetlights along both median edges, each arm over its own carriageway
+    lamp_m = mat_principled("Lamp", (1, 1, 1), emission=(1.0, 0.86, 0.62), strength=40)
+    for i, y in enumerate(range(L0 + 10, L1, 38)):
+        for side, px in ((1, MX1 - 0.8), (-1, MX0 + 0.8)):
+            box(f"Pole{i}{side}", px, y, 4.5, 0.18, 0.18, 9.0, pole)
+            box(f"Arm{i}{side}", px + side * 2.0, y, 8.9, 4.0, 0.12, 0.12, pole)
+            box(f"Head{i}{side}", px + side * 3.8, y, 8.82, 0.7, 0.35, 0.08, lamp_m)
+            data = bpy.data.lights.new(f"SL{i}{side}", "SPOT")
+            data.energy = 9000
+            data.spot_size = math.radians(115)
+            data.spot_blend = 0.6
+            data.color = (1.0, 0.82, 0.58)
+            data.shadow_soft_size = 0.4
+            o = bpy.data.objects.new(f"SL{i}{side}", data)
+            bpy.context.scene.collection.objects.link(o)
+            o.location = (px + side * 3.8, y, 8.6)
+    # distant blocks on both sides, a few lit windows: reads as city, not as any real building
+    for k in range(18):
+        side = 1 if k % 2 else -1
+        x = (12 if side > 0 else -34) + side * (28 + (k * 13) % 30)
+        y = L0 + 30 + k * 24
+        h = 6 + (k * 7) % 14
+        box(f"Bldg{k}", x, y, h / 2, 14, 18, h, mat_principled(f"B{k}", (0.02, 0.02, 0.022), rough=0.9))
+        if k % 3 == 0:
+            box(f"BW{k}", x - side * 7.05, y, h * 0.6, 0.05, 3, 1.2, mat_principled(f"BW{k}", (1, 1, 1), emission=(1.0, 0.75, 0.45), strength=3))
+
+
+def scene_road(kv, f0, f1):
+    """Mill Avenue at night, simplified. view=push (driver's-eye dolly up the right lane, hood
+    and A-pillars framing), top (high slow orbit over the median crossing), median (the sign
+    and the paved path, slow push). Nothing moving on the road; no person, no car ahead."""
+    sc = bpy.context.scene
+    night_sky(sc)
+    build_road()
+    view = kv.get("view", "push")
+    sc.view_settings.look = "AgX - Medium High Contrast"
+    sc.view_settings.exposure = float(kv.get("exposure", 0.4))
+    if view == "push":
+        start, end = Vector((6.6, -60, 1.3)), Vector((6.6, -60 + float(kv.get("dist", 70)), 1.3))
+        cam = camera(start, (6.2, 60, 1.0), lens=28)
+        # hood edge and A-pillars as black silhouettes parented to the camera
+        blk = mat_principled("Cabin", (0.0, 0.0, 0.0), rough=1.0)
+        hood = add("cube", "Hood", size=1, location=(0, -0.62, -0.95))
+        hood.scale = (3.0, 0.5, 1.0)
+        assign(hood, blk)
+        hood.parent = cam
+        for side in (-1, 1):
+            p = add("cube", f"Pillar{side}", size=1, location=(side * 1.05, 0.0, -1.0))
+            p.scale = (0.12, 2.5, 0.12)
+            p.rotation_euler = (math.radians(-25), 0, math.radians(side * 30))
+            assign(p, blk)
+            p.parent = cam
+        for f in range(f0, f1 + 1):
+            u = (f - f0) / max(1, f1 - f0)
+            cam.location = start.lerp(end, u)
+            cam.location.z = 1.3 + 0.006 * math.sin(f / 4.0)
+            cam.keyframe_insert("location", frame=f)
+    elif view == "top":
+        sc.view_settings.exposure = float(kv.get("exposure", 1.3))
+        tgt = Vector((-6.0, 40, 0))
+        cam = camera((40, -20, 50), tgt, lens=32)
+        orbit = math.radians(float(kv.get("orbit", 25)))
+        r = math.hypot(46, 60)
+        a0 = math.atan2(-60, 46)
+        for f in range(f0, f1 + 1):
+            u = (f - f0) / max(1, f1 - f0)
+            a = a0 + orbit * u
+            cam.location = (tgt.x + r * math.cos(a), tgt.y + r * math.sin(a), 50 - 8 * u)
+            look_at(cam, tgt)
+            cam.keyframe_insert("location", frame=f)
+            cam.keyframe_insert("rotation_euler", frame=f)
+    else:  # median: low push toward the sign, across the paved X
+        start, end = Vector((5.0, 27.0, 1.2)), Vector((2.6, 31.0, 1.4))
+        cam = camera(start, (-0.9, 33.0, 1.7), lens=35)
+        for f in range(f0, f1 + 1):
+            u = (f - f0) / max(1, f1 - f0)
+            u = u * u * (3 - 2 * u)
+            cam.location = start.lerp(end, u)
+            look_at(cam, (-0.9, 33.0, 1.8))
+            cam.keyframe_insert("location", frame=f)
+            cam.keyframe_insert("rotation_euler", frame=f)
+
+
+# ---------------------------------------------------------------- THE TEST CAR (Case 02)
+
+def scene_car(kv, f0, f1):
+    """A generic test SUV, simplified (not a model of the actual vehicle): body, glasshouse,
+    wheels, roof sensor rack with a spinning lidar puck. Black void, rim lights, slow orbit."""
+    paint = mat_principled("Paint", (0.10, 0.105, 0.11), metallic=0.6, rough=0.25, coat=1.0)
+    glass = mat_principled("Glass", (0.01, 0.01, 0.012), rough=0.05, metallic=0.3)
+    rubber = mat_principled("Tyre", (0.02, 0.02, 0.02), rough=0.8)
+    rack = mat_principled("Rack", (0.05, 0.05, 0.05), metallic=0.8, rough=0.3)
+    floor(color=(0.008, 0.008, 0.01), rough=0.15)
+
+    def rbox(name, loc, scale, m, bevel=0.15):
+        o = add("cube", name, size=1, location=loc)
+        o.scale = scale
+        bpy.ops.object.transform_apply(scale=True)
+        mod = o.modifiers.new("Bevel", "BEVEL")
+        mod.width = bevel
+        mod.segments = 4
+        assign(o, m)
+        smooth(o)
+        return o
+
+    def profile(name, pts, width, m, bevel=0.04):
+        """Extrude a side profile [(y, z), ...] across x in [-width/2, width/2]."""
+        import bmesh
+        me = bpy.data.meshes.new(name)
+        bm = bmesh.new()
+        L = [bm.verts.new((-width / 2, y, z)) for y, z in pts]
+        R = [bm.verts.new((width / 2, y, z)) for y, z in pts]
+        bm.faces.new(L[::-1])
+        bm.faces.new(R)
+        n = len(pts)
+        for i in range(n):
+            j = (i + 1) % n
+            bm.faces.new((L[i], L[j], R[j], R[i]))
+        bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+        bm.to_mesh(me)
+        bm.free()
+        o = bpy.data.objects.new(name, me)
+        bpy.context.scene.collection.objects.link(o)
+        mod = o.modifiers.new("Bevel", "BEVEL")
+        mod.width = bevel
+        mod.segments = 3
+        mod.limit_method = "ANGLE"
+        assign(o, m)
+        return o
+
+    # side profile of a generic mid-size SUV, metres; +Y is the front
+    profile("Body", [(-2.45, 0.42), (2.42, 0.42), (2.48, 0.72), (2.35, 1.02), (1.30, 1.16),
+                     (0.55, 1.74), (-1.95, 1.78), (-2.35, 1.40), (-2.48, 1.02)], 1.95, paint, 0.06)
+    profile("Glass", [(-2.22, 1.18), (1.22, 1.18), (0.52, 1.70), (-1.92, 1.73), (-2.28, 1.38)], 1.97, glass, 0.02)
+    for x in (-0.86, 0.86):
+        for y in (-1.5, 1.45):
+            w = add("cylinder", f"W{x}{y}", radius=0.38, depth=0.26, location=(x, y, 0.38), vertices=48)
+            w.rotation_euler = (0, math.radians(90), 0)
+            assign(w, rubber)
+            hub = add("cylinder", f"H{x}{y}", radius=0.22, depth=0.27, location=(x, y, 0.38), vertices=32)
+            hub.rotation_euler = (0, math.radians(90), 0)
+            assign(hub, mat_principled("Rim", (0.5, 0.5, 0.52), metallic=1.0, rough=0.3))
+    rbox("RackBase", (0, -0.5, 1.86), (1.3, 1.6, 0.12), rack, 0.04)
+    puck = smooth(add("cylinder", "Lidar", radius=0.22, depth=0.28, location=(0, -0.3, 2.06), vertices=32))
+    assign(puck, mat_principled("LidarMat", (0.05, 0.05, 0.06), metallic=0.5, rough=0.2,
+                                emission=(0.25, 0.6, 1.0), strength=0.12))
+    for k in range(6):  # side cameras on the rack
+        c = add("cube", f"Cam{k}", size=1, location=((-0.6 + 0.24 * k), 0.32, 1.95))
+        c.scale = (0.12, 0.1, 0.08)
+        assign(c, rack)
+    area_light((5, -6, 4), (0, 0, 1), 900, size=4, color=(0.75, 0.85, 1.0), name="Rim1")
+    area_light((-6, 5, 3), (0, 0, 1), 700, size=4, color=(1.0, 0.85, 0.65), name="Rim2")
+    area_light((0, 0, 7), (0, 0, 0), 150, size=6, name="Top")
+    tgt = (0, 0, 1.0)
+    cam = camera((7.5, -7.5, 2.4), tgt, lens=50)
+    orbit = math.radians(float(kv.get("orbit", 30)))
+    r = math.hypot(7.5, 7.5)
+    a0 = math.atan2(-7.5, 7.5)
+    for f in range(f0, f1 + 1):
+        u = (f - f0) / max(1, f1 - f0)
+        a = a0 + orbit * u
+        cam.location = (r * math.cos(a), r * math.sin(a), 2.4)
+        look_at(cam, tgt)
+        cam.keyframe_insert("location", frame=f)
+        cam.keyframe_insert("rotation_euler", frame=f)
+        puck.rotation_euler = (0, 0, f * 0.6)  # the lidar spins
+        puck.keyframe_insert("rotation_euler", frame=f)
+
+
 # ---------------------------------------------------------------- main
 
 def main():
@@ -516,7 +769,7 @@ def main():
     f0, f1 = (int(v) for v in opts["frames"].split(":"))
     sc = reset(opts["res"], int(opts["samples"]))
     {"scale": scene_scale, "brain": scene_brain, "tower": scene_tower,
-     "corridor": scene_corridor}[scene](kv, f0, f1)
+     "corridor": scene_corridor, "road": scene_road, "car": scene_car}[scene](kv, f0, f1)
     os.makedirs(out, exist_ok=True)
     tag = kv.get("name", scene)
     for f in range(f0, f1 + 1, int(opts.get("step", 1))):
