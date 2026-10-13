@@ -257,6 +257,10 @@ def clock_shot(ctx, sid):
 
 def rows_shot(rows, times, header=None, label=None, source=None, strike=False):
     """Dated rows (or plain lines) that land one by one: rows = [(left, right)]."""
+    layers = [G.text_layer(right, G.SANS(48, "SemiBold"), fill=G.INK, spacing=0.04) for _, right in rows]
+    # dated rows share one column, pulled left if the widest line would pass the right margin
+    col = max(420, min(640, G.W - 220 - max(lay.width for lay in layers)))
+
     def frame(t, dur):
         img = G.canvas()
         a = G.fade(t, dur, 0.4, 0.5)
@@ -271,8 +275,8 @@ def rows_shot(rows, times, header=None, label=None, source=None, strike=False):
             y = y0 + i * gap
             if left:
                 G.paste_alpha(img, G.text_layer(left, G.MONO(32, True), fill=G.BRASS, spacing=0.1), (220, y + 8), k)
-            lay = G.text_layer(right, G.SANS(48, "SemiBold"), fill=G.INK, spacing=0.04)
-            x = 640 if left else 220
+            lay = layers[i]
+            x = col if left else 220
             G.paste_alpha(img, lay, (x, y), k)
             if strike:
                 d = ImageDraw.Draw(img)
@@ -288,7 +292,7 @@ def rows_shot(rows, times, header=None, label=None, source=None, strike=False):
 
 
 def stat_count_shot(ctx, sid):
-    t0 = ctx.at(sid, "more than four hundred thousand")
+    t0 = ctx.at(sid, "more than 400 000")
 
     def frame(t, dur):
         img = G.canvas()
@@ -523,9 +527,9 @@ def build(ctx):
           "      is killed: imprisonment for a term not exceeding 14 years"]
     t_uk1 = at("S52", "Responsibility moves")
     shots["S52"] = G.seq((doc(uk, size=34, width=1500, highlight=span(uk, "User-in-charge not liable for manner of driving"),
-                              hi_at=at("S52", "commits no offence"), footer="Not yet in force · planned 2027 · paraphrased headings"), t_uk1),
+                              hi_at=at("S52", "commits no offense"), footer="Not yet in force · planned 2027 · paraphrased headings"), t_uk1),
                          (doc(uk, size=34, width=1500, highlight=span(uk, "imprisonment for a term not exceeding 14 years"),
-                              hi_at=at("S52", "fourteen years", offset=-t_uk1), footer="Not yet in force · planned 2027 · paraphrased headings", drift=0.0), 1))
+                              hi_at=at("S52", "14 years", offset=-t_uk1), footer="Not yet in force · planned 2027 · paraphrased headings", drift=0.0), 1))
     shots["S53"] = G.card_shot("“…not one problem but a set of at least four interconnected problems…”", "ARGUMENT",
                                "Santoni de Sio & Mecacci, 2021 · after Matthias, 2004")
 
@@ -568,7 +572,7 @@ def sfx(ctx):
     for sid in ("S19", "S35", "S46", "S55", "S56"):
         ev.append((sid, 0.3, S.clink(), -11))
     for sid, ph in (("S14", "threw away"), ("S25", "two to four seconds"), ("S32", "humans are very poor"),
-                    ("S37", "The probable cause"), ("S51", "But only for traffic"), ("S52", "commits no offence")):
+                    ("S37", "The probable cause"), ("S51", "But only for traffic"), ("S52", "commits no offense")):
         ev.append((sid, at(sid, ph), S.marker(), -14))
     for sid in ("S02", "S13"):
         ev.append((sid, 0.0, S.hum(ctx.dur[sid], vol=0.025), -18))

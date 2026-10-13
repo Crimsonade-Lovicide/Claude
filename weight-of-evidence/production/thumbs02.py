@@ -30,12 +30,13 @@ def thumb_a(prod):
     img = ImageEnhance.Brightness(road(prod)).enhance(1.25)
     d = ImageDraw.Draw(img, "RGBA")
     # detection box in the lane ahead, slightly left of centre (where she was crossing)
-    cx, cy, s = 760, 640, 70
+    cx, cy, s = 700, 690, 86
+    d.rectangle([cx + s + 14, cy - s - 30, cx + s + 400, cy - s + 172], fill=(6, 7, 10, 215))
     for k, (txt, col, a) in enumerate((("VEHICLE?", G.CYAN, 120), ("OTHER?", G.DIM, 160), ("BICYCLE?", G.BRASS, 255))):
         off = (2 - k) * 10
         d.rectangle([cx - s - off, cy - s - off, cx + s + off, cy + s + off], outline=col + (a,), width=5 if k == 2 else 3)
-        lay = G.text_layer(txt, G.MONO(46, True), fill=col, spacing=0.08)
-        G.paste_alpha(img, lay, (cx + s + 30, cy - s - 14 + k * 58), a / 255)
+        lay = G.text_layer(txt, G.MONO(50, True), fill=col if k == 2 else tuple(min(255, int(v * 1.35)) for v in col), spacing=0.08)
+        G.paste_alpha(img, lay, (cx + s + 34, cy - s - 18 + k * 62), 1.0 if k == 2 else 0.8)
     for x in range(1180, 1920):  # darken the type area
         a = int(200 * min(1, (x - 1180) / 260))
         d.line([x, 0, x, 1080], fill=(8, 9, 12, a))
@@ -53,7 +54,23 @@ def thumb_a(prod):
 def thumb_b(prod, prod1):
     scale = Image.open(os.path.join(prod1, "renders", "thumb_scale.png")).convert("RGB")
     out = os.path.join(prod, "thumb_b.jpg")
-    return T.thumb(T.setup(scale, 120, zoom=0.82), [("WHO'S", 170, G.INK), ("GUILTY?", 170, G.BRASS)], out)
+    return T.thumb(feathered(scale, 330, 0.82), [("WHO'S", 170, G.INK), ("GUILTY?", 170, G.BRASS)], out)
+
+
+def feathered(img, shift, zoom, edge=160):
+    """Like thumbs.setup, but the shrunken render fades into the canvas instead of ending in a seam."""
+    canvas = Image.new("RGB", img.size, img.getpixel((4, 4)))
+    small = img.resize((int(img.width * zoom), int(img.height * zoom)), Image.LANCZOS)
+    w, h = small.size
+    mask = Image.new("L", (w, h), 255)
+    md = ImageDraw.Draw(mask)
+    for i in range(edge):
+        v = int(255 * i / edge)
+        md.line([w - 1 - i, 0, w - 1 - i, h], fill=v)       # right edge
+        md.line([0, h - 1 - i, w, h - 1 - i], fill=v)       # bottom edge
+        md.line([0, i, w, i], fill=v)                        # top edge
+    canvas.paste(small, (-shift, (canvas.height - h) // 2), mask)
+    return canvas
 
 
 def main(prod, prod1):
