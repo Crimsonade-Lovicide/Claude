@@ -581,7 +581,7 @@ def build_road():
         box(f"DashS{y}", MX0 - 4.2, y, 0.005, 0.12, 3.0, 0.01, paint)
     # sign at the path, facing the northbound lanes: "USE CROSSWALK" and an arrow
     SX, SY = -0.9, 33.0
-    box("SignPost", SX, SY, 1.1, 0.06, 0.06, 2.2, pole)
+    box("SignPost", SX - 0.06, SY, 1.1, 0.06, 0.06, 2.2, pole)  # behind the plate, away from the lanes
     box("SignPlate", SX, SY, 2.0, 0.04, 1.15, 0.8, mat_principled("SignWhite", (0.85, 0.85, 0.82), rough=0.5))
     ink = mat_principled("SignInk", (0.02, 0.02, 0.02), rough=0.6)
     for txt, z, size in (("USE", 2.2, 0.17), ("CROSSWALK", 1.98, 0.17), ("\u2192", 1.74, 0.26)):
