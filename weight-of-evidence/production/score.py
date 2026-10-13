@@ -96,7 +96,8 @@ def chord_pad(chords, sec, bright=900, seed=0, vol=0.18):
         length = int(min(seg + 3.0, sec - i * seg) * SR)
         part = np.zeros(length, np.float32)
         for j, m in enumerate(ch):
-            part += pad_voice(hz(m), length / SR, bright=bright, seed=seed + 31 * i + j)[:length]
+            v = pad_voice(hz(m), length / SR, bright=bright, seed=seed + 31 * i + j)[:length]
+            part[:len(v)] += v  # length/SR can round to one sample short
         e = env_adsr(length, a=2.5, d=0.5, s=1.0, r=3.0)
         out[start:start + length] += (part * e)[: len(out) - start]
     return out * vol
