@@ -74,6 +74,7 @@ All of this lives in `production/gfx.py`. Episodes don't override it.
 | `thumb_a.jpg`, `thumb_b.jpg` | Cycles hero still + Pillow type; A/B in YouTube Test & Compare |
 | `episodes/NN-slug/youtube.md` | 2 titles, description (content note, reconstruction note, chapters, sources), tags, pinned verdict comment |
 | review copies | 720p, split at chapter breaks, for review in the Claude app |
+| `weight_of_evidence_caseNN_short.mp4` | 1080×1920 Short cut from the cold open (`production/short02.py`): the episode's own narration and shots, reframed, with a place/date kicker, three-word captions and a "full episode" end card. Related video: the full episode |
 
 Upload goes out as **Private** through the Make scenario "WEIGHT OF EVIDENCE · YouTube API (uploads)". After that, follow the checklist in `channel/setup.md` §10.
 
