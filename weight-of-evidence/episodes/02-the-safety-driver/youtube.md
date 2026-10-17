@@ -77,5 +77,6 @@ robotaxi, who is responsible self-driving car, moral crumple zone, automation co
 | Item | ID |
 |---|---|
 | Case 02 (1080p master, thumbnail A, English captions, in playlist "Cases") | `6GP6-C2GuJE` |
+| Short (1080×1920, 1:21, cut from the cold open) | `glkhjcQDBig` |
 
-Still to do by hand in YouTube Studio: Test & Compare (title 2, thumbnail B), end screen, publish, then pin the comment above.
+Still to do by hand in YouTube Studio: Test & Compare (title 2, thumbnail B), end screen, publish, then pin the comment above. Then set the Short's Related video to the episode and publish the Short.
