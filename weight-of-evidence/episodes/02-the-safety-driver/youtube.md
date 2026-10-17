@@ -71,3 +71,11 @@ robotaxi, who is responsible self-driving car, moral crumple zone, automation co
 - Captions: upload `weight_of_evidence_case02.srt`.
 - Playlist: Cases. End screen: the two slots on the end card, with Case 01 in one of them.
 - Category: Education.
+
+## On YouTube (uploaded 17 Oct 2026 via Make scenario 6603120, private until published)
+
+| Item | ID |
+|---|---|
+| Case 02 (1080p master, thumbnail A, English captions, in playlist "Cases") | `6GP6-C2GuJE` |
+
+Still to do by hand in YouTube Studio: Test & Compare (title 2, thumbnail B), end screen, publish, then pin the comment above.
