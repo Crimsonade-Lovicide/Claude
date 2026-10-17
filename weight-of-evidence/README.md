@@ -9,6 +9,8 @@ appears only in the title card, the end card, the trailer and the channel art. (
 title until October 2026: Open Verdict, dropped after two unrelated channels launched
 under it.)
 
+**The format and look are locked to Case 02. The spec is in [`FORMAT.md`](FORMAT.md).**
+
 ## The promise (one sentence)
 
 > One question nobody has settled. We weigh the evidence. Then we commit to a verdict
@@ -70,6 +72,6 @@ shot.
 | # | Question | Status |
 |---|---|---|
 | 01 | If a tumor made him do it, is he guilty? | Produced: 19:05, captions, chapters, thumbnails |
-| 02 | Who's guilty when the car drives itself? (Tempe, 2018) | Planned |
+| 02 | Who's guilty when the car drives itself? (Tempe, 2018) | Produced: 17:56, captions, chapters, thumbnails. **Format reference** (see `FORMAT.md`). Upload pending |
 | 03 | Is killing to survive murder? (The Mignonette, 1884) | Planned |
 | 04 | Should surgeons use the Pernkopf Atlas? | Planned |
