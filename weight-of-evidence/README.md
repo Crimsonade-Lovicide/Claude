@@ -73,5 +73,5 @@ shot.
 |---|---|---|
 | 01 | If a tumor made him do it, is he guilty? | Produced: 19:05, captions, chapters, thumbnails |
 | 02 | Who's guilty when the car drives itself? (Tempe, 2018) | Produced: 17:56, captions, chapters, thumbnails. **Format reference** (see `FORMAT.md`). Uploaded private 17 Oct 2026 (`6GP6-C2GuJE`) |
-| 03 | Is killing to survive murder? (The Mignonette, 1884) | Script and verdicts approved 18 Oct 2026. In production: narration recorded and aligned, 3D rendering |
+| 03 | Is killing to survive murder? (The Mignonette, 1884) | Produced: 16:54, captions, chapters, thumbnails, Short (1:34). Review copies sent 18 Oct 2026; upload after sign-off |
 | 04 | Should surgeons use the Pernkopf Atlas? | Planned |
