@@ -1097,12 +1097,13 @@ def build_dinghy(props=False):
         sk.scale = (0.7, 0.55, 1)
         sk.rotation_euler = (math.radians(4), math.radians(10), math.radians(-18))
         tex = bpy.data.textures.new("Folds", "CLOUDS")
-        tex.noise_scale = 0.14
+        tex.noise_scale = 0.32  # a few broad folds, not bubbles
+        tex.noise_depth = 1
         d = sk.modifiers.new("Folds", "DISPLACE")
         d.texture = tex
-        d.strength = 0.09
+        d.strength = 0.15
         sk.modifiers.new("Thick", "SOLIDIFY").thickness = 0.004
-        assign(sk, mat_principled("OilskinMat", (0.24, 0.16, 0.03), rough=0.3, coat=1.0))
+        assign(sk, mat_principled("OilskinMat", (0.13, 0.095, 0.03), rough=0.38, coat=0.5))
         smooth(sk)
         sk.parent = hull
         parts.append(sk)
