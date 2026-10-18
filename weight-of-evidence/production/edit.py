@@ -351,14 +351,37 @@ MASTER_PRE = "acompressor=threshold=-20dB:ratio=2.5:attack=8:release=250:makeup=
 
 def loudnorm_filter(audio, target=-14.0, ceiling_db=-1.5):
     """Measure the integrated loudness after MASTER_PRE, then apply the exact gain to reach
-    target and catch the peaks with a final limiter at the ceiling."""
+    target and catch the peaks with a final limiter at the ceiling. The limiter runs at 4x
+    the sample rate so it also catches inter-sample (true) peaks, which AAC would otherwise
+    push past -1 dBTP on broadband sounds like sea wash."""
     out = subprocess.run(["ffmpeg", "-hide_banner", "-i", audio, "-af",
                           f"{MASTER_PRE},loudnorm=print_format=json", "-f", "null", "-"],
                          capture_output=True, text=True).stderr
     m = json.loads(out[out.rindex("{"):out.rindex("}") + 1])
     gain_db = target - float(m["input_i"])
     limit = 10 ** (ceiling_db / 20)
-    return f"{MASTER_PRE},volume={gain_db:.2f}dB,alimiter=limit={limit:.3f}:attack=2:release=50:level=false"
+    return (f"{MASTER_PRE},volume={gain_db:.2f}dB,aresample=192000,"
+            f"alimiter=limit={limit:.3f}:attack=2:release=50:level=false,aresample=48000")
+
+
+def true_peak(path):
+    """True peak (dBTP) of a file's audio, as ffmpeg's ebur128 measures it."""
+    err = subprocess.run(["ffmpeg", "-nostats", "-i", path, "-af", "ebur128=peak=true", "-f", "null", "-"],
+                         capture_output=True, text=True).stderr
+    return float(err[err.rindex("True peak:"):].split("Peak:")[1].split()[0])
+
+
+def master_audio(audio, out):
+    """Loudness-normalised AAC. AAC can overshoot the limiter by a dB or more on dense sounds
+    (sea wash), so measure the encoded file and lower the ceiling until it holds -1 dBTP."""
+    for ceiling in (-1.5, -2.5, -3.5):
+        subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", audio, "-af", loudnorm_filter(audio, ceiling_db=ceiling),
+                        "-ar", "48000", "-c:a", "aac", "-b:a", "256k", out], check=True)
+        tp = true_peak(out)
+        print(f"master: ceiling {ceiling} dB -> true peak {tp} dBTP", flush=True)
+        if tp <= -1.0:
+            break
+    return out
 
 
 def final(ctx, mod, jobs, render=True):
@@ -372,12 +395,12 @@ def final(ctx, mod, jobs, render=True):
                     "-c", "copy", video], check=True, cwd=ctx.prod)
     audio = mix(ctx, mod)
     out = os.path.join(ctx.prod, mod.OUT_NAME)
-    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", video, "-i", audio,
-                    "-af", loudnorm_filter(audio), "-ar", "48000",
+    aac = master_audio(audio, os.path.join(ctx.prod, f"master{tag}.m4a"))
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", video, "-i", aac, "-map", "0:v", "-map", "1:a",
                     # delivery encode: grain makes the CRF 18 intermediates ~30 Mbps; cap for upload
                     "-c:v", "libx264", "-preset", "medium", "-crf", "21", "-maxrate", "16M",
                     "-bufsize", "32M", "-pix_fmt", "yuv420p", "-movflags", "+faststart",
-                    "-c:a", "aac", "-b:a", "256k", "-shortest",
+                    "-c:a", "copy", "-shortest",
                     "-metadata", f"title={mod.TITLE}", out], check=True)
     captions(ctx, mod, out.replace(".mp4", ".srt"))
     if getattr(mod, "CHAPTERS", None):

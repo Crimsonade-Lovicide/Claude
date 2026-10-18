@@ -62,7 +62,7 @@ All of this lives in `production/gfx.py`. Episodes don't override it.
 - **Narration:** ElevenLabs `eleven_multilingual_v2`, voice "Verdict – True Crime Narration" (`ZmqEPiBIr4itJeB29TyD`). One take per act, with no regenerations unless a line is wrong.
 - **Score:** `production/score.py`, synthesized, one cue per block. The cue set: `cue_open`, `cue_science`, `cue_patient`, `cue_law`, `cue_tower`, `cue_verdict`. Reuse them and pick the cue by mood, not by topic.
 - **Sound effects:** `hit` on the title, `whoosh` on act cards and on each verdict's confidence line, `card_drop` on evidence cards, `clink` on weight beats and steelman shots, `marker` on key phrases, `hum` under night or machine scenes, and `sea` (with `rough=1` for storms) under ocean scenes.
-- **Mix:** narration at about −20 dBFS RMS. Music sits 13 dB under it and ducks about 5 dB under speech. The master is `loudnorm` to **−14 LUFS integrated, true peak ≤ −1 dBTP**. (Case 02: −14.6 LUFS, −1.2 dBTP.)
+- **Mix:** narration at about −20 dBFS RMS. Music sits 13 dB under it and ducks about 5 dB under speech. The master is `loudnorm` to **−14 LUFS integrated, true peak ≤ −1 dBTP**. (Case 02: −14.6 LUFS, −1.2 dBTP.) The master measures the encoded AAC and lowers its limiter ceiling if the true peak lands above −1 dBTP; dense sound like sea wash can cost about 1 LU (Case 03 Short: −15.3 LUFS, −1.5 dBTP).
 
 ## 4. Deliverables per case
 
