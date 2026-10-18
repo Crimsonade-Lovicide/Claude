@@ -13,6 +13,8 @@ Scenes:
   road      (Case 02) A divided arterial at night, simplified. k=v: view=push|top|median,
             dist (m, push), orbit (deg, top), exposure
   car       (Case 02) A generic test SUV with a roof lidar, black void. k=v: orbit (deg)
+  sea       (Case 03) The South Atlantic with an empty 13-ft dinghy. k=v: view=dinghy|swell|
+            storm|close|above, mood=dawn|dusk|grey|storm, sea=swell|calm|storm, speed, sun_az, flash
 Each frame is written as <out_dir>/<scene>_####.png. Single stills: --frames 0:0.
 Everything here is a reconstruction or a symbol and is tagged as such in the edit.
 """
@@ -762,6 +764,467 @@ def scene_car(kv, f0, f1):
         puck.keyframe_insert("rotation_euler", frame=f)
 
 
+# ---------------------------------------------------------------- THE SEA (Case 03)
+
+MOODS = {  # horizon, low sky, zenith, sun (elevation deg, strength, colour, glow), exposure
+    "dawn": ((0.36, 0.19, 0.085), (0.035, 0.027, 0.035), (0.004, 0.006, 0.014), (3.0, 3.0, (1.0, 0.66, 0.40), 1.0), -0.5),
+    "dusk": ((0.28, 0.10, 0.06), (0.025, 0.017, 0.025), (0.003, 0.004, 0.010), (1.0, 1.6, (1.0, 0.46, 0.26), 0.9), -0.6),
+    "grey": ((0.16, 0.17, 0.18), (0.08, 0.085, 0.095), (0.035, 0.04, 0.048), (25.0, 0.8, (0.85, 0.9, 1.0), 0.0), -0.7),
+    "storm": ((0.016, 0.019, 0.026), (0.006, 0.008, 0.011), (0.002, 0.003, 0.004), (35.0, 0.35, (0.62, 0.72, 0.95), 0.0), 1.1),
+    "day": ((0.42, 0.40, 0.36), (0.20, 0.21, 0.22), (0.06, 0.08, 0.13), (42.0, 3.2, (1.0, 0.88, 0.70), 0.5), -1.1),
+}
+SEAS = {  # wind m/s, wave scale, choppiness, alignment, foam coverage
+    "swell": (16.0, 0.55, 0.6, 0.85, 0.0),
+    "calm": (11.0, 0.4, 0.5, 0.8, 0.0),
+    "storm": (26.0, 1.6, 1.4, 0.35, 0.45),
+}
+# The dinghy: 13 ft (3.96 m), beam and depth assumed for a ship's boat of that length.
+BOAT_L, BOAT_B, BOAT_D = 3.96, 1.45, 0.55
+SHEER = 0.22  # rise of the gunwale toward the bow
+
+
+def sea_sky(sc, mood, sun_az):
+    """Graded sky with a soft glow round the sun, and the sun itself as the single key."""
+    hz, low, zen, (el, power, col, glow), exposure = MOODS[mood]
+    nt = sc.world.node_tree
+    nt.nodes.clear()
+    L = nt.links.new
+    tc = nt.nodes.new("ShaderNodeTexCoord")
+    sep = nt.nodes.new("ShaderNodeSeparateXYZ")
+    rmp = nt.nodes.new("ShaderNodeValToRGB")
+    el_ = rmp.color_ramp.elements
+    el_[0].position, el_[0].color = 0.0, (*hz, 1)
+    el_[1].position, el_[1].color = 0.22, (*zen, 1)
+    mid = el_.new(0.035)
+    mid.color = (*low, 1)
+    L(tc.outputs["Generated"], sep.inputs[0])
+    L(sep.outputs["Z"], rmp.inputs["Fac"])
+    sd = Vector((math.cos(math.radians(el)) * math.sin(sun_az), math.cos(math.radians(el)) * math.cos(sun_az),
+                 math.sin(math.radians(el))))
+    dot = nt.nodes.new("ShaderNodeVectorMath")
+    dot.operation = "DOT_PRODUCT"
+    dot.inputs[1].default_value = sd
+    L(tc.outputs["Generated"], dot.inputs[0])
+    pw = nt.nodes.new("ShaderNodeMath")
+    pw.operation = "POWER"
+    pw.inputs[1].default_value = 90.0
+    L(dot.outputs["Value"], pw.inputs[0])
+    gl = nt.nodes.new("ShaderNodeMix")
+    gl.data_type = "RGBA"
+    gl.blend_type = "ADD"
+    L(pw.outputs[0], gl.inputs["Factor"])
+    L(rmp.outputs["Color"], gl.inputs["A"])
+    gl.inputs["B"].default_value = (col[0] * glow, col[1] * glow, col[2] * glow, 1)
+    bg = nt.nodes.new("ShaderNodeBackground")
+    out = nt.nodes.new("ShaderNodeOutputWorld")
+    L(gl.outputs["Result"], bg.inputs[0])
+    L(bg.outputs[0], out.inputs[0])
+    data = bpy.data.lights.new("Sun", "SUN")
+    data.energy = power
+    data.color = col
+    data.angle = math.radians(1.2 if el < 10 else (8 if mood == "day" else 50))
+    sun = bpy.data.objects.new("Sun", data)
+    sc.collection.objects.link(sun)
+    sun.rotation_euler = (-sd).to_track_quat("-Z", "Y").to_euler()
+    sc.view_settings.exposure = exposure
+    return bg, data
+
+
+class NodeMath:
+    """Tiny expression helper for shader math chains."""
+
+    def __init__(self, nt):
+        self.nt = nt
+
+    def op(self, operation, a, b=None):
+        n = self.nt.nodes.new("ShaderNodeMath")
+        n.operation = operation
+        for i, v in enumerate((a, b)):
+            if v is None:
+                continue
+            if isinstance(v, (int, float)):
+                n.inputs[i].default_value = v
+            else:
+                self.nt.links.new(v, n.inputs[i])
+        return n.outputs[0]
+
+
+def hull_halfwidth(s, z):
+    """Hull half-width (m) at station s (0 stern .. 1 bow) and height z (boat coords)."""
+    b = BOAT_B / 2 * math.sin(math.pi * (0.15 + 0.85 * s))
+    sheer = SHEER * s * s
+    k = (sheer - z) / BOAT_D
+    return b * math.sqrt(max(0.0, 1 - k * k)), sheer
+
+
+def water_material(name, rough, boat=None, foam=False, haze=None):
+    """Dark sea water. haze=(colour, metres) fades it toward the horizon colour with distance,
+    which is also what hides the seam where the swell tiles meet the flat far sea. With a
+    boat, the surface is cut away inside the hull section, so the swell never shows through
+    the floor of the boat."""
+    m = mat_principled(name, (0.004, 0.010, 0.014), rough=rough)
+    nt = m.node_tree
+    b = nt.nodes["Principled BSDF"]
+    b.inputs["IOR"].default_value = 1.333
+    # small ripples on top of the swell
+    tc = nt.nodes.new("ShaderNodeTexCoord")
+    nz = nt.nodes.new("ShaderNodeTexNoise")
+    nz.noise_dimensions = "4D"
+    nz.inputs["Scale"].default_value = 2.2
+    nz.inputs["Detail"].default_value = 6.0
+    nt.links.new(tc.outputs["Object"], nz.inputs["Vector"])
+    bump = nt.nodes.new("ShaderNodeBump")
+    bump.inputs["Strength"].default_value = 0.12
+    bump.inputs["Distance"].default_value = 0.03
+    nt.links.new(nz.outputs["Fac"], bump.inputs["Height"])
+    nt.links.new(bump.outputs["Normal"], b.inputs["Normal"])
+    if foam:
+        at = nt.nodes.new("ShaderNodeAttribute")
+        at.attribute_name = "foam"
+        mx = nt.nodes.new("ShaderNodeMix")
+        mx.data_type = "RGBA"
+        mx.inputs["A"].default_value = (0.004, 0.010, 0.014, 1)
+        mx.inputs["B"].default_value = (0.32, 0.36, 0.40, 1)
+        ramp = nt.nodes.new("ShaderNodeValToRGB")
+        ramp.color_ramp.elements[0].position = 0.35
+        nt.links.new(at.outputs["Fac"], ramp.inputs["Fac"])
+        nt.links.new(ramp.outputs["Color"], mx.inputs["Factor"])
+        nt.links.new(mx.outputs["Result"], b.inputs["Base Color"])
+    out = nt.nodes["Material Output"]
+    surface = b.outputs["BSDF"]
+    if haze is not None:
+        M = NodeMath(nt)
+        cd = nt.nodes.new("ShaderNodeCameraData")
+        k = M.op("SUBTRACT", 1.0, M.op("EXPONENT", M.op("DIVIDE", M.op("MULTIPLY", cd.outputs["View Distance"], -1.0), haze[1])))
+        em = nt.nodes.new("ShaderNodeEmission")
+        em.inputs["Color"].default_value = (*haze[0], 1)
+        hm = nt.nodes.new("ShaderNodeMixShader")
+        nt.links.new(k, hm.inputs["Fac"])
+        nt.links.new(surface, hm.inputs[1])
+        nt.links.new(em.outputs["Emission"], hm.inputs[2])
+        surface = hm.outputs["Shader"]
+    if boat is not None:
+        M = NodeMath(nt)
+        bc = nt.nodes.new("ShaderNodeTexCoord")
+        bc.object = boat
+        sp = nt.nodes.new("ShaderNodeSeparateXYZ")
+        nt.links.new(bc.outputs["Object"], sp.inputs[0])
+        x, y, z = sp.outputs["X"], sp.outputs["Y"], sp.outputs["Z"]
+        s = M.op("ADD", M.op("DIVIDE", y, BOAT_L), 0.5)
+        bw = M.op("MULTIPLY", M.op("SINE", M.op("MULTIPLY", M.op("ADD", M.op("MULTIPLY", s, 0.85), 0.15), math.pi)), BOAT_B / 2)
+        sheer = M.op("MULTIPLY", M.op("MULTIPLY", s, s), SHEER)
+        k = M.op("DIVIDE", M.op("SUBTRACT", sheer, z), BOAT_D)
+        hw = M.op("MULTIPLY", bw, M.op("SQRT", M.op("MAXIMUM", M.op("SUBTRACT", 1.0, M.op("MULTIPLY", k, k)), 0.0)))
+        inside_x = M.op("LESS_THAN", M.op("ABSOLUTE", x), M.op("SUBTRACT", hw, 0.004))
+        inside_s = M.op("MULTIPLY", M.op("GREATER_THAN", s, 0.0), M.op("LESS_THAN", s, 1.0))
+        under = M.op("LESS_THAN", z, sheer)
+        inside = M.op("MULTIPLY", M.op("MULTIPLY", inside_x, inside_s), under)
+        tr = nt.nodes.new("ShaderNodeBsdfTransparent")
+        mix = nt.nodes.new("ShaderNodeMixShader")
+        nt.links.new(inside, mix.inputs["Fac"])
+        nt.links.new(surface, mix.inputs[1])
+        nt.links.new(tr.outputs["BSDF"], mix.inputs[2])
+        surface = mix.outputs["Shader"]
+    nt.links.new(surface, out.inputs["Surface"])
+    return m, nz
+
+
+def build_ocean(kv, f0, f1, boat=None, res=12, haze=None):
+    sea = kv.get("sea", "swell")
+    wind, scale, chop, align, foam = SEAS[sea]
+    speed = float(kv.get("speed", 1.0))
+    bpy.ops.mesh.primitive_plane_add(size=2)
+    ocean = bpy.context.active_object
+    ocean.name = "Ocean"
+    o = ocean.modifiers.new("Ocean", "OCEAN")
+    o.geometry_mode = "GENERATE"
+    o.spatial_size = 60
+    o.repeat_x = o.repeat_y = int(kv.get("tiles", 9))
+    off = -(o.repeat_x - 1) / 2 * o.spatial_size  # repeats grow toward +x/+y; centre them
+    ocean.location = (off, off, 0)
+    o.resolution = o.viewport_resolution = res
+    o.wind_velocity = wind
+    o.wave_scale = scale
+    o.choppiness = chop
+    o.wave_alignment = align
+    o.wave_direction = math.radians(float(kv.get("wave_dir", 20)))
+    o.random_seed = int(kv.get("seed", 7))
+    o.use_normals = True
+    if foam:
+        o.use_foam = True
+        o.foam_coverage = foam
+        o.foam_layer_name = "foam"
+    rough = 0.05 if sea != "storm" else 0.12
+    mat, nz = water_material("Water", rough, boat=boat, foam=bool(foam), haze=haze)
+    assign(ocean, mat)
+    smooth(ocean)
+    for f in range(f0, f1 + 1):
+        o.time = 10.0 + f / FPS * speed
+        o.keyframe_insert("time", frame=f)
+        nz.inputs["W"].default_value = f / FPS * 0.35 * speed
+        nz.inputs["W"].keyframe_insert("default_value", frame=f)
+    # flat sea from the edge of the tiles to the horizon: a square hole that meets the tiles
+    # exactly, so the two never overlap
+    import bmesh
+    me = bpy.data.meshes.new("FarSea")
+    bm = bmesh.new()
+    a, z = o.spatial_size * o.repeat_x / 2, 0.0
+    corners = [(-1, -1), (1, -1), (1, 1), (-1, 1)]
+    inner = [bm.verts.new((a * cx, a * cy, z)) for cx, cy in corners]
+    outer = [bm.verts.new((4000 * cx, 4000 * cy, z)) for cx, cy in corners]
+    for i in range(4):
+        j = (i + 1) % 4
+        bm.faces.new((inner[i], inner[j], outer[j], outer[i]))
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    bm.to_mesh(me)
+    bm.free()
+    far = bpy.data.objects.new("FarSea", me)
+    bpy.context.scene.collection.objects.link(far)
+    far_mat, fnz = water_material("FarWater", rough + 0.22, haze=haze)  # rougher: averages the waves it stands in for
+    assign(far, far_mat)
+    return ocean
+
+
+def build_dinghy(props=False):
+    """An open 13-ft ship's boat, simplified: lofted round-bilge hull with a small transom,
+    gunwale rail, two thwarts and bottom boards. Generic; nothing here is from a plan."""
+    import bmesh
+    wood = mat_principled("Wood", (0.15, 0.095, 0.055), rough=0.7)
+    nt = wood.node_tree
+    bsdf = nt.nodes["Principled BSDF"]
+    tc = nt.nodes.new("ShaderNodeTexCoord")
+    wv = nt.nodes.new("ShaderNodeTexWave")  # clinker plank lines along the hull
+    wv.wave_type = "BANDS"
+    wv.bands_direction = "Z"
+    wv.inputs["Scale"].default_value = 9.0
+    wv.inputs["Distortion"].default_value = 0.0
+    wv.inputs["Detail"].default_value = 1.0
+    nt.links.new(tc.outputs["Object"], wv.inputs["Vector"])
+    mp = nt.nodes.new("ShaderNodeMapping")  # grain: noise stretched along the boat
+    mp.inputs["Scale"].default_value = (30.0, 0.6, 30.0)
+    nt.links.new(tc.outputs["Object"], mp.inputs["Vector"])
+    gr = nt.nodes.new("ShaderNodeTexNoise")
+    gr.inputs["Scale"].default_value = 3.0
+    gr.inputs["Detail"].default_value = 8.0
+    nt.links.new(mp.outputs["Vector"], gr.inputs["Vector"])
+    col = nt.nodes.new("ShaderNodeValToRGB")
+    col.color_ramp.elements[0].color = (0.07, 0.045, 0.028, 1)
+    col.color_ramp.elements[1].color = (0.24, 0.17, 0.105, 1)
+    nt.links.new(gr.outputs["Fac"], col.inputs["Fac"])
+    nt.links.new(col.outputs["Color"], bsdf.inputs["Base Color"])
+    bump = nt.nodes.new("ShaderNodeBump")
+    bump.inputs["Strength"].default_value = 0.4
+    bump.inputs["Distance"].default_value = 0.003
+    nt.links.new(wv.outputs["Fac"], bump.inputs["Height"])
+    nt.links.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
+    rail_m = mat_principled("Rail", (0.07, 0.045, 0.03), rough=0.5)
+    me = bpy.data.meshes.new("Hull")
+    bm = bmesh.new()
+    NS, NT = 28, 18
+    rows = []
+    for i in range(NS + 1):
+        s = i / NS
+        b = BOAT_B / 2 * math.sin(math.pi * (0.15 + 0.85 * s))
+        sheer = SHEER * s * s
+        y = (s - 0.5) * BOAT_L
+        row = []
+        for j in range(NT + 1):
+            th = -math.pi / 2 + math.pi * j / NT
+            row.append(bm.verts.new((b * math.sin(th), y, sheer - BOAT_D * math.cos(th))))
+        rows.append(row)
+    for i in range(NS):
+        for j in range(NT):
+            bm.faces.new((rows[i][j], rows[i + 1][j], rows[i + 1][j + 1], rows[i][j + 1]))
+    bm.faces.new(rows[0])  # transom
+    bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-4)
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    bm.to_mesh(me)
+    bm.free()
+    hull = bpy.data.objects.new("Dinghy", me)
+    bpy.context.scene.collection.objects.link(hull)
+    sol = hull.modifiers.new("Solid", "SOLIDIFY")
+    sol.thickness = 0.016
+    sol.offset = -1
+    assign(hull, wood)
+    smooth(hull)
+    # gunwale rail along the sheer, both sides
+    cu = bpy.data.curves.new("Gunwale", "CURVE")
+    cu.dimensions = "3D"
+    cu.bevel_depth = 0.024
+    cu.bevel_resolution = 2
+    for side in (-1, 1):
+        sp = cu.splines.new("POLY")
+        pts = []
+        for i in range(NS + 1):
+            s = i / NS
+            hw, sheer = hull_halfwidth(s, SHEER * s * s)
+            pts.append((side * hw, (s - 0.5) * BOAT_L, sheer))
+        sp.points.add(len(pts) - 1)
+        for p, c in zip(sp.points, pts):
+            p.co = (*c, 1)
+    rail = bpy.data.objects.new("Gunwale", cu)
+    bpy.context.scene.collection.objects.link(rail)
+    rail.data.materials.append(rail_m)
+    rail.parent = hull
+    parts = [rail]
+
+    def box(name, loc, size, m):
+        o = add("cube", name, size=1, location=loc)
+        o.scale = size
+        bpy.ops.object.transform_apply(scale=True)
+        bv = o.modifiers.new("Bevel", "BEVEL")
+        bv.width = 0.006
+        bv.segments = 2
+        assign(o, m)
+        o.parent = hull
+        parts.append(o)
+        return o
+
+    for s in (0.28, 0.62):  # thwarts
+        z = SHEER * s * s - 0.2
+        hw, _ = hull_halfwidth(s, z)
+        box(f"Thwart{s}", (0, (s - 0.5) * BOAT_L, z), (2 * hw - 0.02, 0.2, 0.03), wood)
+    for k in range(5):  # bottom boards
+        s = 0.18 + 0.13 * k
+        z = SHEER * s * s - BOAT_D + 0.07
+        hw, _ = hull_halfwidth(s, z)
+        box(f"Board{k}", (0, (s - 0.5) * BOAT_L, z), (2 * hw - 0.03, 0.42, 0.02), wood)
+    if props:
+        # a sodden oilskin left on the stern sheets, aft of the thwart
+        bpy.ops.mesh.primitive_grid_add(x_subdivisions=40, y_subdivisions=40, size=1, location=(-0.12, (0.16 - 0.5) * BOAT_L, -0.30))
+        sk = bpy.context.active_object
+        sk.name = "Oilskin"
+        sk.scale = (0.7, 0.55, 1)
+        sk.rotation_euler = (math.radians(4), math.radians(10), math.radians(-18))
+        tex = bpy.data.textures.new("Folds", "CLOUDS")
+        tex.noise_scale = 0.14
+        d = sk.modifiers.new("Folds", "DISPLACE")
+        d.texture = tex
+        d.strength = 0.09
+        sk.modifiers.new("Thick", "SOLIDIFY").thickness = 0.004
+        assign(sk, mat_principled("OilskinMat", (0.24, 0.16, 0.03), rough=0.3, coat=1.0))
+        smooth(sk)
+        sk.parent = hull
+        parts.append(sk)
+    return hull
+
+
+def float_boat(hull, ocean, f0, f1, at=(0.0, 0.0), heading=0.0, damp=1.0, freeboard=0.30):
+    """Sit the boat on the swell: sample the evaluated ocean under bow, stern and both sides
+    every frame, then pitch, roll and heave to match (lightly smoothed)."""
+    import numpy as np
+    sc = bpy.context.scene
+    ch, sh = math.cos(heading), math.sin(heading)
+
+    def local(dx, dy):
+        return (at[0] + dx * ch - dy * sh, at[1] + dx * sh + dy * ch)
+
+    probes = {"c": local(0, 0), "bow": local(0, 1.6), "stern": local(0, -1.6),
+              "port": local(-0.6, 0), "stb": local(0.6, 0)}
+    raw = []
+    for f in range(f0, f1 + 1):
+        sc.frame_set(f)
+        dg = bpy.context.evaluated_depsgraph_get()
+        me = ocean.evaluated_get(dg).to_mesh()
+        co = np.empty(len(me.vertices) * 3, np.float32)
+        me.vertices.foreach_get("co", co)
+        ocean.evaluated_get(dg).to_mesh_clear()
+        co = co.reshape(-1, 3) + np.array([ocean.location.x, ocean.location.y, 0.0], np.float32)
+        pts = co[(np.abs(co[:, 0] - at[0]) < 5) & (np.abs(co[:, 1] - at[1]) < 5)]
+        h = {}
+        for k, (x, y) in probes.items():  # mean height of the 4 nearest displaced vertices
+            d2 = (pts[:, 0] - x) ** 2 + (pts[:, 1] - y) ** 2
+            h[k] = float(pts[np.argpartition(d2, 4)[:4], 2].mean())
+        raw.append(h)
+    n = len(raw)
+    for idx, f in enumerate(range(f0, f1 + 1)):
+        win = raw[max(0, idx - 3): min(n, idx + 4)]
+        avg = {k: sum(w[k] for w in win) / len(win) for k in raw[0]}
+        pitch = math.atan2(avg["bow"] - avg["stern"], 3.2) * damp
+        roll = math.atan2(avg["port"] - avg["stb"], 1.2) * damp
+        hull.location = (at[0], at[1], avg["c"] * damp + freeboard)
+        hull.rotation_euler = (pitch, -roll, heading)
+        hull.keyframe_insert("location", frame=f)
+        hull.keyframe_insert("rotation_euler", frame=f)
+
+
+def scene_sea(kv, f0, f1):
+    """The South Atlantic, a reconstruction. view=dinghy (the empty boat, small, riding a long
+    swell into a low sun), swell (open ocean, no boat), storm (night, heavy breaking sea),
+    close (low over the gunwale, inside the empty boat), above (thumbnail: from high above). k=v: mood=dawn|dusk|grey|storm,
+    sea=swell|calm|storm, speed (wave time scale), seed."""
+    sc = bpy.context.scene
+    view = kv.get("view", "dinghy")
+    mood = kv.get("mood", {"storm": "storm", "swell": "grey", "close": "day"}.get(view, "dawn"))
+    if view == "storm":
+        kv.setdefault("sea", "storm")
+    sc.cycles.max_bounces = 4
+    # sun azimuth from +Y: ahead of the camera for the glint path; behind it when overcast
+    sun_az = math.radians(float(kv.get("sun_az", 200 if mood == "grey" else 8)))
+    bg, sun = sea_sky(sc, mood, sun_az)
+    haze = (MOODS[mood][0], float(kv.get("haze", 1100)))
+    boat = None
+    if view in ("dinghy", "close", "above"):
+        boat = build_dinghy(props=view != "dinghy")
+    ocean = build_ocean(kv, f0, f1, boat=boat, res=16 if view == "close" else 12, haze=haze)
+    if "exposure" in kv:
+        sc.view_settings.exposure = float(kv["exposure"])
+    if boat is not None:
+        float_boat(boat, ocean, f0, f1, heading=math.radians(float(kv.get("heading", 35))),
+                   damp=0.75 if view == "close" else 1.0)
+    if view == "dinghy":
+        tgt = Vector((0, 0, 0.4))
+        # boat in the lower right third, the sun's path to its left, horizon high in frame
+        start, end = Vector((-12.0, -30.0, 6.0)), Vector((-9.0, -27.5, 5.6))
+        aim = Vector((10.4, 48.9, -3.06))
+        cam = camera(start, tgt, lens=40)
+        for f in range(f0, f1 + 1):
+            u = (f - f0) / max(1, f1 - f0)
+            u = u * u * (3 - 2 * u)
+            cam.location = start.lerp(end, u)
+            look_at(cam, cam.location + aim)
+            cam.keyframe_insert("location", frame=f)
+            cam.keyframe_insert("rotation_euler", frame=f)
+    elif view == "close":
+        cam = camera((0, 0, 0), (0, 1, 0), lens=26)
+        cam.parent = boat
+        cam.rotation_euler = (math.radians(62), 0, math.radians(16))  # down into the boat, toward the bow
+        for f in range(f0, f1 + 1):
+            u = (f - f0) / max(1, f1 - f0)
+            cam.location = (0.62 - 0.08 * u, -2.2 + 0.3 * u, 0.62)  # boat coords: off the starboard quarter
+            cam.keyframe_insert("location", frame=f)
+        tin = smooth(add("cylinder", "Tin", radius=0.055, depth=0.11, vertices=32))
+        assign(tin, mat_principled("TinMat", (0.55, 0.51, 0.46), metallic=1.0, rough=0.35))
+        tin.parent = boat
+        s_tin = 0.44  # on the bottom boards, between the thwarts
+        z_tin = SHEER * s_tin * s_tin - BOAT_D + 0.08 + 0.055
+        for f in range(f0, f1 + 1):  # rolls across the bottom boards as the boat rolls
+            x = 0.16 * math.sin(2 * math.pi * f / 120.0)
+            tin.location = (x, (s_tin - 0.5) * BOAT_L, z_tin)
+            tin.rotation_euler = (0, math.radians(90), x / 0.055)
+            tin.keyframe_insert("location", frame=f)
+            tin.keyframe_insert("rotation_euler", frame=f)
+    elif view == "above":  # thumbnail: the boat from high above, small, lower left
+        camera((-3.0, -12.0, 24.0), (2.6, 0.6, 0.0), lens=50)
+    else:  # swell / storm: open water, slow pan along the horizon
+        h = 2.2 if view == "storm" else 4.0
+        lens = 28 if view == "storm" else 35
+        cam = camera((0, -30, h), (0, 60, h - 6), lens=lens)
+        pan = math.radians(float(kv.get("pan", 10)))
+        for f in range(f0, f1 + 1):
+            u = (f - f0) / max(1, f1 - f0)
+            a = -pan / 2 + pan * u
+            cam.location = (0, -30, h + (0.25 * math.sin(f / 30.0) if view == "storm" else 0))
+            look_at(cam, (60 * math.sin(a), -30 + 60 * math.cos(a), h - (4.0 if view == "storm" else 5.0)))
+            cam.keyframe_insert("location", frame=f)
+            cam.keyframe_insert("rotation_euler", frame=f)
+    if view == "storm" and "flash" in kv:  # one distant lightning flash
+        fl = int(kv["flash"])
+        for f, k in ((fl - 1, 1.0), (fl, 9.0), (fl + 1, 3.0), (fl + 3, 6.0), (fl + 6, 1.0)):
+            bg.inputs["Strength"].default_value = k
+            bg.inputs["Strength"].keyframe_insert("default_value", frame=f)
+
+
 # ---------------------------------------------------------------- main
 
 def main():
@@ -769,7 +1232,7 @@ def main():
     f0, f1 = (int(v) for v in opts["frames"].split(":"))
     sc = reset(opts["res"], int(opts["samples"]))
     {"scale": scene_scale, "brain": scene_brain, "tower": scene_tower,
-     "corridor": scene_corridor, "road": scene_road, "car": scene_car}[scene](kv, f0, f1)
+     "corridor": scene_corridor, "road": scene_road, "car": scene_car, "sea": scene_sea}[scene](kv, f0, f1)
     os.makedirs(out, exist_ok=True)
     tag = kv.get("name", scene)
     for f in range(f0, f1 + 1, int(opts.get("step", 1))):

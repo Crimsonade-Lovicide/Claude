@@ -62,13 +62,11 @@ def feathered(img, shift, zoom, edge=160):
     canvas = Image.new("RGB", img.size, img.getpixel((4, 4)))
     small = img.resize((int(img.width * zoom), int(img.height * zoom)), Image.LANCZOS)
     w, h = small.size
-    mask = Image.new("L", (w, h), 255)
-    md = ImageDraw.Draw(mask)
-    for i in range(edge):
-        v = int(255 * i / edge)
-        md.line([w - 1 - i, 0, w - 1 - i, h], fill=v)       # right edge
-        md.line([0, h - 1 - i, w, h - 1 - i], fill=v)       # bottom edge
-        md.line([0, i, w, i], fill=v)                        # top edge
+    import numpy as np
+    ramp = lambda n: np.clip(np.arange(n) / edge, 0, 1)
+    x = ramp(w)[::-1][None, :]                               # right edge
+    y = np.minimum(ramp(h), ramp(h)[::-1])[:, None]          # top and bottom edges
+    mask = Image.fromarray((255 * np.minimum(x, y)).astype(np.uint8), "L")  # min, so corners fade too
     canvas.paste(small, (-shift, (canvas.height - h) // 2), mask)
     return canvas
 

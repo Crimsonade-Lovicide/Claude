@@ -288,3 +288,20 @@ def hum(sec, vol=0.035):
     y = sum(np.sin(2 * np.pi * 120 * k * t) / k for k in (1, 2, 3, 5))
     y *= 0.85 + 0.15 * np.sin(2 * np.pi * 0.3 * t)
     return fades((y * vol).astype(np.float32), 0.5, 0.5)
+
+
+def sea(sec, vol=0.05, rough=0.0, seed=12):
+    """Open water: low wash that swells and recedes every few seconds; rough (0..1) adds
+    a brighter, faster breaking layer for storms."""
+    rng = np.random.default_rng(seed)
+    n = int(sec * SR)
+    t = t_axis(sec)
+    low = onepole_lp(rng.standard_normal(n).astype(np.float32), 420)
+    swell = 0.55 + 0.45 * np.sin(2 * np.pi * t / 7.5 + rng.uniform(0, 6)) ** 2
+    y = low * swell
+    if rough > 0:
+        wash = bandpass(rng.standard_normal(n).astype(np.float32), 700, 3200)
+        gust = np.clip(np.sin(2 * np.pi * t / 3.1 + 1.0), 0, 1) ** 3
+        y = y + rough * 0.6 * wash * gust
+    y /= np.max(np.abs(y)) + 1e-9
+    return fades((y * vol).astype(np.float32), 1.0, 1.0)

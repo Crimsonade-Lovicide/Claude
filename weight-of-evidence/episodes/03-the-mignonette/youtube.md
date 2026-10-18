@@ -9,7 +9,8 @@
 ## Thumbnail
 
 `production/thumbs03.py`.
-- **A:** the empty dinghy on a dark swell from above, tiny in the frame, with **19 DAYS. 4 MEN.** on the right.
+- **A:** the empty dinghy on dark water from high above, small in the frame, with **20 DAYS. 4 MEN.** on the right
+  (twenty days, as in the special verdict and the narration; the memorial's "nineteen" counts differently).
 - **B:** the Scale, tipped, with **MURDER?**
 
 No people, no blood, no bones.

@@ -8,7 +8,7 @@ act in narration.json order. Writes:
   vo/<shot>.wav   the shot's narration, cut at the middle of the pause between shots
   timing.json     {shot_id: duration_seconds}
   align_report.txt  words the recogniser heard differently from the script (for a listen)
-Needs faster-whisper. Re-run whenever a take changes.
+Needs faster-whisper. Re-run whenever a take changes. WOE_ASR=small.en if base.en drops words.
 """
 
 import difflib
@@ -27,7 +27,7 @@ def norm(w):
 
 def main(prod):
     nar = json.load(open(os.path.join(prod, "narration.json")))
-    model = WhisperModel("base.en", device="cpu", compute_type="int8", cpu_threads=2)
+    model = WhisperModel(os.environ.get("WOE_ASR", "base.en"), device="cpu", compute_type="int8", cpu_threads=2)
     os.makedirs(os.path.join(prod, "vo"), exist_ok=True)
     words_out, timing, report = {}, {}, []
     for ai, act in enumerate(nar["acts"]):

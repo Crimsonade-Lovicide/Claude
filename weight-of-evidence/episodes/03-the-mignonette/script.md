@@ -223,7 +223,7 @@ shown as text only.
 
 ### S48 · The cave
 **Picture:** `GFX: words` "THE CASE OF THE SPELUNCEAN EXPLORERS · 1949" with "day 23 · the dice · rescue on day 32". [E12, E13]
-> Philosophers have kept rebuilding the Mignonette ever since. In 1949, the law professor Lon Fuller invented a case: five explorers trapped in a cave kill one of their own after a throw of the dice he had proposed, then tried to back out of. His fictional judges split, and so have law students for seventy-five years. The trolley problem, invented in 1967, is the same question with the hunger taken out.
+> Philosophers have kept rebuilding the Mignonette ever since. In 1949, the law professor Lon Fuller invented a case: five explorers trapped in a cave kill one of their own after a throw of the dice he had proposed, then tried to back out of. His fictional judges split, and law students have been splitting over it for more than seventy years. The trolley problem, invented in 1967, is the same question with the hunger taken out.
 
 ### S49 · Fourth weight
 **Picture:** `3D: scale_bottom_left` The Scale from below, one pan heavy. Lower third "EVIDENCE · THE LAW BENDS ONLY WHEN NO ONE CHOOSES".
