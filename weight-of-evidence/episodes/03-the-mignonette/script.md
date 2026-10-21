@@ -262,7 +262,7 @@ shown as text only.
 
 ### S57 · Next case
 **Picture:** `GFX: words` "NEXT CASE" over black: "THE PERNKOPF ATLAS · VIENNA" / *Should doctors use it?*
-> Next case: an anatomy atlas so detailed that surgeons still reach for it, drawn in Vienna from the bodies of people the Nazis executed. Should doctors keep using it?
+> Next case: an anatomy atlas so detailed that surgeons still reach for it. It was made in Vienna, partly under the Nazis, and some of its paintings probably show people the regime executed. Should doctors keep using it?
 
 ### S58 · End card
 **Picture:** `GFX: endcard` Title, subscribe area, two end-screen slots. Sources link. No narration.
@@ -289,6 +289,9 @@ description, led by *R v Dudley and Stephens* (1884) 14 QBD 273 and the special 
 
 - S57 (Pernkopf): the University of Vienna's 1998 inquiry found it received the bodies of executed
   prisoners during the Nazi period; some surgeons still use the atlas. Case 04 research confirms detail.
+  Re-recorded 21 Oct 2026: the first take said the atlas was "drawn ... from the bodies of people the
+  Nazis executed", which Case 04 research does not support (some paintings probably, none confirmed:
+  Case 04 research C15, C16, C19). The line now says "some of its paintings probably show" them.
 - S43 "both would probably die within months": confirmed. Re A [2001] Fam 147: if no operation
   takes place, "both will die within three to six months, or perhaps a little longer".
 - S28 attributes the "no conviction before 1884" point to Simpson via secondary sources:
