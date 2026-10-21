@@ -75,4 +75,4 @@ shot.
 | 02 | Who's guilty when the car drives itself? (Tempe, 2018) | Produced: 17:56, captions, chapters, thumbnails. **Format reference** (see `FORMAT.md`). Uploaded private 17 Oct 2026 (`6GP6-C2GuJE`) |
 | 03 | Is killing to survive murder? (The Mignonette, 1884) | Produced: 16:54, captions, chapters, thumbnails, Short (1:34). Signed off 20 Oct. Uploaded private 20 Oct 2026; re-uploaded 21 Oct with a corrected next-case line (`QiPVYrdDzRw`, Short `Mj4jkA1-T7s`); captions still to add in Studio |
 | 04 | Should surgeons use the Pernkopf Atlas? | Produced: 18:01, captions, chapters, thumbnails, Short (1:47). Signed off 21 Oct. Uploaded private 21 Oct 2026 (`rF4oExXmaX0`, Short `VzoS6sqcGPc`); captions still to add in Studio |
-| 05 | Should police be allowed to search your family's DNA? (The Golden State Killer) | Research and script drafted 21 Oct 2026; awaiting script and verdict sign-off, and the choice of next case |
+| 05 | Should police be allowed to search your family's DNA? (The Golden State Killer) | Script and verdicts signed off 21 Oct 2026 (next case: the Central Park Five). In production |

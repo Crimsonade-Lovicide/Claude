@@ -248,8 +248,8 @@ disputed: which site broke the case (B8), "the first" (B18), the rape count (A11
 > That's our verdict. It's open, which means it can change. If you think we got it wrong, make your case in the comments. We'll answer the strongest one in the next episode.
 
 ### S53 · Next case
-**Picture:** `GFX: words` "NEXT CASE" over black: "[NAME · YEAR]" / *[question]*. **To be chosen by the owner at sign-off.**
-> Next case: [to be written once the next case is chosen].
+**Picture:** `GFX: words` "NEXT CASE" over black: "THE CENTRAL PARK FIVE · 1989" / *Should police be allowed to lie to suspects?*
+> Next case: in 1989, five teenagers in New York confessed on video to an attack in Central Park. Thirteen years later, DNA and another man's confession cleared them. Should police be allowed to lie to the people they question?
 
 ### S54 · End card
 **Picture:** `GFX: endcard` Title, subscribe area, two end-screen slots. Sources link. No narration.
@@ -296,5 +296,8 @@ et al. (*Science* 2018), the DOJ interim policy and the Maryland, Montana and Ut
 - **S42:** Montana's "or a court order" is the 2025 amendment (investigative subpoena).
 - **S06, S31:** "1,182" is Dowdeswell's count to Feb 2024; pull her Dec 2025 dataset for a newer
   dated total if one exists.
+- **S53 (next case, chosen 21 Oct 2026):** the Central Park Five. Before recording, check against
+  Case 06 research: five teenagers; videotaped statements in 1989; convictions vacated in 2002 after
+  Matias Reyes's confession and a DNA match ("thirteen years later"). The teaser says only that.
 - **3D:** `car_lot` and `evidence_shelf` are new scenes for `scenes.py` (generic car, no badge or
   plate; plain archive boxes, no case numbers). The Scale clips are reused from Case 01.
