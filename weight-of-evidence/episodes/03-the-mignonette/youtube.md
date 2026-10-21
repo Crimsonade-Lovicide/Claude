@@ -68,3 +68,15 @@ lifeboat ethics, trolley problem, criminal law history, Weight of Evidence
 - Captions: upload `weight_of_evidence_case03.srt`.
 - Playlist: Cases. End screen: the two slots on the end card, with Case 02 in one of them.
 - Category: Education.
+
+## On YouTube (uploaded 20 Oct 2026 via Make scenario 6603120, private until published)
+
+| Item | ID |
+|---|---|
+| Case 03 (1080p master, thumbnail A, title 1, in playlist "Cases") | `zen-H0lcSzs` |
+| Short (1080×1920, 1:34) | `Mj4jkA1-T7s` |
+
+Still to do by hand in YouTube Studio: upload the English captions (`weight_of_evidence_case03.srt`;
+the automated caption upload was blocked this time), Test & Compare (title 2, thumbnail B), end screen
+(Case 02 in one slot), publish, then pin the comment above. Then set the Short's Related video to the
+episode and publish the Short.
