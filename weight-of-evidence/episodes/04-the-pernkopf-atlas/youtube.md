@@ -72,3 +72,15 @@ Nazi medicine, history of anatomy, surgery ethics, Holocaust remembrance, Weight
 - Captions: upload `weight_of_evidence_case04.srt`.
 - Playlist: Cases. End screen: the two slots on the end card, with Case 03 in one of them.
 - Category: Education.
+
+## On YouTube (uploaded 21 Oct 2026 via Make scenario 6603120, private until published)
+
+| Item | ID |
+|---|---|
+| Case 04 (1080p master, thumbnail A, title 1, in playlist "Cases") | `rF4oExXmaX0` |
+| Short (1080×1920, 1:47) | `VzoS6sqcGPc` |
+
+Still to do by hand in YouTube Studio: upload the English captions
+(`deliverables/case04/weight_of_evidence_case04.srt`), Test & Compare (title 2, thumbnail B), end screen
+(Case 03 `QiPVYrdDzRw` in one slot), publish, then pin the comment above. Then set the Short's Related
+video to the episode and publish the Short.
