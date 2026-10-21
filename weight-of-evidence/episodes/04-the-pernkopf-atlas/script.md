@@ -244,8 +244,8 @@ Vienna Protocol is Rabbi Polak's ruling, not Yad Vashem's.
 > That's our verdict. It's open, which means it can change. If you think we got it wrong, make your case in the comments. We'll answer the strongest one in the next episode.
 
 ### S52 · Next case
-**Picture:** `GFX: words` "NEXT CASE" over black: "[NAME · YEAR]" / *[question]*. **To be chosen before recording.**
-> Next case: [one sentence, chosen with the owner].
+**Picture:** `GFX: words` "NEXT CASE" over black: "THE GOLDEN STATE KILLER · 2018" / *Should police search your family's DNA?*
+> Next case: a serial killer who was finally caught in 2018, more than thirty years after his last known attack, because distant relatives of his had uploaded their DNA to a genealogy website. Should police be allowed to search your family's DNA?
 
 ### S53 · End card
 **Picture:** `GFX: endcard` Title, subscribe area, two end-screen slots. Sources link. No narration.

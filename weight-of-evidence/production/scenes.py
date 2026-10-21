@@ -15,6 +15,10 @@ Scenes:
   car       (Case 02) A generic test SUV with a roof lidar, black void. k=v: orbit (deg)
   sea       (Case 03) The South Atlantic with an empty 13-ft dinghy. k=v: view=dinghy|swell|
             storm|close|above, mood=dawn|dusk|grey|storm, sea=swell|calm|storm, speed, sun_az, flash
+  book      (Case 04) A thick, closed, untitled book on a dark table under one key light. No
+            pages are ever opened. k=v: mood=day|night, push (0..1 dolly over the clip)
+  or        (Case 04) An empty operating room in near-darkness; the surgical lamp warms up
+            over an empty table. k=v: warm (seconds for the lamp to come up), push (0..1)
 Each frame is written as <out_dir>/<scene>_####.png. Single stills: --frames 0:0.
 Everything here is a reconstruction or a symbol and is tagged as such in the edit.
 """
@@ -1226,6 +1230,134 @@ def scene_sea(kv, f0, f1):
             bg.inputs["Strength"].keyframe_insert("default_value", frame=f)
 
 
+# ---------------------------------------------------------------- THE BOOK (Case 04)
+
+def scene_book(kv, f0, f1):
+    """A thick closed book, untitled, on a dark table. Never opened: no plate is ever shown."""
+    night = kv.get("mood", "day") == "night"
+    push = float(kv.get("push", "0.25"))
+    wood = mat_principled("Table", (0.035, 0.022, 0.015), rough=0.38, coat=0.25)
+    cloth = mat_principled("Cloth", (0.055, 0.05, 0.048), rough=0.75)
+    pages = mat_principled("Pages", (0.62, 0.57, 0.47), rough=0.9)
+    spine_band = mat_principled("Band", (0.80, 0.58, 0.28), metallic=1.0, rough=0.35)
+    t = add("cube", "Table", size=1, location=(0, 0, -0.03))
+    t.scale = (3.2, 2.0, 0.06)
+    assign(t, wood)
+    # the book: page block inside two boards and a rounded spine
+    W, D, H = 0.30, 0.40, 0.085
+    rot = math.radians(-14)
+
+    def part(name, loc, scale, m):
+        o = add("cube", name, size=1, location=loc)
+        o.scale = scale
+        assign(o, m)
+        bpy.ops.object.modifier_add(type="BEVEL")
+        o.modifiers["Bevel"].width = 0.003
+        o.modifiers["Bevel"].segments = 2
+        return o
+
+    parts = [part("Block", (0.006, 0, H / 2), (W - 0.012, D - 0.012, H - 0.012), pages),
+             part("BoardBot", (0, 0, 0.003), (W, D, 0.006), cloth),
+             part("BoardTop", (0, 0, H - 0.003), (W, D, 0.006), cloth)]
+    sp = add("cylinder", "Spine", radius=H / 2, depth=D, location=(-W / 2, 0, H / 2),
+             rotation=(math.radians(90), 0, 0), vertices=32)
+    assign(sp, cloth)
+    smooth(sp)
+    parts.append(sp)
+    for i, y in enumerate((-0.13, 0.13)):  # two dull brass bands on the spine, no lettering
+        b = add("cylinder", f"Band{i}", radius=H / 2 + 0.0015, depth=0.008, location=(-W / 2, y, H / 2),
+                rotation=(math.radians(90), 0, 0), vertices=32)
+        assign(b, spine_band)
+        parts.append(b)
+    pivot = bpy.data.objects.new("BookPivot", None)
+    bpy.context.scene.collection.objects.link(pivot)
+    for o in parts:
+        o.parent = pivot
+    pivot.rotation_euler = (0, 0, rot)
+    if night:
+        spot((-0.9, -0.5, 1.1), (0, 0, 0.02), 220, angle=34, blend=0.7, color=(1.0, 0.72, 0.45), name="Key")
+        area_light((1.2, 1.4, 0.8), (0, 0, 0), 4, size=2.0, color=(0.45, 0.55, 0.75), name="Fill")
+    else:
+        spot((-0.5, -0.3, 1.5), (0, 0, 0.02), 340, angle=30, blend=0.6, color=(1.0, 0.86, 0.68), name="Key")
+        area_light((1.0, 1.2, 1.0), (0, 0, 0), 8, size=2.0, color=(0.6, 0.7, 0.85), name="Fill")
+    cam = camera((0.0, -1.15, 0.62), (0.0, 0.0, 0.03), lens=55)
+    for f in range(f0, f1 + 1):
+        u = G_ease((f - f0) / max(1, f1 - f0))
+        k = 1.0 - push * u
+        cam.location = (0.08 * math.sin(u * 0.8), -1.15 * k, 0.15 + 0.47 * k)
+        look_at(cam, (0.0, 0.0, 0.03))
+        cam.keyframe_insert("location", frame=f)
+        cam.keyframe_insert("rotation_euler", frame=f)
+
+
+def G_ease(u):
+    u = min(1.0, max(0.0, u))
+    return u * u * (3 - 2 * u)
+
+
+# ---------------------------------------------------------------- THE OPERATING ROOM (Case 04)
+
+def scene_or(kv, f0, f1):
+    """An empty operating room in near-darkness; the lamp over the table warms up."""
+    warm = float(kv.get("warm", "2.5")) * FPS
+    push = float(kv.get("push", "0.2"))
+    flo = mat_principled("ORFloor", (0.10, 0.13, 0.13), rough=0.45, coat=0.1)
+    wall = mat_principled("ORWall", (0.16, 0.22, 0.22), rough=0.6)
+    steel = mat_principled("Steel", (0.62, 0.64, 0.66), metallic=1.0, rough=0.25)
+    pad = mat_principled("Pad", (0.06, 0.09, 0.10), rough=0.55)
+
+    def box(name, loc, scale, m):
+        o = add("cube", name, size=1, location=loc)
+        o.scale = scale
+        assign(o, m)
+        return o
+
+    box("Floor", (0, 0, -0.05), (9, 9, 0.1), flo)
+    box("WallB", (0, 3.5, 1.6), (9, 0.1, 3.4), wall)
+    box("WallL", (-3.5, 0, 1.6), (0.1, 9, 3.4), wall)
+    box("WallR", (3.5, 0, 1.6), (0.1, 9, 3.4), wall)
+    box("Ceil", (0, 0, 3.2), (9, 9, 0.1), wall)
+    # table: column, base, slab, pad
+    box("Base", (0, 0, 0.05), (0.7, 0.45, 0.1), steel)
+    col = add("cylinder", "Column", radius=0.11, depth=0.7, location=(0, 0, 0.45))
+    assign(col, steel)
+    box("Slab", (0, 0, 0.83), (0.6, 2.0, 0.06), steel)
+    p = box("TablePad", (0, 0, 0.89), (0.56, 1.96, 0.06), pad)
+    bpy.ops.object.modifier_add(type="BEVEL")
+    p.modifiers["Bevel"].width = 0.02
+    # lamp: ceiling mount, arm, dish head with an emissive ring
+    box("Mount", (0.0, 0.6, 3.1), (0.25, 0.25, 0.12), steel)
+    box("Arm", (0.0, 0.3, 2.75), (0.06, 0.06, 0.7), steel)
+    head = add("cylinder", "Head", radius=0.38, depth=0.12, location=(0.0, 0.0, 2.35), vertices=48)
+    assign(head, steel)
+    smooth(head)
+    glow = mat_principled("LampGlow", (1, 1, 1), emission=(1.0, 0.96, 0.88), strength=0.0)
+    lens = add("cylinder", "Lens", radius=0.33, depth=0.02, location=(0.0, 0.0, 2.285), vertices=48)
+    assign(lens, glow)
+    key = spot((0.0, 0.0, 2.27), (0.0, 0.0, 0.9), 0.0, angle=34, blend=0.5, color=(1.0, 0.96, 0.88), name="Lamp")
+    # one dim cyan monitor at the back, off-axis
+    mon = mat_principled("Monitor", (0.02, 0.02, 0.02), emission=(0.38, 0.78, 0.84), strength=0.6)
+    box("Screen", (-2.2, 3.42, 1.7), (0.7, 0.04, 0.45), mon)
+    # cool fill so the room reads before the lamp comes up; a wash on the back wall for depth
+    area_light((0, -3, 2.6), (0, 0, 0.8), 70, size=3.0, color=(0.5, 0.65, 0.75), name="Ambient")
+    area_light((0, 1.6, 3.0), (0, 3.5, 1.2), 45, size=4.0, color=(0.45, 0.62, 0.70), name="Wash")
+    area_light((0, 2.4, 1.6), (0, 0, 0.9), 25, size=1.2, color=(0.55, 0.70, 0.80), name="Rim")
+    cam = camera((1.9, -3.1, 1.35), (0.0, 0.1, 1.55), lens=30)
+    for f in range(f0, f1 + 1):
+        u = G_ease((f - f0) / max(1, f1 - f0))
+        on = 1.0 if warm <= 0 else G_ease((f - f0) / warm)
+        b = glow.node_tree.nodes["Principled BSDF"].inputs["Emission Strength"]
+        b.default_value = 30.0 * on
+        b.keyframe_insert("default_value", frame=f)
+        key.data.energy = 2600 * on
+        key.data.keyframe_insert("energy", frame=f)
+        k = 1.0 - push * u
+        cam.location = (1.9 * k, -3.1 * k, 1.35 - 0.05 * u)
+        look_at(cam, (0.0, 0.1, 1.55))
+        cam.keyframe_insert("location", frame=f)
+        cam.keyframe_insert("rotation_euler", frame=f)
+
+
 # ---------------------------------------------------------------- main
 
 def main():
@@ -1233,7 +1365,8 @@ def main():
     f0, f1 = (int(v) for v in opts["frames"].split(":"))
     sc = reset(opts["res"], int(opts["samples"]))
     {"scale": scene_scale, "brain": scene_brain, "tower": scene_tower,
-     "corridor": scene_corridor, "road": scene_road, "car": scene_car, "sea": scene_sea}[scene](kv, f0, f1)
+     "corridor": scene_corridor, "road": scene_road, "car": scene_car, "sea": scene_sea,
+     "book": scene_book, "or": scene_or}[scene](kv, f0, f1)
     os.makedirs(out, exist_ok=True)
     tag = kv.get("name", scene)
     for f in range(f0, f1 + 1, int(opts.get("step", 1))):
