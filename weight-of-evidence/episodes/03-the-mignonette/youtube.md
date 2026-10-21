@@ -73,7 +73,8 @@ lifeboat ethics, trolley problem, criminal law history, Weight of Evidence
 
 | Item | ID |
 |---|---|
-| Case 03 (1080p master, thumbnail A, title 1, in playlist "Cases") | `zen-H0lcSzs` |
+| Case 03 (1080p master, thumbnail A, title 1, in playlist "Cases") | `QiPVYrdDzRw` (re-uploaded 21 Oct 2026 with the corrected S57 teaser) |
+| Superseded first upload (old S57 teaser; delete once the owner confirms) | `zen-H0lcSzs` |
 | Short (1080×1920, 1:34) | `Mj4jkA1-T7s` |
 
 Still to do by hand in YouTube Studio: upload the English captions (`weight_of_evidence_case03.srt`;
