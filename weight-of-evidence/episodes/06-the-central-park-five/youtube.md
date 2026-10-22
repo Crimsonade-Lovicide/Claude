@@ -10,8 +10,8 @@
 
 `production/thumbs06.py`. No photos of the men at any age, no stills from the videotapes, no photo
 of Trisha Meili, no Central Park landmarks that locate where she was found (research §K).
-- **A:** the empty interview room (`interview_room`), the 1980s camera on its tripod facing an empty
-  chair, pushed left, with **THE LIE / IS LEGAL** on the right, "IS LEGAL" in brass. Not a quote of
+- **A:** over the shoulder of the 1980s camera (`room`, view=camera), aimed at the empty chair across the
+  table, pushed left, with **THE LIE / IS LEGAL** on the right, "IS LEGAL" in brass. Not a quote of
   the detective: his exact words aren't settled (research B2).
 - **B:** the Scale, tipped, with **WOULD YOU CONFESS?**
 

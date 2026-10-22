@@ -1577,7 +1577,7 @@ def scene_room(kv, f0, f1):
             u = G_ease((f - f0) / max(1, f1 - f0))
             t_on = (f - f0) / FPS
             s = tally.node_tree.nodes["Principled BSDF"].inputs["Emission Strength"]
-            s.default_value = 12.0 if t_on > 0.8 else 0.0  # the light comes on: recording
+            s.default_value = 12.0 if (t_on > 0.8 or kv.get("tally")) else 0.0  # the light comes on: recording
             s.keyframe_insert("default_value", frame=f)
             cam.location = tuple(start + fwd * (0.3 * push * u))
             look_at(cam, tuple(chair_c))
