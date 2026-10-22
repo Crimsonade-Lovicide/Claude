@@ -19,6 +19,10 @@ Scenes:
             pages are ever opened. k=v: mood=day|night, push (0..1 dolly over the clip)
   or        (Case 04) An empty operating room in near-darkness; the surgical lamp warms up
             over an empty table. k=v: warm (seconds for the lamp to come up), push (0..1)
+  lot       (Case 05) A generic sedan alone in a store car park at dusk, one sodium lamp. No badge
+            or plate. k=v: view=push|wide, push (0..1 dolly toward the driver's door handle)
+  shelf     (Case 05) Steel shelving of plain archive boxes in a cold store, one box lit. No
+            labels. k=v: push (0..1 dolly along the aisle)
 Each frame is written as <out_dir>/<scene>_####.png. Single stills: --frames 0:0.
 Everything here is a reconstruction or a symbol and is tagged as such in the edit.
 """
@@ -684,6 +688,46 @@ def scene_road(kv, f0, f1):
 
 # ---------------------------------------------------------------- THE TEST CAR (Case 02)
 
+# ---------------------------------------------------------------- car bodies (Cases 02, 05)
+
+def rounded_box(name, loc, scale, m, bevel=0.15):
+    o = add("cube", name, size=1, location=loc)
+    o.scale = scale
+    bpy.ops.object.transform_apply(scale=True)
+    mod = o.modifiers.new("Bevel", "BEVEL")
+    mod.width = bevel
+    mod.segments = 4
+    assign(o, m)
+    smooth(o)
+    return o
+
+
+def extruded_profile(name, pts, width, m, bevel=0.04):
+    """Extrude a side profile [(y, z), ...] across x in [-width/2, width/2]."""
+    import bmesh
+    me = bpy.data.meshes.new(name)
+    bm = bmesh.new()
+    L = [bm.verts.new((-width / 2, y, z)) for y, z in pts]
+    R = [bm.verts.new((width / 2, y, z)) for y, z in pts]
+    bm.faces.new(L[::-1])
+    bm.faces.new(R)
+    n = len(pts)
+    for i in range(n):
+        j = (i + 1) % n
+        bm.faces.new((L[i], L[j], R[j], R[i]))
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    bm.to_mesh(me)
+    bm.free()
+    o = bpy.data.objects.new(name, me)
+    bpy.context.scene.collection.objects.link(o)
+    mod = o.modifiers.new("Bevel", "BEVEL")
+    mod.width = bevel
+    mod.segments = 3
+    mod.limit_method = "ANGLE"
+    assign(o, m)
+    return o
+
+
 def scene_car(kv, f0, f1):
     """A generic test SUV, simplified (not a model of the actual vehicle): body, glasshouse,
     wheels, roof sensor rack with a spinning lidar puck. Black void, rim lights, slow orbit."""
@@ -693,41 +737,7 @@ def scene_car(kv, f0, f1):
     rack = mat_principled("Rack", (0.05, 0.05, 0.05), metallic=0.8, rough=0.3)
     floor(color=(0.008, 0.008, 0.01), rough=0.15)
 
-    def rbox(name, loc, scale, m, bevel=0.15):
-        o = add("cube", name, size=1, location=loc)
-        o.scale = scale
-        bpy.ops.object.transform_apply(scale=True)
-        mod = o.modifiers.new("Bevel", "BEVEL")
-        mod.width = bevel
-        mod.segments = 4
-        assign(o, m)
-        smooth(o)
-        return o
-
-    def profile(name, pts, width, m, bevel=0.04):
-        """Extrude a side profile [(y, z), ...] across x in [-width/2, width/2]."""
-        import bmesh
-        me = bpy.data.meshes.new(name)
-        bm = bmesh.new()
-        L = [bm.verts.new((-width / 2, y, z)) for y, z in pts]
-        R = [bm.verts.new((width / 2, y, z)) for y, z in pts]
-        bm.faces.new(L[::-1])
-        bm.faces.new(R)
-        n = len(pts)
-        for i in range(n):
-            j = (i + 1) % n
-            bm.faces.new((L[i], L[j], R[j], R[i]))
-        bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
-        bm.to_mesh(me)
-        bm.free()
-        o = bpy.data.objects.new(name, me)
-        bpy.context.scene.collection.objects.link(o)
-        mod = o.modifiers.new("Bevel", "BEVEL")
-        mod.width = bevel
-        mod.segments = 3
-        mod.limit_method = "ANGLE"
-        assign(o, m)
-        return o
+    rbox, profile = rounded_box, extruded_profile
 
     # side profile of a generic mid-size SUV, metres; +Y is the front
     profile("Body", [(-2.45, 0.42), (2.42, 0.42), (2.48, 0.72), (2.35, 1.02), (1.30, 1.16),
@@ -1358,6 +1368,125 @@ def scene_or(kv, f0, f1):
         cam.keyframe_insert("rotation_euler", frame=f)
 
 
+# ---------------------------------------------------------------- THE CAR PARK (Case 05)
+
+def scene_lot(kv, f0, f1):
+    """A generic sedan, alone in a store car park at dusk under one sodium lamp. Not a model of
+    any real car: no badge, no plate. view=push (slow dolly toward the driver's door handle) or
+    wide (static, high three-quarter)."""
+    sc = bpy.context.scene
+    night_sky(sc, low=(0.16, 0.07, 0.035), high=(0.004, 0.006, 0.016))
+    asphalt = mat_principled("Asphalt", (0.035, 0.035, 0.038), rough=0.55, coat=0.15)
+    paintline = mat_principled("Line", (0.55, 0.53, 0.48), rough=0.6)
+    paint = mat_principled("Paint", (0.05, 0.065, 0.09), metallic=0.6, rough=0.3, coat=1.0)
+    glass = mat_principled("Glass", (0.01, 0.01, 0.012), rough=0.05, metallic=0.3)
+    rubber = mat_principled("Tyre", (0.02, 0.02, 0.02), rough=0.8)
+    chrome = mat_principled("Handle", (0.55, 0.55, 0.57), metallic=1.0, rough=0.2)
+    pole = mat_principled("Pole", (0.25, 0.25, 0.26), metallic=0.7, rough=0.4)
+    g = add("plane", "Lot", size=80)
+    assign(g, asphalt)
+    for k in range(-4, 6):  # parking bay lines
+        ln = add("cube", f"Bay{k}", size=1, location=(k * 2.7 - 1.35, 0.0, 0.003))
+        ln.scale = (0.1, 5.2, 0.005)
+        assign(ln, paintline)
+    # a low sedan side profile, metres; +Y is the front
+    extruded_profile("Body", [(-2.35, 0.36), (2.30, 0.36), (2.38, 0.62), (2.20, 0.82), (0.95, 0.92),
+                              (0.35, 1.38), (-1.15, 1.40), (-1.90, 1.00), (-2.38, 0.86)], 1.82, paint, 0.06)
+    extruded_profile("Glass", [(-1.80, 0.98), (0.90, 0.95), (0.33, 1.34), (-1.12, 1.36)], 1.84, glass, 0.02)
+    for x in (-0.80, 0.80):
+        for y in (-1.45, 1.40):
+            w = add("cylinder", f"W{x}{y}", radius=0.33, depth=0.24, location=(x, y, 0.33), vertices=48)
+            w.rotation_euler = (0, math.radians(90), 0)
+            assign(w, rubber)
+            hub = add("cylinder", f"H{x}{y}", radius=0.2, depth=0.25, location=(x, y, 0.33), vertices=32)
+            hub.rotation_euler = (0, math.radians(90), 0)
+            assign(hub, mat_principled("Rim", (0.5, 0.5, 0.52), metallic=1.0, rough=0.3))
+    handle = rounded_box("DoorHandle", (0.925, 0.05, 0.86), (0.04, 0.26, 0.05), chrome, 0.015)
+    # lamp post with a sodium head, behind and to the left
+    post = add("cylinder", "Post", radius=0.09, depth=7.0, location=(5.5, 4.0, 3.5), vertices=16)
+    assign(post, pole)
+    head = rounded_box("LampHead", (5.0, 4.0, 7.0), (1.2, 0.5, 0.18), pole, 0.05)
+    spot((4.6, 4.0, 6.85), (0.4, 0.0, 0.3), 9000, angle=80, blend=0.6, color=(1.0, 0.62, 0.28), name="Sodium")
+    glow = mat_principled("SodiumGlow", (1, 1, 1), emission=(1.0, 0.62, 0.28), strength=8.0)
+    lens = add("cube", "LampLens", size=1, location=(5.0, 4.0, 6.9))
+    lens.scale = (1.0, 0.4, 0.02)
+    assign(lens, glow)
+    area_light((8, -10, 6), (0, 0, 1), 300, size=8, color=(0.45, 0.55, 0.75), name="SkyFill")
+    area_light((6, -2, 1.5), (0.9, 0.05, 0.8), 120, size=3, color=(1.0, 0.75, 0.5), name="DoorFill")
+    view = kv.get("view", "push")
+    push = float(kv.get("push", "0.45"))
+    tgt = (0.9, 0.05, 0.8)
+    if view == "wide":
+        cam = camera((9.5, -8.0, 4.2), (0.0, 0.5, 0.6), lens=35)
+        for f in range(f0, f1 + 1):  # slow sideways drift
+            u = G_ease((f - f0) / max(1, f1 - f0))
+            cam.location = (9.5 - 2.0 * u, -8.0 - 1.0 * u, 4.2)
+            look_at(cam, (0.0, 0.5, 0.6))
+            cam.keyframe_insert("location", frame=f)
+            cam.keyframe_insert("rotation_euler", frame=f)
+        return
+    cam = camera((6.5, -3.5, 1.3), tgt, lens=45)
+    for f in range(f0, f1 + 1):
+        u = G_ease((f - f0) / max(1, f1 - f0))
+        k = 1.0 - push * u
+        cam.location = (0.9 + 5.6 * k, 0.05 - 3.55 * k, 0.95 + 0.35 * k)
+        look_at(cam, tgt)
+        cam.keyframe_insert("location", frame=f)
+        cam.keyframe_insert("rotation_euler", frame=f)
+
+
+# ---------------------------------------------------------------- THE EVIDENCE STORE (Case 05)
+
+def scene_shelf(kv, f0, f1):
+    """Steel shelving of plain archive boxes in a cold store; one box picked out by a light.
+    No labels or case numbers. Slow dolly along the aisle."""
+    sc = bpy.context.scene
+    night_sky(sc, low=(0.004, 0.005, 0.007), high=(0.002, 0.002, 0.003))
+    steel = mat_principled("Shelf", (0.30, 0.32, 0.33), metallic=0.8, rough=0.45)
+    floor(color=(0.05, 0.055, 0.06), rough=0.35)
+    import random
+    rng = random.Random(1980)
+    boxes = [mat_principled(f"Box{i}", c, rough=0.85) for i, c in
+             enumerate([(0.42, 0.33, 0.22), (0.38, 0.30, 0.20), (0.46, 0.37, 0.25)])]
+    hero = None
+    for side in (-1.4, 1.4):
+        for bay in range(6):
+            y0 = bay * 1.9
+            for x in (side - 0.42, side + 0.42):
+                for z in (0.0, 2.4):
+                    up = add("cube", f"Up{side}{bay}{x}{z}", size=1, location=(x, y0 + (0.9 if z else -0.9), 1.2))
+                    up.scale = (0.04, 0.04, 2.4)
+                    assign(up, steel)
+            for lvl in range(5):
+                z = 0.15 + lvl * 0.55
+                sh = add("cube", f"Sh{side}{bay}{lvl}", size=1, location=(side, y0, z))
+                sh.scale = (0.9, 1.85, 0.025)
+                assign(sh, steel)
+                for b in range(3):
+                    is_hero = side < 0 and bay == 3 and lvl == 2 and b == 1
+                    if rng.random() < 0.18 and not is_hero:
+                        continue
+                    bx = add("cube", f"B{side}{bay}{lvl}{b}", size=1,
+                             location=(side + rng.uniform(-0.04, 0.04), y0 - 0.58 + b * 0.58, z + 0.19))
+                    bx.scale = (0.75, 0.5, 0.36)
+                    bx.rotation_euler = (0, 0, math.radians(rng.uniform(-2, 2)))
+                    assign(bx, boxes[rng.randrange(3)])
+                    if is_hero:
+                        hero = bx
+    hx, hy, hz = hero.location
+    spot((hx + 1.6, hy - 0.6, hz + 1.8), (hx, hy, hz), 1600, angle=12, blend=0.4, color=(1.0, 0.9, 0.75), name="Key")
+    for k in range(4):  # cold tube lights down the aisle
+        area_light((0, k * 3.2, 3.2), (0, k * 3.2, 0), 18, size=1.2, color=(0.65, 0.78, 0.9), name=f"Tube{k}")
+    cam = camera((0.3, -2.5, 1.55), (hx, hy, hz), lens=35)
+    push = float(kv.get("push", "0.35"))
+    for f in range(f0, f1 + 1):
+        u = G_ease((f - f0) / max(1, f1 - f0))
+        cam.location = (0.3, -2.5 + 3.2 * push * u, 1.55)
+        look_at(cam, (hx, hy, hz))
+        cam.keyframe_insert("location", frame=f)
+        cam.keyframe_insert("rotation_euler", frame=f)
+
+
 # ---------------------------------------------------------------- main
 
 def main():
@@ -1366,7 +1495,7 @@ def main():
     sc = reset(opts["res"], int(opts["samples"]))
     {"scale": scene_scale, "brain": scene_brain, "tower": scene_tower,
      "corridor": scene_corridor, "road": scene_road, "car": scene_car, "sea": scene_sea,
-     "book": scene_book, "or": scene_or}[scene](kv, f0, f1)
+     "book": scene_book, "or": scene_or, "lot": scene_lot, "shelf": scene_shelf}[scene](kv, f0, f1)
     os.makedirs(out, exist_ok=True)
     tag = kv.get("name", scene)
     for f in range(f0, f1 + 1, int(opts.get("step", 1))):

@@ -259,19 +259,20 @@ disputed: which site broke the case (B8), "the first" (B18), the rape count (A11
 ## Pronunciation (applied to narration text only)
 
 Model: eleven_multilingual_v2. Numbers are written out in the narration where the voice could
-misread them. Rows marked *check* need a listen before the full recording.
+misread them. Our best guesses, to confirm by ear in the review copy: Maggiore, Witthuhn, Usry
+(families' own pronunciations) and GEDmatch ("Jed-match" is how genealogists say it).
 
 | Written | Spoken as |
 |---|---|
 | DeAngelo | Dee-Ann-jeh-low |
-| Maggiore | Muh-jor-ee (*check: family's own pronunciation*) |
-| Witthuhn | Wit-hoon (*check*) |
+| Maggiore | Muh-jor-ee |
+| Witthuhn | Wit-hoon |
 | Visalia | Vy-sail-yuh |
 | Goleta | Go-lee-tuh |
 | Rae-Venter | Ray-Venter |
-| Usry | Uss-ree (*check*) |
+| Usry | Uss-ree |
 | Schubert | Shoo-bert |
-| GEDmatch | Jed-match (*check*) |
+| GEDmatch | Jed-match |
 | 23andMe | Twenty-three and Me |
 | FamilyTreeDNA | Family Tree D N A |
 
