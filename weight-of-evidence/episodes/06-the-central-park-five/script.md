@@ -268,8 +268,13 @@ Care rules for this episode (research §K):
 > That's our verdict. It's open, which means it can change. If you think we got it wrong, make your case in the comments. We'll answer the strongest one in the next episode.
 
 ### S55 · Next case
-**Picture:** `GFX: words` "NEXT CASE" over black: "<CASE 07 NAME · YEAR>" / *<question>*. **To be chosen by the owner before recording.**
-> Next case: <one-sentence anchor>. <one-sentence turn>. <the question>?
+**Picture:** `GFX: words` "NEXT CASE" over black: "TERRI SCHIAVO · 1990" / *Who should decide when to stop keeping someone alive?*
+> Next case: in 1990, a young woman in Florida collapsed at home and never recovered. Her husband said she wouldn't have wanted to be kept alive like that. Her parents disputed it, and said she was still aware. Their fight over her feeding tube went on for seven years, through the courts, Congress and the White House. Who should decide when to stop keeping someone alive?
+
+_Chosen by the owner, 22 Oct 2026. Checked against Case 07 research §0: "never recovered", not "never
+woke up" (a vegetative state is not a coma, and the parents disputed the diagnosis); "seven years" is the
+feeding-tube case (petition May 11, 1998, to her death March 31, 2005); the President signed the March
+2005 act. Not "life support" and never "pulled the plug": she was fed by tube, not on a ventilator._
 
 ### S56 · End card
 **Picture:** `GFX: endcard` Title, subscribe area, two end-screen slots. Sources link. No narration.
@@ -335,7 +340,7 @@ Innocence Project).
   tested minimization and a deal, not false evidence (I4). The narration says "pressure tactics".
 - **S50:** "three to four times" is the Catlin et al. meta-analysis as reported by Kassin et al. (H7:
   odds ratios 2.88 and 4.34).
-- **S55:** the owner chooses Case 07; then fact-check the teaser before recording, as with Case 05.
+- **S55:** Case 07 is Terri Schiavo (owner, 22 Oct 2026); the line was fact-checked in Case 07 research §0.
 - **3D:** `interview_room` and `park_path` are new scenes for `scenes.py` (empty room, 1980s camera
   on a tripod, no figures; a generic path and lamp, no landmarks). The Scale clips are reused from
   Case 01.
