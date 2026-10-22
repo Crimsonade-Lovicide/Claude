@@ -353,7 +353,8 @@ def loudnorm_filter(audio, target=-14.0, ceiling_db=-1.5):
     """Measure the integrated loudness after MASTER_PRE, then apply the exact gain to reach
     target and catch the peaks with a final limiter at the ceiling. The limiter runs at 4x
     the sample rate so it also catches inter-sample (true) peaks, which AAC would otherwise
-    push past -1 dBTP on broadband sounds like sea wash."""
+    push past -1 dBTP on broadband sounds like sea wash. A 5 ms look-ahead (not 2) catches the
+    first word after a quiet lead-in, which 2 ms let through (Case 06 Short: +1.0 vs -1.3 dBTP)."""
     out = subprocess.run(["ffmpeg", "-hide_banner", "-i", audio, "-af",
                           f"{MASTER_PRE},loudnorm=print_format=json", "-f", "null", "-"],
                          capture_output=True, text=True).stderr
@@ -361,7 +362,7 @@ def loudnorm_filter(audio, target=-14.0, ceiling_db=-1.5):
     gain_db = target - float(m["input_i"])
     limit = 10 ** (ceiling_db / 20)
     return (f"{MASTER_PRE},volume={gain_db:.2f}dB,aresample=192000,"
-            f"alimiter=limit={limit:.3f}:attack=2:release=50:level=false,aresample=48000")
+            f"alimiter=limit={limit:.3f}:attack=5:release=50:level=false,aresample=48000")
 
 
 def true_peak(path):
@@ -373,8 +374,9 @@ def true_peak(path):
 
 def master_audio(audio, out):
     """Loudness-normalised AAC. AAC can overshoot the limiter by a dB or more on dense sounds
-    (sea wash), so measure the encoded file and lower the ceiling until it holds -1 dBTP."""
-    for ceiling in (-1.5, -2.5, -3.5):
+    (sea wash), and loudnorm's gain can overshoot on the first loud sound after a quiet lead-in,
+    so measure the encoded file and lower the ceiling until it holds -1 dBTP."""
+    for ceiling in (-1.5, -2.5, -3.5, -4.5, -5.5):
         subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", audio, "-af", loudnorm_filter(audio, ceiling_db=ceiling),
                         "-ar", "48000", "-c:a", "aac", "-b:a", "256k", out], check=True)
         tp = true_peak(out)
