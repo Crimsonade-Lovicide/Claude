@@ -249,7 +249,9 @@ disputed: which site broke the case (B8), "the first" (B18), the rape count (A11
 
 ### S53 · Next case
 **Picture:** `GFX: words` "NEXT CASE" over black: "THE CENTRAL PARK FIVE · 1989" / *Should police be allowed to lie to suspects?*
-> Next case: in 1989, five teenagers in New York confessed on video to an attack in Central Park. Thirteen years later, DNA and another man's confession cleared them. Should police be allowed to lie to the people they question?
+> Next case: in 1989, five teenagers in New York were accused of an attack in Central Park. Four confessed on video. Thirteen years later, DNA and another man's confession cleared them. Should police be allowed to lie to the people they question?
+
+_Corrected 22 Oct 2026, before upload: the line first said all five "confessed on video". The Manhattan DA's 2002 affirmation records that Yusef Salaam "made one oral, unrecorded, unsigned statement"; only four were videotaped (Case 06 research, T1). Re-recorded with the owner's approval._
 
 ### S54 · End card
 **Picture:** `GFX: endcard` Title, subscribe area, two end-screen slots. Sources link. No narration.
