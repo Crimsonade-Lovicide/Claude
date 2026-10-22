@@ -84,7 +84,7 @@ Care rules for this episode (research §K):
 > On the night of April the nineteenth, 1989, a group of thirty or more teenagers came into the north end of Central Park. Over the next forty minutes or so, some of them attacked strangers. A man was beaten and robbed and left unconscious. Joggers at the reservoir were set upon. Those attacks were real, and some of the five would later admit to parts of them.
 
 ### S12 · Trisha Meili
-**Picture:** `GFX: card` RECORD: "found about 1:30 a.m. … badly beaten about the head". Source "Manhattan DA, Affirmation, 2002". No map, no photo. [A3, E8]
+**Picture:** `GFX: card` RECORD: "Trisha Meili, 29, went out to run at about 8:55 p.m. She was found about 1:30 a.m., close to death." Source "Manhattan DA, Affirmation, 2002". No map, no photo, nothing about her injuries. [A3, E8]
 > Trisha Meili was twenty-nine. She went out for a run at about nine o'clock. She was found after half past one in the morning, near a footpath in the north of the park, beaten and close to death. She survived. She has no memory of the attack. For fourteen years she kept her name private. Since 2003, she has spoken under her own name.
 
 ### S13 · The rules on age
@@ -178,7 +178,7 @@ Care rules for this episode (research §K):
 > In May 2002, the FBI reported that his DNA matched the semen on her sock. Further tests matched him to the other samples, with odds of one in six billion, and to a hair. No one else's DNA was present.
 
 ### S34 · His account fit
-**Picture:** `GFX: card` RECORD: "The newly discovered evidence provides incontrovertible proof that he was." Manhattan DA, Affirmation, 2002. [D4, D5]
+**Picture:** `GFX: card` RECORD: "…a serial rapist was also at large. The newly discovered evidence provides incontrovertible proof that he was." Manhattan DA, Affirmation, 2002. [D4, D5]
 > His account fit the scene in ways none of the five statements had: the direction she was running, where she was struck, the things that were taken from her. And two days earlier, he had attacked another woman in the park.
 
 ### S35 · Every conviction
