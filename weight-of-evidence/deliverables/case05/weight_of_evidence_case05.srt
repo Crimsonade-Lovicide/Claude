@@ -1339,20 +1339,24 @@ We'll answer the strongest one
 in the next episode.
 
 289
-00:18:25,998 --> 00:18:31,778
+00:18:26,078 --> 00:18:30,758
 Next case: in 1989, five teenagers in
-New York confessed on video
+New York were accused of an
 
 290
-00:18:31,798 --> 00:18:33,608
-to an attack in Central Park.
+00:18:30,778 --> 00:18:32,068
+attack in Central Park.
 
 291
-00:18:34,438 --> 00:18:38,688
+00:18:32,898 --> 00:18:34,088
+Four confessed on video.
+
+292
+00:18:34,938 --> 00:18:38,848
 Thirteen years later, DNA and another
 man's confession cleared them.
 
-292
-00:18:39,138 --> 00:18:41,668
+293
+00:18:39,518 --> 00:18:41,988
 Should police be allowed to lie to
 the people they question?

@@ -70,3 +70,16 @@ familial DNA search, cold case, Fourth Amendment, true crime ethics, Weight of E
 - Captions: upload `weight_of_evidence_case05.srt`.
 - Playlist: Cases. End screen: the two slots on the end card, with Case 04 in one of them.
 - Category: Education.
+
+## On YouTube (uploaded 22 Oct 2026 via Make scenario 6603120, private until published)
+
+| Item | ID |
+|---|---|
+| Case 05 (1080p master, thumbnail A, title 1, in playlist "Cases") | `eQ8V_kBwWAU` |
+| Short (1080×1920, 1:51) | `cr87whdslPE` |
+
+Uploaded after the S53 correction (four of the five confessed on video, not five). Still to do by hand
+in YouTube Studio: upload the English captions (`deliverables/case05/weight_of_evidence_case05.srt`),
+Test & Compare (title 2, thumbnail B), end screen (Case 04 `rF4oExXmaX0` in one slot), schedule for
+**Wed 25 Nov, 12:00 ET** (Thanksgiving week; see `channel/release-schedule.md`), then pin the comment
+above once it's live. Set the Short's Related video to the episode and schedule it for Sun 29 Nov.

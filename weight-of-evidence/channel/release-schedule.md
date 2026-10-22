@@ -21,22 +21,21 @@ evening. Consistency matters more than the exact slot. After four episodes, YouT
 | Thu 5 Nov | **Case 02** `6GP6-C2GuJE` | Sun 8 Nov · `glkhjcQDBig` | Tue 3 Nov |
 | Thu 12 Nov | **Case 03** `QiPVYrdDzRw` | Sun 15 Nov · `Mj4jkA1-T7s` | Tue 10 Nov |
 | Thu 19 Nov | **Case 04** `rF4oExXmaX0` | Sun 22 Nov · `VzoS6sqcGPc` | Tue 17 Nov |
-| **Wed** 25 Nov | **Case 05** (after sign-off and upload) | Sun 29 Nov | Mon 23 Nov |
+| **Wed** 25 Nov | **Case 05** `eQ8V_kBwWAU` | Sun 29 Nov · `cr87whdslPE` | Mon 23 Nov |
 | Thu 3 Dec | **Case 06**, the Central Park Five (in research) | Sun 6 Dec | Tue 1 Dec |
 
 - **Case 05 moves to Wednesday** because Thursday 26 November is Thanksgiving in the US. The
   alternative is Thursday 3 December, with everything after it shifting a week.
 - **Case 06 must be produced by about 26 November** for 3 December. Research started 22 October.
   A script for your sign-off by about 28 October leaves ample time.
-- **Case 05's teaser** about the Central Park Five is being fact-checked in the Case 06 research.
-  If it needs a change, it gets re-recorded before Case 05 is uploaded.
+- **Case 05's teaser** was corrected before upload (four of the five confessed on video, not five).
 
 ## What has to happen before each date
 
 The Studio steps (`channel/setup.md` §10) are yours; the API can't do them, or was blocked when
 we tried:
 
-1. **Captions:** Cases 01 and 02 have them. Cases 03 and 04 still need the `.srt` uploaded.
+1. **Captions:** Cases 01 and 02 have them. Cases 03, 04 and 05 still need the `.srt` uploaded.
 2. **Test & Compare:** title 2 and thumbnail B, from each `youtube.md`.
 3. **End screen:** two video slots on the end card. Point one at the previous case, and once the
    next case is live, update the other slot to it.
