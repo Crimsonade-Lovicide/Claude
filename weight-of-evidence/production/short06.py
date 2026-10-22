@@ -68,6 +68,7 @@ def build(ctx):
     S4.KICKER = KICKER  # S4.kicker reads its module's KICKER
     ep = E.Ctx(EP06_PROD, ep06)  # the episode's own timing, so its shots render exactly as cut
     shots = ep06.build(ep)
+    shots["S01"] = E.clip_shot(E.Clip(EP06_PROD, "room_push"), tag=None)  # the crop adds its own tag; no half lower third
     s = {sid: reframe(ctx, sid, shots[sid]) for sid in FRAMING}
     s["S02"] = S4.type_v(ctx, "S02", [("VIDEOTAPED STATEMENTS", G.MONO(34, True), G.DIM, 0.3),
                                       ("4 OF 5", G.SANS(200, "SemiBold"), G.INK, "Four of them"),
