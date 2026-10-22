@@ -170,7 +170,7 @@ Care rules for this episode (research §K):
 **Picture:** `GFX: title` III · THE MATCH
 
 ### S32 · A prisoner speaks
-**Picture:** `GFX: rows` LATE 2001 · A PRISONER SAYS ANOTHER MAN IS SERVING TIME FOR HIS CRIME / JAN 17, 2002 · HE IS INTERVIEWED / FEB 2002 · THE DA'S OFFICE IS TOLD. Label RECORD. Source "Manhattan DA, Affirmation, 2002". [D1, D2]
+**Picture:** `GFX: rows` LATE 2001 · A PRISONER SPEAKS UP / JAN 17, 2002 · HE SAYS HE DID IT, ALONE / FEB 2002 · THE DA'S OFFICE IS TOLD. Label RECORD. Source "Manhattan DA, Affirmation, 2002". [D1, D2]
 > In late 2001, a man serving thirty-three years to life, for rapes and a murder he committed later that summer of 1989, told prison staff that someone else had been convicted of a crime he'd committed. His name was Matias Reyes. He said he had attacked Trisha Meili, and that he had done it alone. He said a chance meeting with Korey Wise, in prison, had prompted him. Wise was still inside.
 
 ### S33 · The match

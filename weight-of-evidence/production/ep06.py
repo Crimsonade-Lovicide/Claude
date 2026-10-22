@@ -93,7 +93,7 @@ def build(ctx):
     shots["S14"] = rows([("14", "Kevin Richardson"), ("14", "Raymond Santana"), ("15", "Antron McCray"),
                          ("15", "Yusef Salaam"), ("16", "Korey Wise")],
                         [at("S14", "Kevin Richardson"), at("S14", "Raymond Santana"), at("S14", "Antron"),
-                         at("S14", "Yusef"), at("S14", "Korey Wise")],
+                         at("S14", "Yusef"), at("S14", "Wise was sixteen")],
                         header="AGE IN APRIL 1989", label="RECORD", source=AFF)
     t_card = at("S15", "But the camera")
     shots["S15"] = G.seq((E.clip_shot(C("room_camera")), t_card),
@@ -148,8 +148,8 @@ def build(ctx):
 
     # III. THE MATCH
     shots["S31"] = G.title_shot("III · THE MATCH")
-    shots["S32"] = rows([("LATE 2001", "A prisoner says others were convicted of his crime"),
-                         ("JAN 17, 2002", "He is interviewed"), ("FEB 2002", "The DA's office is told")],
+    shots["S32"] = rows([("LATE 2001", "A prisoner speaks up"), ("JAN 17, 2002", "He says he did it, alone"),
+                         ("FEB 2002", "The DA's office is told")],
                         [0.4, at("S32", "His name was"), at("S32", "chance meeting")], label="RECORD", source=AFF)
     shots["S33"] = num("1 IN 6 BILLION", "HIS DNA MATCHED", "no one else's DNA was present", AFF, colour=G.BRASS,
                        at=at("S33", "the FBI reported"))
@@ -159,7 +159,7 @@ def build(ctx):
     shots["S35"] = G.seq((card("“The People consent to the relief requested and recommend that the Court vacate the "
                                "defendants' convictions in their entirety.”", "RECORD",
                                "Nancy E. Ryan, Manhattan DA's office, Dec 5, 2002"), t_tej),
-                         (rows([("DEC 19, 2002", "Justice Charles Tejada vacates every conviction"),
+                         (rows([("DEC 19, 2002", "Justice Tejada vacates every conviction"),
                                 ("AUG 2002", "Korey Wise already released")],
                                [0.3, at("S35", "Korey Wise had", offset=-t_tej)], label="RECORD",
                                source="NYPD panel report, 2003 · National Registry of Exonerations"), 1))
@@ -192,7 +192,7 @@ def build(ctx):
     t_pace = at("S43", "Under a 1984")
     shots["S43"] = G.seq((card("Officers “decided to invent evidence”: “a fingerprint of his had been found in a very "
                                "telling place.”", "RECORD", "R v Mason, Court of Appeal, 1987"), t_pace),
-                         (rows([("s. 76", "A confession likely to be unreliable is excluded, even if true"),
+                         (rows([("s. 76", "A likely unreliable confession is excluded, even if true"),
                                 ("s. 78", "Evidence that harms a fair trial can be refused")],
                                [0.3, at("S43", "and must exclude", offset=-t_pace)],
                                header="POLICE AND CRIMINAL EVIDENCE ACT 1984", label="RECORD"), 1))
