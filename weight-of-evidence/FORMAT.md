@@ -78,6 +78,13 @@ All of this lives in `production/gfx.py`. Episodes don't override it.
 
 Upload goes out as **Private** through the Make scenario "WEIGHT OF EVIDENCE · YouTube API (uploads)". After that, follow the checklist in `channel/setup.md` §10.
 
+**Archive (owner's rule, Oct 2026):** every master, Short, caption file, chapter list, thumbnail
+and `youtube.md` also goes to the owner's **AIE drive**, an external drive on their Mac, not
+Google Drive. The production machine can't reach it, so files travel through a temporary Google
+Drive transit folder: upload them one by one (no zip), the owner copies them across, and once
+they confirm, trash the folder **and** the files in it. The files belong to the account the Make
+scenario uploads as, so trashing the folder alone leaves them taking up storage.
+
 ## 5. Starting a new case
 
 1. `episodes/NN-slug/research.md`: the claims table, where every number carries a source.
