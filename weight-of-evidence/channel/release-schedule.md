@@ -1,9 +1,9 @@
-# Release schedule (draft, 22 Oct 2026, for the owner to confirm)
+# Release schedule (confirmed by the owner, 22 Oct 2026)
 
 Every episode is uploaded **private**. This schedule puts them out one a week. The order is fixed
 because each episode's closing teaser names the next case: 01 → 02 → 03 → 04 → 05 → 06.
 
-## The proposal
+## The schedule
 
 **One episode a week, Thursdays at 12:00 US Eastern** (9:00 Pacific; 17:00 UK, or 16:00 on
 29 October, when the UK has changed its clocks and the US hasn't yet). The Short follows
@@ -43,9 +43,11 @@ we tried:
 4. **After it goes live:** pin the verdict comment from `youtube.md`.
 5. **The Short:** set its Related video to the episode before it goes public.
 
-Once a case's Studio steps are done, tell me and I'll set its publish time through the API
-(`status.publishAt`, private until then), and its Short's for the Sunday after. You don't need to
-be at a keyboard on release day.
+**Scheduling is done in Studio.** YouTube's API rejected a scheduled publish time on 22 October
+("invalid scheduled publishing time", for a valid future time), so the videos uploaded through Make
+can't be scheduled from here. In Studio: open the video → **Visibility** → **Schedule** → pick the
+date and 12:00 in your time zone. Each scheduled video stays private, and editable, until then.
+Schedule each Short the same way, for the Sunday after.
 
 ## After each release
 
