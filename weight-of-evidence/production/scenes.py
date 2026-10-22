@@ -23,6 +23,10 @@ Scenes:
             or plate. k=v: view=push|wide, push (0..1 dolly toward the driver's door handle)
   shelf     (Case 05) Steel shelving of plain archive boxes in a cold store, one box lit. No
             labels. k=v: push (0..1 dolly along the aisle)
+  room      (Case 06) An empty precinct interview room at night, a 1980s video camera on a
+            tripod aimed at an empty chair. No figures. k=v: view=push|camera, push (0..1)
+  park      (Case 06) A park footpath at night under one old lamp, bare trees, a bench. No
+            landmarks. k=v: push (0..1 drift along the path)
 Each frame is written as <out_dir>/<scene>_####.png. Single stills: --frames 0:0.
 Everything here is a reconstruction or a symbol and is tagged as such in the edit.
 """
@@ -1487,6 +1491,195 @@ def scene_shelf(kv, f0, f1):
         cam.keyframe_insert("rotation_euler", frame=f)
 
 
+# ---------------------------------------------------------------- THE INTERVIEW ROOM (Case 06)
+
+def scene_room(kv, f0, f1):
+    """An empty precinct interview room at night: metal table, two chairs, a 1980s shoulder video
+    camera on a tripod facing the empty far chair, one fluorescent fixture. No figures, no papers.
+    view=push (slow dolly from the door toward the table) | camera (close on the camera, its red
+    tally light on, the empty chair beyond)."""
+    wall = mat_principled("RoomWall", (0.075, 0.085, 0.07), rough=0.75)
+    flo = mat_principled("RoomFloor", (0.035, 0.035, 0.032), rough=0.35, coat=0.2)
+    steel = mat_principled("TableSteel", (0.30, 0.31, 0.30), metallic=0.6, rough=0.45)
+    top = mat_principled("TableTop", (0.045, 0.042, 0.038), rough=0.35, coat=0.25)
+    seat = mat_principled("Seat", (0.05, 0.05, 0.055), rough=0.6)
+    body = mat_principled("CamBody", (0.03, 0.03, 0.032), rough=0.4)
+    lensm = mat_principled("CamLens", (0.01, 0.01, 0.012), metallic=0.4, rough=0.15)
+    tally = mat_principled("Tally", (1, 0, 0), emission=(1.0, 0.08, 0.05), strength=0.0)
+    tube = mat_principled("Tube", (1, 1, 1), emission=(0.82, 0.93, 0.88), strength=6.0)
+
+    def box(name, loc, scale, m, rot=(0, 0, 0)):
+        o = add("cube", name, size=1, location=loc)
+        o.scale = scale
+        o.rotation_euler = rot
+        assign(o, m)
+        return o
+
+    def rod(name, a, b, r, m):
+        a, b = Vector(a), Vector(b)
+        o = add("cylinder", name, radius=r, depth=(b - a).length, location=(a + b) / 2, vertices=12)
+        o.rotation_euler = (b - a).to_track_quat("Z", "Y").to_euler()
+        assign(o, m)
+        return o
+
+    box("Floor", (0, 0, -0.05), (5.0, 5.0, 0.1), flo)
+    box("WallB", (0, 2.2, 1.5), (5.0, 0.1, 3.2), wall)
+    box("WallL", (-2.0, 0, 1.5), (0.1, 5.0, 3.2), wall)
+    box("WallR", (2.0, 0, 1.5), (0.1, 5.0, 3.2), wall)
+    box("Ceil", (0, 0, 2.9), (5.0, 5.0, 0.1), wall)
+    # table, legs, two chairs facing each other across it
+    box("TableTop", (0, 0.3, 0.74), (1.5, 0.8, 0.04), top)
+    for x in (-0.68, 0.68):
+        for y in (-0.05, 0.65):
+            rod(f"TLeg{x}{y}", (x, 0.3 + (y - 0.3), 0.0), (x, 0.3 + (y - 0.3), 0.72), 0.02, steel)
+
+    def chair(name, y, facing):
+        box(f"{name}Seat", (0, y, 0.45), (0.44, 0.42, 0.04), seat)
+        box(f"{name}Back", (0, y + 0.2 * facing, 0.72), (0.42, 0.03, 0.42), seat)
+        for dx in (-0.19, 0.19):
+            for dy in (-0.18, 0.18):
+                rod(f"{name}Leg{dx}{dy}", (dx, y + dy, 0.0), (dx, y + dy, 0.43), 0.012, steel)
+
+    chair("Far", 1.0, 1)   # the empty chair the camera points at
+    chair("Near", -0.4, -1)
+    # a 1980s shoulder camera on a tripod, in the near-right corner, aimed at the far chair
+    cx, cy, cz = 1.15, -0.85, 1.35
+    aim = Vector((0.0, 1.0, 0.9)) - Vector((cx, cy, cz))
+    yaw = math.atan2(aim.y, aim.x) - math.pi / 2
+    cam_body = box("CamBody", (cx, cy, cz), (0.14, 0.42, 0.2), body, rot=(0, 0, yaw))
+    fwd = Vector((math.cos(yaw + math.pi / 2), math.sin(yaw + math.pi / 2), 0))
+    lens_c = Vector((cx, cy, cz)) + fwd * 0.27
+    rod("CamLens", lens_c - fwd * 0.07, lens_c + fwd * 0.07, 0.055, lensm)
+    vf = Vector((cx, cy, cz + 0.13)) + fwd * 0.08
+    box("Viewfinder", tuple(vf), (0.05, 0.14, 0.05), body, rot=(0, 0, yaw))
+    tl = Vector((cx, cy, cz + 0.07)) + fwd * 0.215
+    led = add("uv_sphere", "TallyLight", radius=0.012, location=tuple(tl))
+    assign(led, tally)
+    rod("TripodHead", (cx, cy, cz - 0.1), (cx, cy, cz - 0.22), 0.03, steel)
+    for k in range(3):
+        a = math.radians(90 + k * 120)
+        rod(f"TripodLeg{k}", (cx, cy, cz - 0.22), (cx + 0.38 * math.cos(a), cy + 0.38 * math.sin(a), 0.0),
+            0.012, steel)
+    # one fluorescent fixture over the table; a hard key under it; dim cool fill
+    box("Fixture", (0, 0.3, 2.82), (0.35, 1.25, 0.06), steel)
+    box("TubeA", (-0.08, 0.3, 2.785), (0.04, 1.15, 0.025), tube)
+    box("TubeB", (0.08, 0.3, 2.785), (0.04, 1.15, 0.025), tube)
+    area_light((0, 0.3, 2.74), (0, 0.3, 0), 70, size=0.8, color=(0.85, 0.95, 0.9), name="Fluor")
+    area_light((-1.6, -1.6, 2.2), (0.3, 0.6, 0.8), 4, size=1.5, color=(0.5, 0.6, 0.7), name="Fill")
+    view = kv.get("view", "push")
+    push = float(kv.get("push", "0.3"))
+    if view == "camera":
+        side = Vector((fwd.y, -fwd.x, 0))
+        start = Vector((cx, cy, cz + 0.22)) - fwd * 0.7 + side * 0.5
+        chair_c = Vector((0.0, 1.0, 0.7))
+        cam = camera(tuple(start), tuple(chair_c), lens=35)
+        for f in range(f0, f1 + 1):
+            u = G_ease((f - f0) / max(1, f1 - f0))
+            t_on = (f - f0) / FPS
+            s = tally.node_tree.nodes["Principled BSDF"].inputs["Emission Strength"]
+            s.default_value = 12.0 if t_on > 0.8 else 0.0  # the light comes on: recording
+            s.keyframe_insert("default_value", frame=f)
+            cam.location = tuple(start + fwd * (0.3 * push * u))
+            look_at(cam, tuple(chair_c))
+            cam.keyframe_insert("location", frame=f)
+            cam.keyframe_insert("rotation_euler", frame=f)
+        return
+    s = tally.node_tree.nodes["Principled BSDF"].inputs["Emission Strength"]
+    s.default_value = 12.0
+    tgt = (0.2, 0.6, 0.75)
+    cam = camera((-1.4, -1.9, 1.6), tgt, lens=24)
+    for f in range(f0, f1 + 1):
+        u = G_ease((f - f0) / max(1, f1 - f0))
+        k = 1.0 - push * u
+        cam.location = (0.2 + (-1.6) * k, 0.6 + (-2.5) * k, 0.75 + 0.85 * k)
+        look_at(cam, tgt)
+        cam.keyframe_insert("location", frame=f)
+        cam.keyframe_insert("rotation_euler", frame=f)
+
+
+# ---------------------------------------------------------------- THE PARK PATH (Case 06)
+
+def scene_park(kv, f0, f1):
+    """A park footpath at night under one old lamp post: bare trees, a bench, wet asphalt.
+    Generic, no landmarks. Slow drift along the path."""
+    sc = bpy.context.scene
+    night_sky(sc, low=(0.02, 0.025, 0.04), high=(0.002, 0.003, 0.008))
+    grass = mat_principled("Grass", (0.03, 0.04, 0.028), rough=0.9)
+    path = mat_principled("Path", (0.03, 0.03, 0.033), rough=0.25, coat=0.6)
+    bark = mat_principled("Bark", (0.03, 0.025, 0.022), rough=0.9)
+    iron = mat_principled("Iron", (0.03, 0.035, 0.03), metallic=0.6, rough=0.5)
+    slat = mat_principled("Slat", (0.06, 0.04, 0.025), rough=0.7)
+    glow = mat_principled("Lantern", (1, 1, 1), emission=(1.0, 0.78, 0.5), strength=18.0)
+    g = add("plane", "Ground", size=120)
+    assign(g, grass)
+    import random
+    rng = random.Random(1989)
+    # a gently curving path along +Y
+    pts = [(1.2 * math.sin(i * 0.12), i * 1.0) for i in range(-10, 45)]
+    verts, faces = [], []
+    for i, (x, y) in enumerate(pts):  # one continuous strip, 2.6 m wide
+        verts += [(x - 1.3, y, 0.01), (x + 1.3, y, 0.01)]
+        if i:
+            faces.append((2 * i - 2, 2 * i - 1, 2 * i + 1, 2 * i))
+    me = bpy.data.meshes.new("PathMesh")
+    me.from_pydata(verts, [], faces)
+    strip = bpy.data.objects.new("Path", me)
+    sc.collection.objects.link(strip)
+    assign(strip, path)
+
+    def rod(name, a, b, r, m):
+        a, b = Vector(a), Vector(b)
+        o = add("cylinder", name, radius=r, depth=(b - a).length, location=(a + b) / 2, vertices=8)
+        o.rotation_euler = (b - a).to_track_quat("Z", "Y").to_euler()
+        assign(o, m)
+        return o
+
+    def tree(n, x, y):
+        h = rng.uniform(5.5, 8.0)
+        rod(f"Trunk{n}", (x, y, 0), (x, y, h), rng.uniform(0.14, 0.22), bark)
+        for b in range(rng.randint(5, 8)):
+            z = rng.uniform(h * 0.45, h * 0.95)
+            a = rng.uniform(0, 2 * math.pi)
+            ln = rng.uniform(1.2, 2.8)
+            end = (x + ln * math.cos(a), y + ln * math.sin(a), z + rng.uniform(0.6, 1.8))
+            rod(f"Br{n}_{b}", (x, y, z), end, 0.05, bark)
+            for t in range(2):
+                a2 = a + rng.uniform(-0.9, 0.9)
+                rod(f"Tw{n}_{b}_{t}", end, (end[0] + 0.9 * math.cos(a2), end[1] + 0.9 * math.sin(a2),
+                                             end[2] + rng.uniform(0.2, 0.8)), 0.02, bark)
+
+    n = 0
+    for y in range(-6, 44, 4):
+        for side in (-1, 1):
+            if rng.random() < 0.75:
+                tree(n, 1.2 * math.sin(y * 0.12) + side * rng.uniform(3.5, 7.5), y + rng.uniform(-1.5, 1.5))
+                n += 1
+    # one lamp post beside the path, a bench under it
+    lx, ly = 1.2 * math.sin(14 * 0.12) + 1.9, 14.0
+    rod("Post", (lx, ly, 0), (lx, ly, 3.6), 0.07, iron)
+    lan = add("cylinder", "LanternGlass", radius=0.2, depth=0.4, location=(lx, ly, 3.8), vertices=6)
+    assign(lan, glow)
+    cap = add("cone", "LanternCap", radius1=0.3, depth=0.25, location=(lx, ly, 4.1), vertices=6)
+    assign(cap, iron)
+    spot((lx, ly, 3.7), (lx - 1.2, ly, 0), 900, angle=110, blend=0.8, color=(1.0, 0.78, 0.5), name="Lamp")
+    for k, dz in enumerate((0.45, 0.62, 0.79)):
+        sl = add("cube", f"Slat{k}", size=1, location=(lx + 0.55, ly - 1.6, dz if k == 0 else 0.5 + 0.12 * k))
+        sl.scale = (0.45 if k == 0 else 0.05, 1.6, 0.04 if k == 0 else 0.12)
+        assign(sl, slat)
+    for dy in (-0.7, 0.7):
+        rod(f"BenchLeg{dy}", (lx + 0.55, ly - 1.6 + dy, 0), (lx + 0.55, ly - 1.6 + dy, 0.45), 0.03, iron)
+    area_light((0, 60, 25), (0, 10, 0), 900, size=40, color=(0.35, 0.45, 0.7), name="SkyGlow")
+    push = float(kv.get("push", "0.35"))
+    cam = camera((0.3, -2.0, 1.6), (1.2, 16.0, 1.4), lens=32)
+    for f in range(f0, f1 + 1):
+        u = G_ease((f - f0) / max(1, f1 - f0))
+        y = -2.0 + 9.0 * push * u
+        cam.location = (1.2 * math.sin(y * 0.12) - 0.4, y, 1.6)
+        look_at(cam, (1.2 * math.sin((y + 16) * 0.12) + 0.6, y + 16, 1.3))
+        cam.keyframe_insert("location", frame=f)
+        cam.keyframe_insert("rotation_euler", frame=f)
+
+
 # ---------------------------------------------------------------- main
 
 def main():
@@ -1495,7 +1688,8 @@ def main():
     sc = reset(opts["res"], int(opts["samples"]))
     {"scale": scene_scale, "brain": scene_brain, "tower": scene_tower,
      "corridor": scene_corridor, "road": scene_road, "car": scene_car, "sea": scene_sea,
-     "book": scene_book, "or": scene_or, "lot": scene_lot, "shelf": scene_shelf}[scene](kv, f0, f1)
+     "book": scene_book, "or": scene_or, "lot": scene_lot, "shelf": scene_shelf,
+     "room": scene_room, "park": scene_park}[scene](kv, f0, f1)
     os.makedirs(out, exist_ok=True)
     tag = kv.get("name", scene)
     for f in range(f0, f1 + 1, int(opts.get("step", 1))):

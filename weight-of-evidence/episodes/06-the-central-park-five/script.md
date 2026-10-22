@@ -140,7 +140,7 @@ Care rules for this episode (research §K):
 
 ### S25 · Where
 **Picture:** `GFX: card` RECORD: "Perhaps most significant, none of the defendants accurately described where the attack on the jogger took place." Manhattan DA, Affirmation, 2002. [B7, B10, B11]
-> Most significant, it said, none of them correctly described where the attack happened. Korey Wise was the exception, and police had taken him to the scene before he went on tape. Some details were simply wrong. One statement described knife wounds she didn't have.
+> Most significant, it said, none of them correctly described where the attack happened. Korey Wise came nearest, but police had taken him to the scene before he went on tape. Some details were simply wrong. One statement described knife wounds she didn't have.
 
 ### S26 · Why people confess
 **Picture:** `GFX: number` "48%" then "94%" in brass; sub "signed a false confession · after a false witness". Label RECORD. Source "Kassin & Kiechel, 1996, as reported in Kassin, 2005". [H5]
