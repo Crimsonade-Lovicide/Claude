@@ -269,8 +269,13 @@ Care rules for this episode (research §K):
 > That's our verdict. It's open, which means it can change. If you think we got it wrong, make your case in the comments. We'll answer the strongest one in the next episode.
 
 ### S56 · Next case
-**Picture:** `GFX: words` "NEXT CASE" over black: "KALIEF BROWDER · 2010" / *<question>*. **Case 08 chosen by the owner, 23 Oct 2026; the line is being fact-checked (Case 08 research §0).**
-> Next case: <one-sentence anchor>. <one-sentence turn>. <the question>?
+**Picture:** `GFX: words` "NEXT CASE" over black: "KALIEF BROWDER · 2010" / *Should anyone be jailed for years before a trial?*
+> Next case: in 2010, a sixteen-year-old in New York was accused of robbing a man of his backpack. He said he didn't do it. His family couldn't pay his bail, and because he was on probation, a judge soon held him without bail. He spent three years on Rikers Island, much of it in solitary, and never had a trial. Should anyone be jailed for years before a trial?
+
+_Case 08 chosen by the owner, 23 Oct 2026. Checked against Case 08 research §0: the $3,000 bail held him
+only until about July 28, 2010; after that he was remanded on a probation violation, so the line does not
+say money kept him in for three years. The charge was robbery with force, not a stolen backpack. Arrested
+May 15, 2010, aged 16; released May 29–30, 2013 (about 1,110 days); never tried; charges dismissed._
 
 ### S57 · End card
 **Picture:** `GFX: endcard` Title, subscribe area, two end-screen slots. Sources link. No narration.
@@ -318,7 +323,7 @@ ch. 765, the Mental Capacity Act 2005, and the research (Shalowitz 2006; Andrews
 - **S37:** the CBS figure comes through Gallup's compilation (H13).
 - **S45:** *Bland* is known through *An NHS Trust v Y* (2018); read the 1993 speeches if possible.
 - **S47:** Andrews et al. is a single unit's referrals (40 patients).
-- **S56:** the owner chooses Case 08; then fact-check the teaser, as with Cases 05 and 06.
+- **S56:** Case 08 is Kalief Browder (owner, 23 Oct 2026); the line was fact-checked in Case 08 research §0.
 - **3D:** `dome` (a simplified, generic lit dome at night, not a model of the Capitol) and
   `courtroom` (empty, generic, no seals) are new scenes for `scenes.py`. The Scale clips are reused
   from Case 01.
