@@ -269,7 +269,7 @@ Care rules for this episode (research §K):
 > That's our verdict. It's open, which means it can change. If you think we got it wrong, make your case in the comments. We'll answer the strongest one in the next episode.
 
 ### S56 · Next case
-**Picture:** `GFX: words` "NEXT CASE" over black: "<CASE 08 NAME · YEAR>" / *<question>*. **To be chosen by the owner, then fact-checked, before recording.**
+**Picture:** `GFX: words` "NEXT CASE" over black: "KALIEF BROWDER · 2010" / *<question>*. **Case 08 chosen by the owner, 23 Oct 2026; the line is being fact-checked (Case 08 research §0).**
 > Next case: <one-sentence anchor>. <one-sentence turn>. <the question>?
 
 ### S57 · End card
