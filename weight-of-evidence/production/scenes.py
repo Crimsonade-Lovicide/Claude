@@ -27,6 +27,10 @@ Scenes:
             tripod aimed at an empty chair. No figures. k=v: view=push|camera, push (0..1)
   park      (Case 06) A park footpath at night under one old lamp, bare trees, a bench. No
             landmarks. k=v: push (0..1 drift along the path)
+  dome      (Case 07) A generic floodlit dome at night, simplified massing; not a model of any
+            real building. k=v: push (0..1)
+  courtroom (Case 07) An empty courtroom in morning light: bench, witness stand, pews. No seals or
+            names. k=v: view=push|bench, push (0..1)
 Each frame is written as <out_dir>/<scene>_####.png. Single stills: --frames 0:0.
 Everything here is a reconstruction or a symbol and is tagged as such in the edit.
 """
@@ -1680,6 +1684,147 @@ def scene_park(kv, f0, f1):
         cam.keyframe_insert("rotation_euler", frame=f)
 
 
+# ---------------------------------------------------------------- THE DOME (Case 07)
+
+def scene_dome(kv, f0, f1):
+    """A generic lit dome at night: a colonnaded base, a drum ringed with columns, a ribbed dome and a
+    small lantern, floodlit from below. Simplified massing; not a model of any real building.
+    Slow push from a low angle."""
+    sc = bpy.context.scene
+    night_sky(sc, low=(0.012, 0.016, 0.035), high=(0.001, 0.002, 0.006))
+    stone = mat_principled("Stone", (0.62, 0.60, 0.56), rough=0.6)
+    dark = mat_principled("Shadow", (0.05, 0.05, 0.055), rough=0.8)
+    glow = mat_principled("WindowGlow", (1, 1, 1), emission=(1.0, 0.82, 0.55), strength=3.0)
+    lawn = mat_principled("Lawn", (0.01, 0.014, 0.01), rough=0.9)
+    g = add("plane", "Ground", size=400)
+    assign(g, lawn)
+
+    def box(name, loc, scale, m):
+        o = add("cube", name, size=1, location=loc)
+        o.scale = scale
+        assign(o, m)
+        return o
+
+    box("Base", (0, 0, 6), (90, 30, 12), stone)
+    box("Steps", (0, -17, 1.5), (40, 6, 3), stone)
+    for k in range(-9, 10):  # a portico of columns across the front, lit windows between
+        col = add("cylinder", f"Col{k}", radius=0.7, depth=10, location=(k * 2.2, -15.6, 8), vertices=16)
+        assign(col, stone)
+        if k % 2 == 0:
+            box(f"Win{k}", (k * 2.2 + 1.1, -15.05, 7), (0.9, 0.05, 2.4), glow)
+    box("Pediment", (0, -15.6, 13.6), (44, 2, 1.2), stone)
+    drum = add("cylinder", "Drum", radius=11, depth=10, location=(0, 0, 17), vertices=64)
+    assign(drum, stone)
+    for k in range(36):  # columns round the drum
+        a = 2 * math.pi * k / 36
+        col = add("cylinder", f"DCol{k}", radius=0.45, depth=9, location=(11.8 * math.cos(a), 11.8 * math.sin(a), 17),
+                  vertices=12)
+        assign(col, stone)
+    box("Ring", (0, 0, 22.3), (25, 25, 0.6), stone)
+    dome = add("uv_sphere", "Dome", radius=10.5, location=(0, 0, 22.5), segments=64, ring_count=32)
+    dome.scale = (1, 1, 1.25)
+    assign(dome, stone)
+    smooth(dome)
+    bpy.ops.object.mode_set(mode="EDIT")
+    bpy.ops.mesh.select_all(action="DESELECT")
+    bpy.ops.object.mode_set(mode="OBJECT")
+    for v in dome.data.vertices:  # keep only the upper half
+        v.select = v.co.z < -0.01
+    bpy.ops.object.mode_set(mode="EDIT")
+    bpy.ops.mesh.delete(type="VERT")
+    bpy.ops.object.mode_set(mode="OBJECT")
+    lan = add("cylinder", "Lantern", radius=2.2, depth=5, location=(0, 0, 37.5), vertices=24)
+    assign(lan, stone)
+    cap = add("cone", "LanternCap", radius1=2.4, depth=3, location=(0, 0, 41.5), vertices=24)
+    assign(cap, stone)
+    lg = add("cylinder", "LanternGlow", radius=1.9, depth=3, location=(0, 0, 37.5), vertices=24)
+    assign(lg, glow)
+    # floodlights from the ground, cool moonlight from behind
+    for k, x in enumerate((-30, 0, 30)):
+        spot((x, -60, 1), (0, 0, 24 if k == 1 else 10), 90000, angle=34, blend=0.8, color=(1.0, 0.9, 0.78),
+             name=f"Flood{k}")
+    area_light((0, 80, 60), (0, 0, 20), 40000, size=40, color=(0.4, 0.5, 0.8), name="Moon")
+    push = float(kv.get("push", "0.25"))
+    cam = camera((14, -105, 5), (0, 0, 22), lens=40)
+    for f in range(f0, f1 + 1):
+        u = G_ease((f - f0) / max(1, f1 - f0))
+        k = 1.0 - push * u
+        cam.location = (14 * k, -105 * k, 5 + 2 * u)
+        look_at(cam, (0, 0, 22))
+        cam.keyframe_insert("location", frame=f)
+        cam.keyframe_insert("rotation_euler", frame=f)
+
+
+# ---------------------------------------------------------------- THE COURTROOM (Case 07)
+
+def scene_courtroom(kv, f0, f1):
+    """An empty courtroom in the morning: wood panelling, a raised bench, a witness stand, two counsel
+    tables and gallery pews, light through tall windows. No seals, flags or nameplates.
+    view=push (slow dolly up the aisle toward the bench) | bench (low, from beside the witness stand)."""
+    wood = mat_principled("Panel", (0.09, 0.055, 0.03), rough=0.45, coat=0.3)
+    lightwood = mat_principled("Desk", (0.16, 0.10, 0.055), rough=0.4, coat=0.3)
+    wall = mat_principled("CWall", (0.13, 0.12, 0.11), rough=0.8)
+    flo = mat_principled("Carpet", (0.06, 0.05, 0.05), rough=0.95)
+    sky = mat_principled("Daylight", (1, 1, 1), emission=(0.92, 0.95, 1.0), strength=6.0)
+
+    def box(name, loc, scale, m):
+        o = add("cube", name, size=1, location=loc)
+        o.scale = scale
+        assign(o, m)
+        return o
+
+    box("Floor", (0, 4, -0.05), (16, 26, 0.1), flo)
+    box("WallB", (0, 13, 3.5), (16, 0.2, 7), wall)
+    box("WallL", (-8, 4, 3.5), (0.2, 26, 7), wall)
+    box("WallR", (8, 4, 3.5), (0.2, 26, 7), wall)
+    box("Ceil", (0, 4, 7), (16, 26, 0.2), wall)
+    box("Wainscot", (0, 12.85, 1.2), (16, 0.15, 2.4), wood)
+    for x in (-7.85, 7.85):
+        box(f"WainS{x}", (x, 4, 1.2), (0.15, 26, 2.4), wood)
+    # tall windows down the right wall
+    for k in range(4):
+        y = -4 + k * 4.5
+        box(f"Win{k}", (7.88, y, 4.0), (0.05, 1.6, 3.6), sky)
+        area_light((7.5, y, 4.0), (0, y + 2, 0.5), 140, size=2.0, color=(0.95, 0.97, 1.0), name=f"WinL{k}")
+    # the bench, the witness stand, counsel tables, the bar and gallery pews
+    box("Bench", (0, 11.2, 1.0), (6, 1.4, 2.0), wood)
+    box("BenchTop", (0, 11.0, 2.05), (6.2, 1.6, 0.1), lightwood)
+    box("BenchBack", (0, 12.4, 2.6), (2.4, 0.2, 2.4), wood)
+    box("Witness", (4.2, 10.2, 0.6), (1.6, 1.4, 1.2), wood)
+    box("WitnessRail", (4.2, 9.5, 1.3), (1.7, 0.1, 0.2), lightwood)
+    for x in (-2.6, 2.6):
+        box(f"Counsel{x}", (x, 6.5, 0.76), (3.2, 1.2, 0.06), lightwood)
+        for dx in (-1.4, 1.4):
+            for dy in (-0.5, 0.5):
+                box(f"CLeg{x}{dx}{dy}", (x + dx, 6.5 + dy, 0.37), (0.06, 0.06, 0.74), wood)
+    box("Bar", (0, 4.6, 0.5), (14, 0.12, 1.0), wood)
+    for r in range(6):
+        y = 3.0 - r * 1.5
+        for x in (-4.2, 4.2):
+            box(f"Pew{r}{x}", (x, y, 0.45), (5.6, 0.5, 0.08), wood)
+            box(f"PewB{r}{x}", (x, y - 0.25, 0.85), (5.6, 0.06, 0.8), wood)
+    area_light((0, 4, 6.8), (0, 6, 0), 40, size=6, color=(1.0, 0.92, 0.8), name="Ceiling")
+    spot((0, 6, 6.6), (0, 10.4, 1.6), 900, angle=30, blend=0.7, color=(1.0, 0.9, 0.75), name="BenchKey")
+    view = kv.get("view", "push")
+    push = float(kv.get("push", "0.4"))
+    if view == "bench":
+        cam = camera((6.2, 2.5, 1.5), (0.5, 10.8, 1.8), lens=28)
+        for f in range(f0, f1 + 1):
+            u = G_ease((f - f0) / max(1, f1 - f0))
+            cam.location = (6.2 - 0.8 * u, 2.5 + 1.2 * u, 1.5)
+            look_at(cam, (0.5, 10.8, 1.8))
+            cam.keyframe_insert("location", frame=f)
+            cam.keyframe_insert("rotation_euler", frame=f)
+        return
+    cam = camera((0, -8, 1.7), (0, 11, 1.8), lens=28)
+    for f in range(f0, f1 + 1):
+        u = G_ease((f - f0) / max(1, f1 - f0))
+        cam.location = (0, -8 + 11 * push * u, 1.7)
+        look_at(cam, (0, 11, 1.8))
+        cam.keyframe_insert("location", frame=f)
+        cam.keyframe_insert("rotation_euler", frame=f)
+
+
 # ---------------------------------------------------------------- main
 
 def main():
@@ -1689,7 +1834,7 @@ def main():
     {"scale": scene_scale, "brain": scene_brain, "tower": scene_tower,
      "corridor": scene_corridor, "road": scene_road, "car": scene_car, "sea": scene_sea,
      "book": scene_book, "or": scene_or, "lot": scene_lot, "shelf": scene_shelf,
-     "room": scene_room, "park": scene_park}[scene](kv, f0, f1)
+     "room": scene_room, "park": scene_park, "dome": scene_dome, "courtroom": scene_courtroom}[scene](kv, f0, f1)
     os.makedirs(out, exist_ok=True)
     tag = kv.get("name", scene)
     for f in range(f0, f1 + 1, int(opts.get("step", 1))):
