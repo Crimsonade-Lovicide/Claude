@@ -161,7 +161,7 @@ def build(ctx):
                                "Nancy E. Ryan, Manhattan DA's office, Dec 5, 2002"), t_tej),
                          (rows([("DEC 19, 2002", "Justice Tejada vacates every conviction"),
                                 ("AUG 2002", "Korey Wise already released")],
-                               [0.3, at("S35", "Korey Wise had", offset=-t_tej)], label="RECORD",
+                               [0.3, at("S35", "been released that August", offset=-t_tej)], label="RECORD",
                                source="NYPD panel report, 2003 · National Registry of Exonerations"), 1))
     t_fair = at("S36", "Linda")
     shots["S36"] = G.seq((card("“…it is more likely than not that the defendants participated in an attack upon the "
