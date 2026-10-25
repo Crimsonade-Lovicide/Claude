@@ -287,8 +287,14 @@ Care rules for this episode (research §J):
 > That's our verdict. It's open, which means it can change. If you think we got it wrong, make your case in the comments. We'll answer the strongest one in the next episode.
 
 ### S59 · Next case
-**Picture:** `GFX: words` "NEXT CASE" over black: "<NAME · YEAR>" / *<question>*
-> Next case: [to be written once the owner chooses Case 09; fact-check it in that case's research §0 before recording].
+**Picture:** `GFX: words` "NEXT CASE" over black: "CAMERON TODD WILLINGHAM · 1991" / *Should a state execute someone when the evidence is disputed?*
+> Next case: Texas, 1991. A house fire kills three young sisters. Investigators call it arson, and their father, Cameron Todd Willingham, is sentenced to death. Four days before his execution in 2004, a fire scientist tells the governor's office and the parole board the arson evidence doesn't hold up. Texas executes him. Independent experts have since rejected the arson findings. His conviction still stands. Should a state execute someone when the evidence is disputed?
+
+_Case 09 chosen by the owner, 25 Oct 2026. Checked against Case 09 research §0: the fire was Dec 23, 1991;
+Gerald Hurst's report was faxed to the parole board and the governor's office on Feb 13, 2004, four days
+before the execution; "independent" matters, because the State Fire Marshal's Office and Corsicana stood by
+the original findings; no court has vacated the conviction and the 2014 pardon request was refused. The
+line doesn't say "innocent" or "exonerated", or how the children died._
 
 ### S60 · End card
 **Picture:** `GFX: endcard` Title, subscribe area, two end-screen slots. Sources link. Help line in small mono under the slots: "If you're struggling: call or text 988 (US) · findahelpline.com". No narration.
@@ -347,7 +353,8 @@ Collaborative for Justice 2023).
   bail bonds" only if checked. Custody time limits: check whether the 2024–25 temporary extensions
   are still in force (B9).
 - **S53:** Jennifer Harrison's quote is from CBS New York (2022), not her own text.
-- **S59:** the next case is the owner's choice.
+- **S59:** Case 09 is Cameron Todd Willingham (owner, 25 Oct 2026); the line was fact-checked in Case 09
+  research §0.
 - **3D:** `cell` is a new scene for `scenes.py`: an empty punitive-segregation cell built to DOJ's 6 × 8
   ft figure, a steel door with a slot, a narrow high window, a bed slab; two views (`push`, `slot`). The
   courtroom clip is reused from Case 07, the Scale clips from Case 01.
