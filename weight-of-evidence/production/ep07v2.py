@@ -69,7 +69,7 @@ def build(ctx):
     t_hw, t_ju = at("S07", "Their husband"), at("S07", "A judge")
     t_po, t_ow = at("S07", "Politicians"), at("S07", "And what should")
     shots["S07"] = G.seq((old["S07"], t_hw),
-                         (B(("ai_two_chairs", t_ju - t_hw), ("courtroom_bench", t_po - t_ju, 6.0),
+                         (B(("ai_two_chairs", t_ju - t_hw), ("courtroom_push", t_po - t_ju, 4.0),
                             ("ai_dome", t_ow - t_po), ("desk_directive", None, 4.0)), 1))
     # S08  the record we read, then the promise
     t_l, t_w = at("S08", "the laws Florida"), at("S08", "At the end")
