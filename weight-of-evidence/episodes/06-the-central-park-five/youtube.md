@@ -69,3 +69,16 @@ Frazier v. Cupp, wrongful convictions, juvenile justice, true crime ethics, Weig
 - Captions: upload `weight_of_evidence_case06.srt`.
 - Playlist: Cases. End screen: the two slots on the end card, with Case 05 in one of them.
 - Category: Education.
+
+## On YouTube (uploaded 25 Oct 2026 via Make scenario 6603120, private until published)
+
+| Item | ID |
+|---|---|
+| Case 06 (1080p master, thumbnail A, title 1, in playlist "Cases") | `sJmmALwAiGw` |
+| Short (1080×1920, 1:52) | `bI1cihs9--k` |
+
+Still to do by hand in YouTube Studio: upload the English captions
+(`deliverables/case06/weight_of_evidence_case06.srt`), Test & Compare (title 2, thumbnail B), end screen
+(Case 05 `eQ8V_kBwWAU` in one slot), schedule for **Thu 3 Dec, 12:00 ET** (see
+`channel/release-schedule.md`), then pin the comment above once it's live. Set the Short's Related video
+to the episode and schedule it for Sun 6 Dec.
