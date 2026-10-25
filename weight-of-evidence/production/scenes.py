@@ -31,6 +31,9 @@ Scenes:
             real building. k=v: push (0..1)
   courtroom (Case 07) An empty courtroom in morning light: bench, witness stand, pews. No seals or
             names. k=v: view=push|bench, push (0..1)
+  desk      (shared) A typed page on a dark desk under one lamp, a pen beside it. The text is
+            verbatim from the record (DOCS) or a labelled generic form. k=v: doc=pl109_3|
+            directive|blank, view=push|pen|stack, push (0..1)
 Each frame is written as <out_dir>/<scene>_####.png. Single stills: --frames 0:0.
 Everything here is a reconstruction or a symbol and is tagged as such in the edit.
 """
@@ -1828,6 +1831,139 @@ def scene_courtroom(kv, f0, f1):
 
 # ---------------------------------------------------------------- main
 
+# ---------------------------------------------------------------- THE DESK (shared: any case)
+
+DOCS = {
+    # Every line is verbatim from the record (research.md E6 / [PL109-3]); "..." marks a cut.
+    "pl109_3": ("PUBLIC LAW 109-3 — MAR. 21, 2005", "119 STAT. 15",
+                ["An Act", "For the relief of the parents of Theresa Marie Schiavo."],
+                ["... shall have jurisdiction ...",
+                 "Any parent of Theresa Marie Schiavo shall have standing ...",
+                 "... shall determine de novo any claim ... notwithstanding any prior State "
+                 "court determination ...",
+                 "Nothing in this Act shall constitute a precedent with respect to future "
+                 "legislation, including the provision of private relief bills."]),
+    # A generic, illustrative form: field labels only, no state, no wording of any real statute.
+    "directive": ("", "", ["ADVANCE DIRECTIVE"],
+                  ["Name ______________________________________",
+                   "", "______________________________________________",
+                   "______________________________________________",
+                   "______________________________________________", "",
+                   "Signature _________________________  Date ________",
+                   "Witness ___________________________  Date ________"]),
+    "blank": ("", "", [], []),
+}
+
+
+def doc_texture(doc, path, w=1275, h=1650):
+    """A letter-size page as an image (150 dpi): typed in Courier Prime, slightly aged paper."""
+    from PIL import Image, ImageDraw, ImageFilter, ImageFont
+    import random
+    fonts = os.environ.get("WOE_FONTS", os.path.join(os.path.dirname(__file__), "fonts"))
+    f = lambda n: ImageFont.truetype(os.path.join(fonts, "CourierPrime.ttf"), n)  # noqa: E731
+    head, stat, title, body = DOCS[doc]
+    img = Image.new("RGB", (w, h), (226, 219, 202))
+    rng = random.Random(doc)
+    px = img.load()
+    for _ in range(9000):  # paper tooth
+        x, y = rng.randrange(w), rng.randrange(h)
+        v = rng.randint(-10, 6)
+        r, g, b = px[x, y]
+        px[x, y] = (r + v, g + v, b + v)
+    d = ImageDraw.Draw(img)
+    ink = (40, 37, 34)
+    y = 120
+    if head:
+        d.text((110, y), head, font=f(26), fill=ink)
+        d.text((w - 110, y), stat, font=f(26), fill=ink, anchor="ra")
+        d.line((110, y + 46, w - 110, y + 46), fill=ink, width=2)
+        y += 110
+    for i, t in enumerate(title):
+        d.text((w // 2, y), t, font=f(54 if i == 0 else 34), fill=ink, anchor="ma")
+        y += 80 if i == 0 else 70
+    y += 50
+    for para in body:
+        line = ""
+        for word in para.split(" "):
+            test = (line + " " + word).strip()
+            if d.textlength(test, font=f(31)) > w - 240:
+                d.text((120, y), line, font=f(31), fill=ink)
+                y, line = y + 46, word
+            else:
+                line = test
+        d.text((120, y), line, font=f(31), fill=ink)
+        y += 46 + 30
+    img = img.filter(ImageFilter.GaussianBlur(0.6))
+    img.save(path)
+    return path
+
+
+def scene_desk(kv, f0, f1):
+    """A typed document on a dark desk under one lamp, a pen beside it. The page text is real
+    (DOCS, verbatim from the record) or a labelled generic form. k=v: doc=pl109_3|directive|blank,
+    view=push|pen|stack, push (0..1)."""
+    doc = kv.get("doc", "blank")
+    view = kv.get("view", "push")
+    push = float(kv.get("push", "0.3"))
+    wood = mat_principled("Desk", (0.03, 0.019, 0.013), rough=0.42, coat=0.2)
+    t = add("cube", "Desk", size=1, location=(0, 0, -0.03))
+    t.scale = (3.2, 2.0, 0.06)
+    assign(t, wood)
+    tex = doc_texture(doc, os.path.join(bpy.app.tempdir or "/tmp", f"doc_{doc}.png"))
+    page = mat_principled("Page", (0.8, 0.78, 0.72), rough=0.85)
+    nt = page.node_tree
+    im = nt.nodes.new("ShaderNodeTexImage")
+    im.image = bpy.data.images.load(tex)
+    nt.links.new(im.outputs["Color"], nt.nodes["Principled BSDF"].inputs["Base Color"])
+    plain = mat_principled("Under", (0.62, 0.59, 0.52), rough=0.9)
+    pw, ph = 0.2159, 0.2794
+    n_under = 6 if view == "stack" else 2
+    for i in range(n_under):  # the pages underneath, a little out of square
+        u = add("plane", f"Under{i}", size=1, location=(0.004 * i, -0.003 * i, 0.0005 + 0.0004 * i))
+        u.scale = (pw, ph, 1)
+        u.rotation_euler = (0, 0, math.radians((-5 + 3 * i) if view == "stack" else (2 - 3 * i)))
+        assign(u, plain)
+    top = add("plane", "Page", size=1, location=(0, 0, 0.003 + 0.0004 * n_under))
+    top.scale = (pw, ph, 1)
+    top.rotation_euler = (0, 0, math.radians(-6))
+    assign(top, page)
+    # the pen: black barrel, brass clip and tip, lying across the lower right of the page
+    black = mat_principled("Barrel", (0.012, 0.012, 0.014), rough=0.25, coat=0.6)
+    brass = mat_principled("Brass", (0.80, 0.58, 0.28), metallic=1.0, rough=0.3)
+    pen = add("cylinder", "Pen", radius=0.0055, depth=0.14, location=(0.1, -0.11, 0.0065),
+              rotation=(0, math.radians(90), math.radians(28)), vertices=32)
+    assign(pen, black)
+    smooth(pen)
+    tip = add("cone", "Tip", radius1=0.0055, radius2=0.0006, depth=0.018, location=(0.1 - 0.0698 * 0.883, -0.11 - 0.0698 * 0.469, 0.0065),
+              rotation=(0, math.radians(-90), math.radians(28)), vertices=32)
+    assign(tip, brass)
+    smooth(tip)
+    spot((-0.6, -0.15, 0.85), (0.04, 0.02, 0.0), 120, angle=30, blend=0.9, color=(1.0, 0.78, 0.55), name="Lamp")
+    area_light((0.9, 1.0, 0.7), (0, 0, 0), 1.2, size=2.0, color=(0.45, 0.55, 0.75), name="Fill")
+    if view == "pen":
+        a, b, tgt, lens = (0.32, -0.42, 0.10), (0.20, -0.30, 0.07), (0.05, -0.08, 0.0), 70
+    elif view == "stack":
+        a, b, tgt, lens = (0.0, -0.05, 0.75), (0.02, -0.03, 0.55), (0.0, 0.0, 0.0), 45
+    else:
+        a, b, tgt, lens = (-0.10, -0.50, 0.34), (-0.02, -0.30, 0.22), (0.0, 0.03, 0.0), 55
+    cam = camera(a, tgt, lens=lens)
+    focus = bpy.data.objects.new("Focus", None)  # shallow depth of field on the target
+    bpy.context.scene.collection.objects.link(focus)
+    focus.location = tgt
+    cam.data.dof.use_dof = True
+    cam.data.dof.focus_object = focus
+    cam.data.dof.aperture_fstop = 2.8 if view == "pen" else 4.0
+    for f in range(f0, f1 + 1):
+        u = G_ease((f - f0) / max(1, f1 - f0)) * push / 0.3
+        u = min(u, 1.0)
+        cam.location = tuple(a[i] + (b[i] - a[i]) * u for i in range(3))
+        look_at(cam, tgt)
+        if view == "stack":
+            cam.rotation_euler[2] += math.radians(8 * u)
+        cam.keyframe_insert("location", frame=f)
+        cam.keyframe_insert("rotation_euler", frame=f)
+
+
 def main():
     scene, out, opts, kv = args()
     f0, f1 = (int(v) for v in opts["frames"].split(":"))
@@ -1835,7 +1971,8 @@ def main():
     {"scale": scene_scale, "brain": scene_brain, "tower": scene_tower,
      "corridor": scene_corridor, "road": scene_road, "car": scene_car, "sea": scene_sea,
      "book": scene_book, "or": scene_or, "lot": scene_lot, "shelf": scene_shelf,
-     "room": scene_room, "park": scene_park, "dome": scene_dome, "courtroom": scene_courtroom}[scene](kv, f0, f1)
+     "room": scene_room, "park": scene_park, "dome": scene_dome, "courtroom": scene_courtroom,
+     "desk": scene_desk}[scene](kv, f0, f1)
     os.makedirs(out, exist_ok=True)
     tag = kv.get("name", scene)
     for f in range(f0, f1 + 1, int(opts.get("step", 1))):

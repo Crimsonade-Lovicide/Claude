@@ -18,6 +18,10 @@ CLIPS=(
   "dome_push|dome|400|14|push=0.25"
   "courtroom_push|courtroom|540|14|view=push push=0.4"
   "courtroom_bench|courtroom|440|14|view=bench"
+  "desk_act_push|desk|260|14|doc=pl109_3 view=push push=0.3"
+  "desk_blank_pen|desk|200|14|doc=blank view=pen push=0.25"
+  "desk_directive|desk|280|14|doc=directive view=stack push=0.3"
+  "desk_act_stack|desk|160|14|doc=pl109_3 view=stack push=0.3"
 )
 
 want() { [ $# -eq 0 ] && return 0; for w in "${@:2}"; do [ "$w" = "$1" ] && return 0; done; return 1; }
