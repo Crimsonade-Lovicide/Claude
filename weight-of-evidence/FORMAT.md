@@ -55,6 +55,18 @@ All of this lives in `production/gfx.py`. Episodes don't override it.
   - Rendered at 960×540 on every second frame, then Lanczos-upscaled and frame-blended to 24 fps.
   - The Scale (`scale_tip_left/right`, `scale_level_loaded`) is reused, never rebuilt.
   - People involved in the case are never depicted.
+- **Generated footage** (`production/footage.py`; owner request, October 2026: the
+  static-card cut was too slow). Prototype on Case 07's cold open (`ep07v2.py`); once
+  it's approved it applies to every case.
+  - Higgsfield text-to-video (Kling 3.0 Turbo, 1080p, 5 s) B-roll under the narration,
+    a new clip about every 4–5 s, short dissolves, graded to the palette.
+  - Places and objects only: buildings, rooms, documents, streets, weather. Never a
+    person involved in the case, never faces (hands are fine), never legible fake
+    dates or names. Reject any clip that breaks this.
+  - Every generated frame carries `ILLUSTRATIVE · AI-GENERATED`. It is never passed off
+    as archival.
+  - Cards, rows and numbers sit over blurred, darkened footage (`F.over`) instead of black.
+    Act cards, verdict cards, the title and the end card stay on black.
 - **Motion:** slow pushes and eases (`G.ease`), no snap cuts inside a shot. Cards drop onto the word that introduces them (`ctx.at(shot, "phrase")`).
 
 ## 3. Sound
