@@ -79,4 +79,4 @@ shot.
 | 06 | Should police be allowed to lie to the people they question? (The Central Park Five) | Script signed off 22 Oct 2026 (next case: Terri Schiavo). Produced 24 Oct: 18:08, captions, chapters, thumbnails, Short (1:52). Signed off 25 Oct; uploaded private 25 Oct 2026 (`sJmmALwAiGw`, Short `bI1cihs9--k`); captions still to add in Studio |
 | 07 | Who should decide when to stop keeping someone alive? (Terri Schiavo) | Script and verdicts signed off 23 Oct 2026 (next case: Kalief Browder; teaser fact-checked and corrected). In production |
 | 08 | Should anyone be jailed for years before a trial? (Kalief Browder) | Question confirmed 24 Oct 2026. Script and verdicts signed off 25 Oct (next case: Cameron Todd Willingham; teaser fact-checked) |
-| 09 | Should a state execute someone when the evidence is disputed? (Cameron Todd Willingham) | Chosen 25 Oct 2026. Research done; script next |
+| 09 | Should a state execute someone when the evidence is disputed? (Cameron Todd Willingham) | Chosen 25 Oct 2026. Research done; script and YouTube package drafted 25 Oct, waiting on sign-off and the choice of Case 10 |

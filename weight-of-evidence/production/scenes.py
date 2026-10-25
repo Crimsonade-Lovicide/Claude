@@ -1692,7 +1692,7 @@ def scene_dome(kv, f0, f1):
     Slow push from a low angle."""
     sc = bpy.context.scene
     night_sky(sc, low=(0.012, 0.016, 0.035), high=(0.001, 0.002, 0.006))
-    stone = mat_principled("Stone", (0.62, 0.60, 0.56), rough=0.6)
+    stone = mat_principled("Stone", (0.5, 0.48, 0.45), rough=0.6)
     dark = mat_principled("Shadow", (0.05, 0.05, 0.055), rough=0.8)
     glow = mat_principled("WindowGlow", (1, 1, 1), emission=(1.0, 0.82, 0.55), strength=3.0)
     lawn = mat_principled("Lawn", (0.01, 0.014, 0.01), rough=0.9)
@@ -1741,16 +1741,17 @@ def scene_dome(kv, f0, f1):
     assign(lg, glow)
     # floodlights from the ground, cool moonlight from behind
     for k, x in enumerate((-30, 0, 30)):
-        spot((x, -60, 1), (0, 0, 24 if k == 1 else 10), 90000, angle=34, blend=0.8, color=(1.0, 0.9, 0.78),
+        spot((x, -60, 1), (0, 0, 24 if k == 1 else 10), 30000, angle=34, blend=0.9, color=(1.0, 0.9, 0.78),
              name=f"Flood{k}")
     area_light((0, 80, 60), (0, 0, 20), 40000, size=40, color=(0.4, 0.5, 0.8), name="Moon")
+    # framed right of centre, with dark sky and lawn on the left for the lower third
     push = float(kv.get("push", "0.25"))
-    cam = camera((14, -105, 5), (0, 0, 22), lens=40)
+    cam = camera((40, -150, 4), (-26, 0, 20), lens=40)
     for f in range(f0, f1 + 1):
         u = G_ease((f - f0) / max(1, f1 - f0))
         k = 1.0 - push * u
-        cam.location = (14 * k, -105 * k, 5 + 2 * u)
-        look_at(cam, (0, 0, 22))
+        cam.location = (40 * k, -150 * k, 4 + 2 * u)
+        look_at(cam, (-26 * k, 0, 20))
         cam.keyframe_insert("location", frame=f)
         cam.keyframe_insert("rotation_euler", frame=f)
 
