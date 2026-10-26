@@ -2,7 +2,7 @@
 
     python thumbs07.py <prod_dir> <case01_prod_dir>
 
-A: the empty courtroom (scenes.py courtroom, view=bench), pushed left, with WHO DECIDES? on the right.
+A: the rebuilt courtroom (scenes.py courtroom, view=bench, sun through the windows), pushed left, with WHO DECIDES? on the right.
    No photograph of Terri Schiavo, nothing from the 2002 videotapes, no bedside, hospice or medical
    imagery (research §K).
 B: the Scale (Case 01's hero render), tipped, with NOTHING IN / WRITING.
