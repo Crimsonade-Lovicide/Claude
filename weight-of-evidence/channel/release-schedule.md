@@ -23,10 +23,13 @@ evening. Consistency matters more than the exact slot. After four episodes, YouT
 | Thu 19 Nov | **Case 04** `rF4oExXmaX0` | Sun 22 Nov · `VzoS6sqcGPc` | Tue 17 Nov |
 | **Wed** 25 Nov | **Case 05** `eQ8V_kBwWAU` | Sun 29 Nov · `cr87whdslPE` | Mon 23 Nov |
 | Thu 3 Dec | **Case 06** `sJmmALwAiGw` | Sun 6 Dec · `bI1cihs9--k` | Tue 1 Dec |
+| Thu 10 Dec | **Case 07** `hOOC3jte4U0` | Sun 13 Dec · `ZKmIFNiwEGU` | Tue 8 Dec |
 
 - **Case 05 moves to Wednesday** because Thursday 26 November is Thanksgiving in the US. The
   alternative is Thursday 3 December, with everything after it shifting a week.
 - **Case 06** was produced and uploaded (private) on 25 October, well ahead of 3 December.
+- **Case 07** was rebuilt in the hybrid look (FORMAT.md §2) and uploaded (private) on 26 October, with the
+  AI disclosure set to Yes.
 - **Case 05's teaser** was corrected before upload (four of the five confessed on video, not five).
 
 ## What has to happen before each date
@@ -34,7 +37,7 @@ evening. Consistency matters more than the exact slot. After four episodes, YouT
 The Studio steps (`channel/setup.md` §10) are yours; the API can't do them, or was blocked when
 we tried:
 
-1. **Captions:** Cases 01 and 02 have them. Cases 03, 04, 05 and 06 still need the `.srt` uploaded.
+1. **Captions:** Cases 01 and 02 have them. Cases 03, 04, 05, 06 and 07 still need the `.srt` uploaded.
 2. **Test & Compare:** title 2 and thumbnail B, from each `youtube.md`.
 3. **End screen:** two video slots on the end card. Point one at the previous case, and once the
    next case is live, update the other slot to it.

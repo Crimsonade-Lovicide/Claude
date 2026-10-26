@@ -10,8 +10,8 @@
 
 `production/thumbs07.py`. No photograph of Terri Schiavo, nothing from the 2002 videotapes, no bedside,
 hospice or medical imagery (research §K).
-- **A:** the empty courtroom (`courtroom`), pushed left, with **WHO DECIDES?** on the right, "DECIDES?"
-  in brass.
+- **A:** the rebuilt courtroom (`courtroom`, sun through the windows), pushed left, with **WHO DECIDES?** on
+  the right, "DECIDES?" in brass.
 - **B:** the Scale, tipped, with **NOTHING IN / WRITING**.
 
 ## Description
@@ -22,7 +22,7 @@ hospice or medical imagery (research §K).
 >
 > Content note: this episode discusses a severe brain injury and the end of a life. Nothing graphic is described or shown. No image of Terri Schiavo, and nothing from the videotapes made of her, is shown.
 >
-> The Capitol and the courtroom are simplified reconstructions, labelled on screen.
+> The courtroom, the rooms and the documents are reconstructions or illustrations, labelled on screen; the documents show only the record's own words. Clips marked AI-GENERATED are illustrative places, never archival footage.
 >
 > CHAPTERS
 > (generated from the final edit: weight_of_evidence_case07_chapters.txt)
@@ -62,10 +62,22 @@ persistent vegetative state, Cruzan, medical ethics, Weight of Evidence
 
 ## Upload settings
 
-- Not made for kids. No age restriction expected (no graphic description, no imagery of her or of any
-  medical setting); revisit if YouTube flags the topic.
+- Not made for kids. No age restriction expected (no graphic description, no imagery of her; the medical
+  settings shown are empty and generic, research §K); revisit if YouTube flags the topic.
 - Altered or synthetic content: **Yes** (owner's decision, 26 Oct 2026). The hybrid look uses photoreal
   AI-generated clips of real places, labelled ILLUSTRATIVE · AI-GENERATED on screen (see `channel/setup.md` §6).
 - Captions: upload `weight_of_evidence_case07.srt`.
 - Playlist: Cases. End screen: the two slots on the end card, with Case 06 in one of them.
 - Category: Education.
+
+## On YouTube (uploaded 26 Oct 2026 via Make scenario 6603120, private until published)
+
+| Item | ID |
+|---|---|
+| Case 07, hybrid cut (1080p master, 17:42, thumbnail A, title 1, in playlist "Cases", AI disclosure Yes) | `hOOC3jte4U0` |
+| Short (1080×1920, 1:45, AI disclosure Yes) | `ZKmIFNiwEGU` |
+
+Release: **Thu 10 Dec, 12:00 ET**; the Short **Sun 13 Dec**. Still to do by hand in YouTube Studio:
+schedule both, upload the English captions (`deliverables/case07/weight_of_evidence_case07.srt`), Test &
+Compare (title 2, thumbnail B), end screen (Case 06 in one slot), set the Short's Related video to the
+episode, and pin the verdict comment once it's live.

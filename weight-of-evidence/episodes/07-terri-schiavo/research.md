@@ -420,6 +420,11 @@ rule performs against England's best-interests model in contested cases.
   hospice, hospital or bedside imagery, no feeding tubes, no brain scans, no autopsy figures or
   diagrams of her brain. If the brain weight is shown, use a neutral number card (`RECORD`), not an
   anatomical image, and tag any generic brain model `ILLUSTRATION · NOT DATA`.
+  **Owner's decision, 26 Oct 2026 (the hybrid rebuild):** the approved cut uses empty, peopleless
+  settings that this rule excluded: a generic care-home room with a made bed and an empty IV stand, two
+  hospital corridors, an empty operating room, a care-home exterior at night, and a generic brain model
+  tagged `ILLUSTRATION · NOT HER BRAIN`. Flagged before upload; the owner chose to keep the cut as
+  approved. Still excluded: any image of her, the videotapes, feeding tubes, scans, autopsy figures.
 - **Both families, equal respect.** Michael Schiavo and the Schindler family (Mary Schindler; Bobby
   Schindler, who leads the Terri Schiavo Life & Hope Network; Suzanne Vitadamo) are living people with
   long public positions; Bob Schindler died in 2009. Give each side its strongest case in its own record.
