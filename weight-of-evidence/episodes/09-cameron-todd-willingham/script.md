@@ -258,8 +258,9 @@ Care rules for this episode (research §K):
 > That's our verdict. It's open, which means it can change. If you think we got it wrong, make your case in the comments. We'll answer the strongest one in the next episode.
 
 ### S53 · Next case
-**Picture:** `GFX: words` "NEXT CASE" over black: "<NAME · YEAR>" / *<question>*
-> Next case: [to be written once the owner chooses Case 10; fact-check it in that case's research §0 before recording].
+**Picture:** `GFX: words` "NEXT CASE" over black: "TARASOFF · 1969" / *Should a therapist break a patient's
+confidence to warn someone in danger?*
+> Next case: Berkeley, 1969. A graduate student tells his university therapist he intends to kill a young woman. The therapist asks the campus police to detain him. They hold him briefly, and let him go. No one warns her family. That October, he kills her. Her parents sue, and California's Supreme Court rules that a therapist can owe a duty to protect the person a patient threatens. Should a therapist break a patient's confidence to warn someone in danger?
 
 ### S54 · End card
 **Picture:** `GFX: endcard` Title, subscribe area, two end-screen slots. Sources link. No narration.
@@ -317,7 +318,9 @@ the National Registry of Exonerations on Ernest Ray Willis, and David Grann, "Tr
 - **S44:** Art. 11.073 must be quoted from the official text; the narration paraphrases. "A man it had hanged"
   was cut; England's 1965 Act is quoted from legislation.gov.uk (research H6).
 - **S47:** Stacy Kuykendall's earlier accounts (1992 investigators, 1999 tape) are from Grann; confirm.
-- **S53:** the next case is the owner's choice.
+- **S53:** Case 10 is Tarasoff (owner's choice, 26 Oct 2026); every line checked in `10-tarasoff/research.md` §0.
+  "No one warns her family", not "her" (the 1976 opinion: "No one warned plaintiffs"), and "That October", not
+  "two months later" (the court's two opinions disagree on the date of the threat).
 - **3D:** `fax` (an office fax machine on an empty desk at night) and `fireroom` (an empty test room with a
   couch reaching flashover, floor patterns forming) are new scenes for `scenes.py`. The courtroom clip is
   reused from Case 07, the Scale clips from Case 01.
