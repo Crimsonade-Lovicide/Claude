@@ -107,6 +107,7 @@ voice. ([YouTube Help](https://support.google.com/youtube/answer/14328491))
   uses photoreal Higgsfield clips of real places (the Capitol, the Supreme Court, Westminster). They
   show no people and are tagged ILLUSTRATIVE · AI-GENERATED on screen, but a viewer could take them
   for real footage. Cases 01–06 stay No: they have no generated footage.
+  Uploads through the API set `status.containsSyntheticMedia: true` in the `videos.insert` body.
 
 ## 7. Monetization (what's verified and what isn't)
 
