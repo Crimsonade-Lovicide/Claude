@@ -103,6 +103,10 @@ voice. ([YouTube Help](https://support.google.com/youtube/answer/14328491))
   read as quotes.
 - **Answer Yes in future** if a case uses a photoreal recreation of a real event or place (a
   realistic Tempe crash scene, say) or a voice that sounds like a real person.
+- **From Case 07 on: answer Yes** (owner's decision, 26 Oct 2026). The hybrid look (FORMAT.md §2)
+  uses photoreal Higgsfield clips of real places (the Capitol, the Supreme Court, Westminster). They
+  show no people and are tagged ILLUSTRATIVE · AI-GENERATED on screen, but a viewer could take them
+  for real footage. Cases 01–06 stay No: they have no generated footage.
 
 ## 7. Monetization (what's verified and what isn't)
 

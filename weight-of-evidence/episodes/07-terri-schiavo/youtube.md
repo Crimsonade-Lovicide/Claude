@@ -64,8 +64,8 @@ persistent vegetative state, Cruzan, medical ethics, Weight of Evidence
 
 - Not made for kids. No age restriction expected (no graphic description, no imagery of her or of any
   medical setting); revisit if YouTube flags the topic.
-- Altered or synthetic content: **No**. Reconstructions are stylised and labelled, and the narration
-  is not a real person's voice (see `channel/setup.md` §6).
+- Altered or synthetic content: **Yes** (owner's decision, 26 Oct 2026). The hybrid look uses photoreal
+  AI-generated clips of real places, labelled ILLUSTRATIVE · AI-GENERATED on screen (see `channel/setup.md` §6).
 - Captions: upload `weight_of_evidence_case07.srt`.
 - Playlist: Cases. End screen: the two slots on the end card, with Case 06 in one of them.
 - Category: Education.

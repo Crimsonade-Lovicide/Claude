@@ -63,8 +63,8 @@ forensic science, clemency, Herrera v. Collins, Weight of Evidence
 
 - Not made for kids. No age restriction expected (no graphic description, no imagery of the children, the
   fire or the execution); revisit if YouTube flags the topic.
-- Altered or synthetic content: **No**. Reconstructions are stylised and labelled, and the narration
-  is not a real person's voice (see `channel/setup.md` §6).
+- Altered or synthetic content: **Yes** (owner's decision, 26 Oct 2026). The hybrid look uses photoreal
+  AI-generated clips of real places, labelled ILLUSTRATIVE · AI-GENERATED on screen (see `channel/setup.md` §6).
 - Captions: upload `weight_of_evidence_case09.srt`.
 - Playlist: Cases. End screen: the two slots on the end card, with Case 08 in one of them.
 - Category: Education.
