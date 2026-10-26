@@ -29,8 +29,12 @@ Scenes:
             landmarks. k=v: push (0..1 drift along the path)
   dome      (Case 07) A generic floodlit dome at night, simplified massing; not a model of any
             real building. k=v: push (0..1)
-  courtroom (Case 07) An empty courtroom in morning light: bench, witness stand, pews. No seals or
-            names. k=v: view=push|bench, push (0..1)
+  courtroom (Case 07) An empty courtroom in morning light: panelled, bench, witness stand with a
+            microphone, pews, sun through the windows. No seals or names. k=v: view=push|bench|
+            witness|gallery, push (0..1), haze (volume density for light shafts; 0 = off, default)
+  ward      (shared) An empty care-home room at night: a made bed, an empty IV stand, blinds, street
+            light. No one in it. k=v: view=push|window
+  tv        (shared) An old CRT TV showing only static, for footage we choose not to show. k=v: push
   desk      (shared) A typed page on a dark desk under one lamp, a pen beside it. The text is
             verbatim from the record (DOCS) or a labelled generic form. k=v: doc=pl109_3|
             directive|blank, view=push|pen|stack, push (0..1)
@@ -1761,70 +1765,175 @@ def scene_dome(kv, f0, f1):
 
 # ---------------------------------------------------------------- THE COURTROOM (Case 07)
 
-def scene_courtroom(kv, f0, f1):
-    """An empty courtroom in the morning: wood panelling, a raised bench, a witness stand, two counsel
-    tables and gallery pews, light through tall windows. No seals, flags or nameplates.
-    view=push (slow dolly up the aisle toward the bench) | bench (low, from beside the witness stand)."""
-    wood = mat_principled("Panel", (0.09, 0.055, 0.03), rough=0.45, coat=0.3)
-    lightwood = mat_principled("Desk", (0.16, 0.10, 0.055), rough=0.4, coat=0.3)
-    wall = mat_principled("CWall", (0.13, 0.12, 0.11), rough=0.8)
-    flo = mat_principled("Carpet", (0.06, 0.05, 0.05), rough=0.95)
-    sky = mat_principled("Daylight", (1, 1, 1), emission=(0.92, 0.95, 1.0), strength=6.0)
+def mat_wood(name, color, rough=0.42, scale=3.0, coat=0.3):
+    """Principled wood: the base colour broken into soft grain bands (distorted wave texture)."""
+    m = mat_principled(name, color, rough=rough, coat=coat)
+    nt = m.node_tree
+    tc = nt.nodes.new("ShaderNodeTexCoord")
+    wv = nt.nodes.new("ShaderNodeTexWave")
+    wv.wave_type = "BANDS"
+    wv.bands_direction = "X"
+    wv.inputs["Scale"].default_value = scale
+    wv.inputs["Distortion"].default_value = 3.0
+    wv.inputs["Detail"].default_value = 3.0
+    wv.inputs["Detail Scale"].default_value = 1.5
+    ramp = nt.nodes.new("ShaderNodeValToRGB")
+    ramp.color_ramp.elements[0].color = (color[0] * 0.85, color[1] * 0.85, color[2] * 0.85, 1)
+    ramp.color_ramp.elements[1].color = (color[0] * 1.12, color[1] * 1.1, color[2] * 1.08, 1)
+    nt.links.new(tc.outputs["Generated"], wv.inputs["Vector"])
+    nt.links.new(wv.outputs["Fac"], ramp.inputs["Fac"])
+    nt.links.new(ramp.outputs["Color"], nt.nodes["Principled BSDF"].inputs["Base Color"])
+    return m
 
-    def box(name, loc, scale, m):
+
+def bevel(o, width=0.02, segments=2):
+    mod = o.modifiers.new("Bevel", "BEVEL")
+    mod.width = width
+    mod.segments = segments
+    mod.limit_method = "ANGLE"
+    return o
+
+
+def scene_courtroom(kv, f0, f1):
+    """An empty courtroom in the morning: panelled walls with pilasters, a raised bench with a tall
+    empty chair, a witness stand with a microphone, counsel tables and chairs, a railed bar and
+    gallery pews, light falling through tall mullioned windows in soft shafts. No seals, flags or
+    nameplates. view=push (dolly up the aisle) | bench (low, beside the witness stand) |
+    witness (close on the empty witness chair) | gallery (from the stand back over the pews)."""
+    wood = mat_wood("Panel", (0.085, 0.05, 0.028))
+    lightwood = mat_wood("Desk", (0.15, 0.09, 0.05), rough=0.35)
+    wall = mat_principled("CWall", (0.16, 0.15, 0.135), rough=0.85)
+    flo = mat_principled("Carpet", (0.07, 0.035, 0.03), rough=0.95)
+    leather = mat_principled("Leather", (0.045, 0.022, 0.016), rough=0.6)
+    metal = mat_principled("Mic", (0.05, 0.05, 0.055), metallic=0.9, rough=0.3)
+    brass = mat_principled("Brass", (0.80, 0.58, 0.28), metallic=1.0, rough=0.3)
+    sky = mat_principled("Daylight", (1, 1, 1), emission=(0.92, 0.95, 1.0), strength=7.0)
+
+    def box(name, loc, scale, m, bev=0.02):
         o = add("cube", name, size=1, location=loc)
         o.scale = scale
         assign(o, m)
+        if bev:
+            bevel(o, bev)
         return o
 
-    box("Floor", (0, 4, -0.05), (16, 26, 0.1), flo)
-    box("WallB", (0, 13, 3.5), (16, 0.2, 7), wall)
-    box("WallL", (-8, 4, 3.5), (0.2, 26, 7), wall)
-    box("WallR", (8, 4, 3.5), (0.2, 26, 7), wall)
-    box("Ceil", (0, 4, 7), (16, 26, 0.2), wall)
+    box("Floor", (0, 4, -0.05), (16, 26, 0.1), flo, 0)
+    box("WallB", (0, 13, 3.5), (16, 0.2, 7), wall, 0)
+    box("WallL", (-8, 4, 3.5), (0.2, 26, 7), wall, 0)
+    box("WallF", (0, -9, 3.5), (16, 0.2, 7), wall, 0)
+    for x in (-1.0, 1.0):  # double doors at the back of the gallery
+        box(f"Door{x}", (x * 0.62, -8.85, 1.3), (1.2, 0.1, 2.6), wood)
+    win_y = [-4 + k * 4.5 for k in range(4)]
+    box("WallR_lo", (8, 4, 1.1), (0.2, 26, 2.2), wall, 0)
+    box("WallR_hi", (8, 4, 6.4), (0.2, 26, 1.2), wall, 0)
+    edges = [-9.0] + [e for y in win_y for e in (y - 0.8, y + 0.8)] + [17.0]
+    for k in range(0, len(edges), 2):
+        y0, y1 = edges[k], edges[k + 1]
+        box(f"Pier{k}", (8, (y0 + y1) / 2, 4.0), (0.2, y1 - y0, 3.6), wall, 0)
+    box("Ceil", (0, 4, 7), (16, 26, 0.2), wall, 0)
     box("Wainscot", (0, 12.85, 1.2), (16, 0.15, 2.4), wood)
+    box("Cap", (0, 12.75, 2.42), (16, 0.3, 0.08), lightwood)
     for x in (-7.85, 7.85):
         box(f"WainS{x}", (x, 4, 1.2), (0.15, 26, 2.4), wood)
-    # tall windows down the right wall
-    for k in range(4):
-        y = -4 + k * 4.5
-        box(f"Win{k}", (7.88, y, 4.0), (0.05, 1.6, 3.6), sky)
-        area_light((7.5, y, 4.0), (0, y + 2, 0.5), 140, size=2.0, color=(0.95, 0.97, 1.0), name=f"WinL{k}")
-    # the bench, the witness stand, counsel tables, the bar and gallery pews
+        box(f"CapS{x}", (x * 0.995, 4, 2.42), (0.3, 26, 0.08), lightwood)
+    for k in range(7):  # pilasters on the back wall and coffered ceiling beams
+        x = -6.6 + k * 2.2
+        box(f"Pil{k}", (x, 12.8, 3.5), (0.45, 0.25, 7), wood)
+    for k in range(6):
+        box(f"Beam{k}", (0, -6 + k * 4, 6.8), (16, 0.35, 0.35), wood)
+    for k in range(6):  # raised panels along the back wainscot
+        box(f"Inset{k}", (-5.5 + k * 2.2, 12.75, 1.2), (1.6, 0.06, 1.6), lightwood, 0.03)
+    # tall mullioned windows down the right wall; a faint haze gives the light shafts
+    skyb = box("Sky", (9.5, 4, 4.0), (0.05, 26, 8), sky, 0)
+    skyb.visible_shadow = False
+    for k, y in enumerate(win_y):
+        for j in range(3):
+            box(f"MulH{k}{j}", (8.0, y, 2.9 + j * 1.1), (0.08, 1.6, 0.06), wood, 0)
+        box(f"MulV{k}", (8.0, y, 4.0), (0.08, 0.06, 3.6), wood, 0)
+        area_light((7.6, y, 4.0), (0, y + 2, 0.5), 70, size=1.6, color=(0.95, 0.97, 1.0), name=f"WinL{k}")
+    sun = bpy.data.lights.new("Sun", "SUN")
+    sun.energy = 6.0
+    sun.angle = math.radians(1.0)
+    sun.color = (1.0, 0.9, 0.76)
+    so = bpy.data.objects.new("Sun", sun)
+    bpy.context.scene.collection.objects.link(so)
+    so.location = (14, 0, 9)
+    look_at(so, (2, 3, 0))
+    if float(kv.get("haze", "0")) > 0:  # light shafts; slow on CPU and noisy at low samples
+        haze = box("Haze", (4.0, 4, 3.4), (7.6, 25.6, 6.8), mat_principled("HazeM", (1, 1, 1)), 0)
+        hm = bpy.data.materials.new("HazeVol")
+        hm.use_nodes = True
+        nt = hm.node_tree
+        nt.nodes.remove(nt.nodes["Principled BSDF"])
+        vol = nt.nodes.new("ShaderNodeVolumeScatter")
+        vol.inputs["Density"].default_value = float(kv["haze"])
+        nt.links.new(vol.outputs["Volume"], nt.nodes["Material Output"].inputs["Volume"])
+        assign(haze, hm)
+        bpy.context.scene.cycles.volume_step_rate = 6.0
+    # the bench, its tall empty chair and a brass lamp
     box("Bench", (0, 11.2, 1.0), (6, 1.4, 2.0), wood)
     box("BenchTop", (0, 11.0, 2.05), (6.2, 1.6, 0.1), lightwood)
-    box("BenchBack", (0, 12.4, 2.6), (2.4, 0.2, 2.4), wood)
+    for k in range(3):
+        box(f"BenchInset{k}", (-2 + k * 2, 10.48, 1.0), (1.5, 0.05, 1.3), lightwood, 0.03)
+    box("ChairBack", (0, 12.1, 2.9), (1.0, 0.2, 1.6), leather, 0.06)
+    box("ChairSeat", (0, 11.7, 2.25), (1.0, 0.8, 0.15), leather, 0.05)
+    lamp = add("cylinder", "LampStem", radius=0.02, depth=0.4, location=(1.6, 10.9, 2.3))
+    assign(lamp, brass)
+    shade = add("cone", "LampShade", radius1=0.16, radius2=0.08, depth=0.16, location=(1.6, 10.9, 2.52))
+    assign(shade, mat_principled("Shade", (0.05, 0.2, 0.08), rough=0.3, coat=0.5))
+    # the witness stand: rail, chair, microphone on a gooseneck
     box("Witness", (4.2, 10.2, 0.6), (1.6, 1.4, 1.2), wood)
-    box("WitnessRail", (4.2, 9.5, 1.3), (1.7, 0.1, 0.2), lightwood)
+    box("WitnessTop", (4.2, 9.55, 1.24), (1.75, 0.2, 0.06), lightwood)
+    box("WChairBack", (4.2, 10.75, 1.55), (0.6, 0.12, 0.8), leather, 0.05)
+    box("WChairSeat", (4.2, 10.45, 1.25), (0.6, 0.55, 0.1), leather, 0.04)
+    mic = add("cylinder", "MicStem", radius=0.008, depth=0.35, location=(4.2, 9.6, 1.42),
+              rotation=(math.radians(25), 0, 0))
+    assign(mic, metal)
+    head = add("uv_sphere", "MicHead", radius=0.025, location=(4.2, 9.68, 1.58))
+    assign(head, metal)
+    # counsel tables and chairs
     for x in (-2.6, 2.6):
         box(f"Counsel{x}", (x, 6.5, 0.76), (3.2, 1.2, 0.06), lightwood)
+        box(f"Apron{x}", (x, 6.5, 0.66), (3.0, 1.0, 0.16), wood)
         for dx in (-1.4, 1.4):
             for dy in (-0.5, 0.5):
-                box(f"CLeg{x}{dx}{dy}", (x + dx, 6.5 + dy, 0.37), (0.06, 0.06, 0.74), wood)
-    box("Bar", (0, 4.6, 0.5), (14, 0.12, 1.0), wood)
+                box(f"CLeg{x}{dx}{dy}", (x + dx, 6.5 + dy, 0.37), (0.06, 0.06, 0.74), wood, 0.01)
+        for dx in (-0.8, 0.8):
+            box(f"CChB{x}{dx}", (x + dx, 5.55, 0.85), (0.5, 0.08, 0.6), leather, 0.03)
+            box(f"CChS{x}{dx}", (x + dx, 5.75, 0.48), (0.5, 0.45, 0.08), leather, 0.03)
+    # the bar with balusters, and the pews
+    box("Bar", (0, 4.6, 0.95), (14, 0.16, 0.1), lightwood)
+    box("BarBase", (0, 4.6, 0.05), (14, 0.2, 0.1), wood)
+    for k in range(57):
+        x = -6.9 + k * 0.25
+        if abs(x) < 0.7:
+            continue
+        b = add("cylinder", f"Bal{k}", radius=0.03, depth=0.85, location=(x, 4.6, 0.5), vertices=12)
+        assign(b, wood)
     for r in range(6):
         y = 3.0 - r * 1.5
         for x in (-4.2, 4.2):
-            box(f"Pew{r}{x}", (x, y, 0.45), (5.6, 0.5, 0.08), wood)
+            box(f"Pew{r}{x}", (x, y, 0.45), (5.6, 0.5, 0.08), lightwood)
             box(f"PewB{r}{x}", (x, y - 0.25, 0.85), (5.6, 0.06, 0.8), wood)
-    area_light((0, 4, 6.8), (0, 6, 0), 40, size=6, color=(1.0, 0.92, 0.8), name="Ceiling")
-    spot((0, 6, 6.6), (0, 10.4, 1.6), 900, angle=30, blend=0.7, color=(1.0, 0.9, 0.75), name="BenchKey")
+            for e in (-2.8, 2.8):
+                box(f"PewE{r}{x}{e}", (x + e, y - 0.05, 0.5), (0.08, 0.6, 1.0), wood)
+    area_light((0, 4, 6.6), (0, 6, 0), 30, size=6, color=(1.0, 0.92, 0.8), name="Ceiling")
+    spot((0, 6, 6.6), (0, 10.4, 1.6), 700, angle=30, blend=0.7, color=(1.0, 0.9, 0.75), name="BenchKey")
     view = kv.get("view", "push")
     push = float(kv.get("push", "0.4"))
     if view == "bench":
-        cam = camera((6.2, 2.5, 1.5), (0.5, 10.8, 1.8), lens=28)
-        for f in range(f0, f1 + 1):
-            u = G_ease((f - f0) / max(1, f1 - f0))
-            cam.location = (6.2 - 0.8 * u, 2.5 + 1.2 * u, 1.5)
-            look_at(cam, (0.5, 10.8, 1.8))
-            cam.keyframe_insert("location", frame=f)
-            cam.keyframe_insert("rotation_euler", frame=f)
-        return
-    cam = camera((0, -8, 1.7), (0, 11, 1.8), lens=28)
+        a, b, tgt, lens = (6.2, 2.5, 1.5), (5.4, 3.7, 1.5), (0.5, 10.8, 1.8), 28
+    elif view == "witness":
+        a, b, tgt, lens = (2.6, 7.4, 1.35), (3.0, 7.9, 1.4), (4.2, 10.3, 1.45), 40
+    elif view == "gallery":
+        a, b, tgt, lens = (3.4, 9.6, 2.2), (2.6, 9.0, 2.3), (-1.5, -3.0, 0.6), 24
+    else:
+        a, b, tgt, lens = (0, -8, 1.7), (0, -8 + 11 * push, 1.7), (0, 11, 1.8), 28
+    cam = camera(a, tgt, lens=lens)
     for f in range(f0, f1 + 1):
         u = G_ease((f - f0) / max(1, f1 - f0))
-        cam.location = (0, -8 + 11 * push * u, 1.7)
-        look_at(cam, (0, 11, 1.8))
+        cam.location = tuple(a[i] + (b[i] - a[i]) * u for i in range(3))
+        look_at(cam, tgt)
         cam.keyframe_insert("location", frame=f)
         cam.keyframe_insert("rotation_euler", frame=f)
 
@@ -1852,6 +1961,32 @@ DOCS = {
                    "Signature _________________________  Date ________",
                    "Witness ___________________________  Date ________"]),
     "blank": ("", "", [], []),
+    # Case 07: each page carries only the words its card quotes, with the card's source as header.
+    "petition": ("MAY 11, 1998", "", ["Petition for Authorization", "to Discontinue Artificial Life Support"], []),
+    "greer": ("JUDGE GEORGE GREER", "FEB. 11, 2000", [],
+              ["... is reliable, is creditable and rises to the level of clear and convincing evidence."]),
+    "dca2003": ("FLORIDA SECOND DISTRICT COURT OF APPEAL", "JUNE 6, 2003", [],
+                ["If Mrs. Schiavo were our own daughter, we could not but hold to such a faith.",
+                 "But in the end, this case is not about the aspirations that loving parents have for their "
+                 "children. It is about Theresa Schiavo's right to make her own decision ..."]),
+    "wolfson": ("GUARDIAN AD LITEM", "DEC. 1, 2003", [],
+                ["Sometimes good law is not enough, good medicine is not enough, and all too often, good "
+                 "intentions do not suffice."]),
+    "pariente": ("BUSH v. SCHIAVO", "FLA. 2004", [], ["... But our hearts are not the law."]),
+    "birch": ("ELEVENTH CIRCUIT", "MARCH 30, 2005", [],
+              ["... acted in a manner demonstrably at odds with our Founding Fathers' blueprint for the "
+               "governance of a free people — our Constitution."]),
+    "examiner": ("PINELLAS-PASCO MEDICAL EXAMINER", "2005", [],
+                 ["... the cause of which cannot be determined with reasonable medical certainty.",
+                  "... cannot prove or disprove a diagnosis of persistent vegetative state or minimally "
+                  "conscious state."]),
+    "cruzan": ("CRUZAN v. DIRECTOR, MISSOURI DEPT. OF HEALTH", "1990", [],
+               ["... a State may apply a clear and convincing evidence standard in proceedings where a "
+                "guardian seeks to discontinue nutrition and hydration of a person diagnosed to be in a "
+                "persistent vegetative state."]),
+    "mca": ("MENTAL CAPACITY ACT 2005", "s. 4", [],
+            ["... the person's past and present wishes and feelings ...",
+             "... the beliefs and values that would be likely to influence his decision ..."]),
 }
 
 
@@ -1964,6 +2099,153 @@ def scene_desk(kv, f0, f1):
         cam.keyframe_insert("rotation_euler", frame=f)
 
 
+# ---------------------------------------------------------------- THE ROOM AND THE TV (shared)
+
+def scene_ward(kv, f0, f1):
+    """An empty room in a care home at night: a made hospital bed with rails, an IV stand with
+    nothing on it, a bedside cabinet, an armchair, a window with venetian blinds and street light
+    outside. No one is in it. view=push (from the door toward the bed) | window (the blinds, light
+    through the slats)."""
+    wall = mat_principled("WWall", (0.42, 0.44, 0.40), rough=0.8)
+    flo = mat_principled("WFloor", (0.20, 0.21, 0.19), rough=0.25, coat=0.4)
+    sheet = mat_principled("Sheet", (0.70, 0.71, 0.70), rough=0.9)
+    blanket = mat_principled("Blanket", (0.32, 0.38, 0.42), rough=0.95)
+    frame = mat_principled("Frame", (0.6, 0.62, 0.63), metallic=0.8, rough=0.35)
+    wood = mat_wood("Cab", (0.20, 0.13, 0.08), rough=0.5)
+    fabric = mat_principled("Chair", (0.18, 0.20, 0.17), rough=0.95)
+    slat_m = mat_principled("Slat", (0.75, 0.74, 0.70), rough=0.6)
+    night = mat_principled("Night", (1, 1, 1), emission=(0.55, 0.65, 0.85), strength=0.7)
+
+    def box(name, loc, scale, m, bev=0.01):
+        o = add("cube", name, size=1, location=loc)
+        o.scale = scale
+        assign(o, m)
+        if bev:
+            bevel(o, bev)
+        return o
+
+    box("Floor", (0, 0, -0.05), (6, 6, 0.1), flo, 0)
+    box("Ceil", (0, 0, 2.8), (6, 6, 0.1), wall, 0)
+    box("WallB", (0, 3, 1.4), (6, 0.1, 2.8), wall, 0)
+    box("WallL", (-3, 0, 1.4), (0.1, 6, 2.8), wall, 0)
+    box("WallF", (0, -3, 1.4), (6, 0.1, 2.8), wall, 0)
+    # right wall with a window opening (x=3), blinds, the night outside
+    box("WR_lo", (3, 0, 0.45), (0.1, 6, 0.9), wall, 0)
+    box("WR_hi", (3, 0, 2.5), (0.1, 6, 0.6), wall, 0)
+    box("WR_a", (3, -1.85, 1.5), (0.1, 2.3, 1.3), wall, 0)
+    box("WR_b", (3, 1.85, 1.5), (0.1, 2.3, 1.3), wall, 0)
+    outside = box("Outside", (4.5, 0, 1.4), (0.05, 6, 3), night, 0)
+    outside.visible_shadow = False
+    for k in range(22):
+        sl = box(f"Slat{k}", (2.96, 0, 0.88 + k * 0.058), (0.05, 1.42, 0.006), slat_m, 0)
+        sl.rotation_euler = (0, math.radians(35), 0)
+    street = bpy.data.lights.new("Street", "SPOT")
+    street.energy = 450
+    street.spot_size = math.radians(40)
+    street.color = (1.0, 0.72, 0.42)
+    st = bpy.data.objects.new("Street", street)
+    bpy.context.scene.collection.objects.link(st)
+    st.location = (6, -0.8, 2.6)
+    look_at(st, (0, 0.6, 0.4))
+    # the bed: frame, mattress, sheet folded back, pillow, rails
+    box("BedBase", (0.4, 0.9, 0.45), (1.0, 2.1, 0.12), frame, 0.02)
+    box("Mattress", (0.4, 0.9, 0.6), (0.92, 2.0, 0.18), sheet, 0.04)
+    box("Blanket", (0.4, 0.55, 0.705), (0.95, 1.3, 0.03), blanket, 0.012)
+    box("Fold", (0.4, 1.2, 0.72), (0.95, 0.16, 0.05), sheet, 0.02)
+    box("Pillow", (0.4, 1.68, 0.76), (0.62, 0.36, 0.12), sheet, 0.05)
+    box("Head", (0.4, 1.98, 0.85), (1.02, 0.05, 0.8), frame, 0.02)
+    box("Foot", (0.4, -0.18, 0.7), (1.02, 0.05, 0.5), frame, 0.02)
+    for x in (-0.12, 0.92):
+        box(f"Rail{x}", (x, 1.15, 0.86), (0.03, 0.9, 0.12), frame, 0.01)
+        for y in (-0.15, 1.95):
+            box(f"Leg{x}{y}", (x + (0.04 if x > 0 else -0.04), y, 0.2), (0.04, 0.04, 0.4), frame, 0.005)
+    # the IV stand, empty; cabinet; armchair under the window
+    pole = add("cylinder", "Pole", radius=0.015, depth=1.9, location=(-0.6, 1.7, 0.95))
+    assign(pole, frame)
+    hook = add("cylinder", "Hook", radius=0.008, depth=0.4, location=(-0.6, 1.7, 1.88), rotation=(0, math.radians(90), 0))
+    assign(hook, frame)
+    box("Cab", (1.45, 1.7, 0.4), (0.45, 0.45, 0.8), wood)
+    box("CabTop", (1.45, 1.7, 0.81), (0.5, 0.5, 0.03), wood)
+    box("ChairSeat", (2.4, -0.6, 0.42), (0.7, 0.7, 0.18), fabric, 0.06)
+    box("ChairBack", (2.68, -0.6, 0.8), (0.14, 0.7, 0.7), fabric, 0.06)
+    for y in (-0.92, -0.28):
+        box(f"Arm{y}", (2.4, y, 0.6), (0.7, 0.1, 0.22), fabric, 0.04)
+    area_light((-1.5, -1.0, 2.6), (0, 0, 0), 18, size=1.0, color=(1.0, 0.8, 0.6), name="Night light")
+    view = kv.get("view", "push")
+    if view == "window":
+        a, b, tgt, lens = (1.2, -1.2, 1.3), (1.6, -0.9, 1.35), (3.0, 0.2, 1.45), 45
+    else:
+        a, b, tgt, lens = (-2.3, -2.5, 1.55), (-1.7, -1.8, 1.45), (0.6, 1.0, 0.7), 26
+    cam = camera(a, tgt, lens=lens)
+    for f in range(f0, f1 + 1):
+        u = G_ease((f - f0) / max(1, f1 - f0))
+        cam.location = tuple(a[i] + (b[i] - a[i]) * u for i in range(3))
+        look_at(cam, tgt)
+        cam.keyframe_insert("location", frame=f)
+        cam.keyframe_insert("rotation_euler", frame=f)
+
+
+def scene_tv(kv, f0, f1):
+    """An old CRT television on a low cabinet in a dark room, showing only static. Stands for
+    footage we choose not to show. k=v: push (0..1)."""
+    case = mat_principled("TVCase", (0.025, 0.024, 0.023), rough=0.4, coat=0.3)
+    wood = mat_wood("Stand", (0.12, 0.075, 0.045), rough=0.45)
+    floor(color=(0.02, 0.018, 0.016), rough=0.5)
+    wallm = mat_principled("TVWall", (0.08, 0.075, 0.07), rough=0.9)
+    w = add("cube", "Wall", size=1, location=(0, 1.2, 1.5))
+    w.scale = (6, 0.1, 3)
+    assign(w, wallm)
+    st = add("cube", "Stand", size=1, location=(0, 0, 0.3))
+    st.scale = (1.2, 0.55, 0.6)
+    assign(st, wood)
+    bevel(st, 0.015)
+    tv = add("cube", "TV", size=1, location=(0, 0.05, 0.9))
+    tv.scale = (0.78, 0.58, 0.6)
+    assign(tv, case)
+    bevel(tv, 0.06, 4)
+    scr = bpy.data.materials.new("Static")
+    scr.use_nodes = True
+    nt = scr.node_tree
+    em = nt.nodes.new("ShaderNodeEmission")
+    nz = nt.nodes.new("ShaderNodeTexNoise")
+    nz.noise_dimensions = "4D"
+    nz.inputs["Scale"].default_value = 150.0
+    nz.inputs["Detail"].default_value = 0.0
+    ramp = nt.nodes.new("ShaderNodeValToRGB")
+    ramp.color_ramp.elements[0].position = 0.42
+    ramp.color_ramp.elements[1].position = 0.58
+    nt.links.new(nz.outputs["Fac"], ramp.inputs["Fac"])
+    nt.links.new(ramp.outputs["Color"], em.inputs["Color"])
+    em.inputs["Strength"].default_value = 0.55
+    nt.links.new(em.outputs["Emission"], nt.nodes["Material Output"].inputs["Surface"])
+    s_ = add("plane", "Screen", size=1, location=(0, -0.247, 0.92), rotation=(math.radians(90), 0, 0))
+    s_.scale = (0.6, 0.44, 1)
+    assign(s_, scr)
+    glow = bpy.data.lights.new("Glow", "AREA")
+    glow.energy = 6
+    glow.size = 0.6
+    glow.color = (0.8, 0.85, 1.0)
+    go = bpy.data.objects.new("Glow", glow)
+    bpy.context.scene.collection.objects.link(go)
+    go.location = (0, -0.32, 0.92)
+    area_light((-1.5, -1.5, 2.2), (0, 0, 0.8), 6, size=1.5, color=(0.6, 0.65, 0.8), name="Fill")
+    area_light((-1.2, 0.9, 1.8), (0, 0, 0.9), 25, size=0.8, color=(1.0, 0.85, 0.7), name="Rim")
+    look_at(go, (0, -3, 0.9))
+    push = float(kv.get("push", "0.3"))
+    a, b, tgt = (0.7, -2.0, 1.0), (0.4, -1.25, 0.97), (0, 0, 0.9)
+    cam = camera(a, tgt, lens=40)
+    for f in range(f0, f1 + 1):
+        u = G_ease((f - f0) / max(1, f1 - f0)) * min(1.0, push / 0.3)
+        cam.location = tuple(a[i] + (b[i] - a[i]) * u for i in range(3))
+        look_at(cam, tgt)
+        cam.keyframe_insert("location", frame=f)
+        cam.keyframe_insert("rotation_euler", frame=f)
+        nz.inputs["W"].default_value = f * 7.31
+        nz.inputs["W"].keyframe_insert("default_value", frame=f)
+        glow.energy = 5 + 2 * math.sin(f * 1.7)
+        glow.keyframe_insert("energy", frame=f)
+
+
 def main():
     scene, out, opts, kv = args()
     f0, f1 = (int(v) for v in opts["frames"].split(":"))
@@ -1972,7 +2254,7 @@ def main():
      "corridor": scene_corridor, "road": scene_road, "car": scene_car, "sea": scene_sea,
      "book": scene_book, "or": scene_or, "lot": scene_lot, "shelf": scene_shelf,
      "room": scene_room, "park": scene_park, "dome": scene_dome, "courtroom": scene_courtroom,
-     "desk": scene_desk}[scene](kv, f0, f1)
+     "desk": scene_desk, "ward": scene_ward, "tv": scene_tv}[scene](kv, f0, f1)
     os.makedirs(out, exist_ok=True)
     tag = kv.get("name", scene)
     for f in range(f0, f1 + 1, int(opts.get("step", 1))):

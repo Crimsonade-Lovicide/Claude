@@ -2,12 +2,13 @@
 
     python short07.py <short_prod> --stills | --final
 
-Re-uses Case 07's narration and shots: no new voice, no new 3D. <short_prod> holds a
+Re-uses Case 07's narration and footage: no new voice, no new 3D. <short_prod> holds a
 narration.json listing only the shots below (plus V01), timing.json / words.json copied
-from Case 07, and vo/ + anim/ linked to Case 07's production dir. EP07_PROD points at it.
-Same recipe as short06.py: 3D shots are cropped, type shots are set again natively for 9:16.
-Same care rules as the episode: no image of Terri Schiavo, nothing from the videotapes, no
-medical or bedside imagery.
+from Case 07, and vo/ linked to Case 07's production dir. EP07_PROD points at the hybrid
+production (its anim/ holds the Blender and generated clips). Type shots are set natively for
+9:16 and laid over the episode's footage cropped to vertical (footage.over_v), as in the episode.
+Same care rules as the episode: no image of Terri Schiavo, nothing from the videotapes, places
+and objects only.
 """
 
 import os
@@ -20,13 +21,15 @@ sys.path.insert(0, HERE)
 
 import edit as E  # noqa: E402
 import ep07  # noqa: E402
+import ep07v2  # noqa: E402
+import footage as F  # noqa: E402
 import gfx as G  # noqa: E402
 import score as S  # noqa: E402
 import short02 as S2  # noqa: E402  (feather, captions, grain_v)
 import short03 as S3  # noqa: E402  (reframe recipe)
 import short04 as S4  # noqa: E402  (type_v, card_v)
 
-EP07_PROD = os.environ.get("EP07_PROD", "/home/user/ovprod/ep07")
+EP07_PROD = os.environ.get("EP07_PROD", "/home/user/ovprod/ep07v2")
 OUT_NAME = "weight_of_evidence_case07_short.mp4"
 TITLE = "Congress Passed a Law for One Woman. Who Should Decide When We Die? #shorts"
 SILENT = {"V01": 3.6}
@@ -39,16 +42,14 @@ FADE_OUT = {"S06": 0.6, "V01": 0.4}
 VW, VH = S2.VW, S2.VH
 KICKER = "TERRI SCHIAVO · FLORIDA · 1990–2005"
 
-FRAMING = {  # 3D shots: a horizontal window of the 16:9 frame, or None for a centre crop
-    "S01": ((720, 1800), "RECONSTRUCTION"),
-    "S07": (None, None),
-}
-
-
-def reframe(ctx, sid, fn):
-    S3.FRAMING[sid] = FRAMING[sid]
-    S3.KICKER = KICKER
-    return S3.reframe(ctx, sid, fn)
+def captions_only(ctx, sid):
+    """Kicker and word-by-word captions on black: laid over clean footage by over_v."""
+    def frame(t, dur):
+        out = Image.new("RGB", (VW, VH), G.BG)
+        S3.kicker(out)
+        S2.captions(ctx, sid, out, t)
+        return out
+    return frame
 
 
 def endcard(t, dur):
@@ -68,10 +69,13 @@ def endcard(t, dur):
 
 def build(ctx):
     S4.KICKER = KICKER  # S4.kicker reads its module's KICKER
-    ep = E.Ctx(EP07_PROD, ep07)  # the episode's own timing, so its shots render exactly as cut
-    shots = ep07.build(ep)
-    shots["S01"] = E.clip_shot(E.Clip(EP07_PROD, "dome_push"), tag=None)  # the crop adds its own tag
-    s = {sid: reframe(ctx, sid, shots[sid]) for sid in FRAMING}
+    S3.KICKER = KICKER
+    at = ctx.at
+
+    def B(*items):
+        return F.broll(EP07_PROD, list(items), tags=ep07v2.TAGS, stamp=False)
+
+    s = {}
     s["S02"] = S4.card_v(ctx, "S02", "“Any parent of Theresa Marie Schiavo shall have standing … Nothing in this Act "
                                      "shall constitute a precedent with respect to future legislation.”", "RECORD",
                          "Pub. L. 109-3, March 21, 2005")
@@ -96,6 +100,24 @@ def build(ctx):
                                       ("1 IN 3", G.SANS(200, "SemiBold"), G.BRASS, "only about"),
                                       ("a review of 150 studies, 2011–2016", G.SANS(44), G.DIM, "only about")],
                          source="Yadav et al., Health Affairs, 2017", label="RECORD", y0=480)
+    # the footage under each shot, as in the episode's cold open
+    t_card, t_par = at("S03", "when she was"), at("S03", "Paramedics")
+    t_h, t_p, t_j = at("S04", "Her husband"), at("S04", "Her parents"), at("S04", "A judge")
+    t_hw, t_ju = at("S07", "Their husband"), at("S07", "A judge")
+    t_po, t_ow = at("S07", "Politicians"), at("S07", "And what should")
+    t2 = at("S01", "Within the hour")
+    s["S01"] = F.over_v(B(("ai_dome", 5.2), ("ai_house_chamber", t2 - 5.2), "ai_pen_sign"),
+                        captions_only(ctx, "S01"), dim=1, blur=0)
+    s["S02"] = F.over_v(B("desk_act_push"), s["S02"], clear_until=1.2, cx=0.45)
+    s["S03"] = F.over_v(B(("ai_fl_street", t_card), ("ai_lights", t_par - t_card), "corridor"), s["S03"],
+                        clear_until=t_card)
+    s["S04"] = F.over_v(B(("desk_blank_pen", t_h), ("ai_ring", t_p - t_h), ("ai_sunrise", t_j - t_p), "court_bench"),
+                        s["S04"], clear_until=t_h)
+    s["S05"] = F.over_v(B(("ai_vigil", 4.6), "ai_tv_trucks"), s["S05"])
+    s["S06"] = F.over_v(B("desk_directive"), s["S06"], clear_until=at("S06", "only about"))
+    s["S07"] = F.over_v(B(("scale_empty", t_hw), ("ai_two_chairs", t_ju - t_hw), ("court_push", t_po - t_ju, 4.0),
+                          ("ai_dome", t_ow - t_po), ("desk_directive", None, 4.0)),
+                        captions_only(ctx, "S07"), dim=1, blur=0)
     s["V01"] = endcard
     return s
 

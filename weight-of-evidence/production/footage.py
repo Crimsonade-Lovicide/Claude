@@ -130,10 +130,53 @@ def over(footage, graphic, dim=0.38, blur=6, clear_until=0.0, ramp=0.6):
             d = 1 - (1 - dim) * k
             bg = bg.filter(ImageFilter.GaussianBlur(blur * k)).point(lambda v: int(v * d))
         fg = graphic(t, dur)
-        img = Image.composite(fg, bg, fg.convert("L").point(lambda v: 255 if v > 40 else int(v * 6)))
+        # the graphic's near-black ground (and its grain) drops out entirely; type and cards stay
+        img = Image.composite(fg, bg, fg.convert("L").point(lambda v: 255 if v > 40 else max(0, (v - 20) * 12)))
         tag = footage.tag_at(t, dur) if hasattr(footage, "tag_at") else None
         if tag:
             st = G.stamp(tag, 18)
             G.paste_alpha(img, st, (G.W - st.width - 60, 52), 0.8 * G.fade(t, dur, 0.4, 0.4))
+        return img
+    return frame
+
+
+def delay(graphic, d):
+    """A graphic that starts d seconds into the shot (black before), its own timing intact, so the
+    footage under it can play clean first."""
+    def frame(t, dur):
+        if t < d:
+            return G.canvas()
+        return graphic(t - d, max(0.01, dur - d))
+    return frame
+
+
+# ---------------------------------------------------------------- 9:16 (Shorts)
+
+VW, VH = 1080, 1920
+
+
+def to_vertical(img, cx=0.5):
+    """A 16:9 frame scaled to full 9:16 height and cropped around cx (0..1 across the frame)."""
+    w = int(img.width * VH / img.height)
+    big = img.resize((w, VH), Image.LANCZOS)
+    x = int(min(max(0, cx * w - VW / 2), w - VW))
+    return big.crop((x, 0, x + VW, VH))
+
+
+def over_v(footage, graphic, dim=0.38, blur=8, clear_until=0.0, ramp=0.6, cx=0.5):
+    """over() for Shorts: the footage cropped to 9:16 under a vertical graphic, its tag top right
+    (below the kicker). dim=1, blur=0 plays the footage clean under captions only."""
+    def frame(t, dur):
+        k = min(1.0, max(0.0, (t - clear_until) / ramp)) if clear_until > 0 else 1.0
+        bg = to_vertical(footage(t, dur), cx)
+        if k > 0 and (dim < 1 or blur > 0):
+            d = 1 - (1 - dim) * k
+            bg = bg.filter(ImageFilter.GaussianBlur(blur * k)).point(lambda v: int(v * d))
+        fg = graphic(t, dur)
+        img = Image.composite(fg, bg, fg.convert("L").point(lambda v: 255 if v > 40 else max(0, (v - 20) * 12)))
+        tag = footage.tag_at(t, dur) if hasattr(footage, "tag_at") else None
+        if tag:
+            st = G.stamp(tag, 18)
+            G.paste_alpha(img, st, (VW - st.width - 40, 196), 0.85 * G.fade(t, dur, 0.3, 0.3))
         return img
     return frame
