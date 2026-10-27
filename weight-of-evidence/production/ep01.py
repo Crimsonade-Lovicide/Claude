@@ -573,7 +573,8 @@ def stacked_words_shot(lines, times):
     return frame
 
 
-def endcard_shot():
+def endcard_shot(note=None):
+    """The end card; note is an extra small line under the slots (Case 08: a help line)."""
     def frame(t, dur):
         img = G.canvas()
         a = G.fade(t, dur, 1.0, 1.5)
@@ -583,6 +584,8 @@ def endcard_shot():
         for x in (300, 1020):  # end-screen slots
             d.rounded_rectangle([x, 470, x + 600, 808], radius=10, outline=tuple(int(c * a) for c in G.FAINT), width=2)
         G.centered(img, G.text_layer("Sources for every claim are in the description.", G.MONO(24), fill=G.DIM), 900, a)
+        if note:
+            G.centered(img, G.text_layer(note, G.MONO(22), fill=G.DIM), 950, a)
         return G.finish(img, t)
     return frame
 

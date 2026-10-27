@@ -11,7 +11,7 @@ import math
 import os
 import sys
 
-from PIL import ImageDraw
+from PIL import Image, ImageDraw
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -256,8 +256,26 @@ def clock_shot(ctx, sid):
 
 
 def rows_shot(rows, times, header=None, label=None, source=None, strike=False):
-    """Dated rows (or plain lines) that land one by one: rows = [(left, right)]."""
-    layers = [G.text_layer(right, G.SANS(48, "SemiBold"), fill=G.INK, spacing=0.04) for _, right in rows]
+    """Dated rows (or plain lines) that land one by one: rows = [(left, right)]. A line too long for
+    the page wraps onto a second line (shorter ones render exactly as before)."""
+    fnt = G.SANS(48, "SemiBold")
+
+    def layer(left, right):
+        one = G.text_layer(right, fnt, fill=G.INK, spacing=0.04)
+        room = G.W - 220 - (420 if left else 220)
+        if one.width <= room:
+            return one
+        # wrap narrow enough that the column stays at its widest (640), clear of long labels
+        width = G.W - 220 - (640 if left else 220) - 40
+        parts = [G.text_layer(ln, fnt, fill=G.INK, spacing=0.04) for ln in G.wrap(right, fnt, width)]
+        lay = Image.new("RGBA", (max(p.width for p in parts), sum(p.height for p in parts) - 8 * (len(parts) - 1)),
+                        (0, 0, 0, 0))
+        y = 0
+        for p in parts:
+            lay.alpha_composite(p, (0, y))
+            y += p.height - 8
+        return lay
+    layers = [layer(left, right) for left, right in rows]
     # dated rows share one column, pulled left if the widest line would pass the right margin
     col = max(420, min(640, G.W - 220 - max(lay.width for lay in layers)))
 
@@ -268,11 +286,14 @@ def rows_shot(rows, times, header=None, label=None, source=None, strike=False):
             G.paste_alpha(img, G.text_layer(header, G.MONO(26, True), fill=G.DIM, spacing=0.35), (220, 200), a)
         y0 = 300 if header else 260
         gap = min(130, 560 // max(1, len(rows)))
+        ys = [y0]  # a wrapped (taller) row pushes the rows below it down
+        for lay in layers[:-1]:
+            ys.append(ys[-1] + max(gap, lay.height + 26))
         for i, ((left, right), ts) in enumerate(zip(rows, times)):
             k = G.ease((t - ts) / 0.5) * a
             if k <= 0:
                 continue
-            y = y0 + i * gap
+            y = ys[i]
             if left:
                 G.paste_alpha(img, G.text_layer(left, G.MONO(32, True), fill=G.BRASS, spacing=0.1), (220, y + 8), k)
             lay = layers[i]

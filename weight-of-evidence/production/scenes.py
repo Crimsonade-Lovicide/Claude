@@ -34,6 +34,11 @@ Scenes:
             witness|gallery, push (0..1), haze (volume density for light shafts; 0 = off, default)
   ward      (shared) An empty care-home room at night: a made bed, an empty IV stand, blinds, street
             light. No one in it. k=v: view=push|window
+  cell      (Case 08) An empty punitive-segregation cell, 6 x 8 ft per the DOJ report: block walls,
+            bed slab, steel toilet-sink, steel door with a food slot, a narrow high window. No one in
+            it. k=v: view=push|slot|window|door, push (0..1)
+  tier      (Case 08) An empty jail tier: steel cell doors under caged tubes, a wall phone; or a
+            dormitory of empty bunks. No numbers or signs. k=v: view=corridor|phone|dorm, push
   tv        (shared) An old CRT TV showing only static, for footage we choose not to show. k=v: push
   desk      (shared) A typed page on a dark desk under one lamp, a pen beside it. The text is
             verbatim from the record (DOCS) or a labelled generic form. k=v: doc=pl109_3|
@@ -1987,6 +1992,30 @@ DOCS = {
     "mca": ("MENTAL CAPACITY ACT 2005", "s. 4", [],
             ["... the person's past and present wishes and feelings ...",
              "... the beliefs and values that would be likely to influence his decision ..."]),
+    # Case 08: verbatim (checked 27 Oct 2026, script "Before recording"); "docket" is the words said
+    # in court as The New Yorker quotes them, typed up: tagged RECONSTRUCTION in the edit.
+    "cpl3030": ("N.Y. CRIMINAL PROCEDURE LAW", "§ 30.30", [],
+                ["... must be granted where the people are not ready for trial within:",
+                 "(a) six months of the commencement of a criminal action ... at least one of which "
+                 "is a felony;"]),
+    "docket": ("JAN. 28, 2011", "", [], ["The People are not ready. We are requesting one week."]),
+    "sdny": ("U.S. ATTORNEY, SOUTHERN DISTRICT OF NEW YORK", "AUG. 4, 2014", [],
+             ["... a deep-seated culture of violence is pervasive throughout the adolescent "
+              "facilities ..."]),
+    "stack": ("STACK v. BOYLE", "1951", [],
+              ["Unless this right to bail before trial is preserved, the presumption of innocence, "
+               "secured only after centuries of struggle, would lose its meaning."]),
+    "salerno": ("UNITED STATES v. SALERNO", "1987", [],
+                ["In our society liberty is the norm, and detention prior to trial or without trial "
+                 "is the carefully limited exception."]),
+    "bailact": ("BAIL ACT 1976", "s. 4", [],
+                ["A person to whom this section applies shall be granted bail except as provided in "
+                 "Schedule 1 to this Act."]),
+    "dgy": ("AMERICAN ECONOMIC REVIEW", "2018", [],
+            ["... pretrial detention significantly increases the probability of conviction, "
+             "primarily through an increase in guilty pleas."]),
+    "bjs": ("BUREAU OF JUSTICE STATISTICS", "2026", [],
+            ["At midyear 2024, 68% of jail inmates (450,700) were unconvicted ..."]),
 }
 
 
@@ -2246,6 +2275,246 @@ def scene_tv(kv, f0, f1):
         glow.keyframe_insert("energy", frame=f)
 
 
+def mat_block(name, paint, rough=0.75, scale=(0.4, 0.2)):
+    """Painted cinder-block wall: brick texture with shallow mortar lines under thick paint."""
+    m = mat_principled(name, paint, rough=rough)
+    nt = m.node_tree
+    geo = nt.nodes.new("ShaderNodeNewGeometry")  # world position in metres: (x + y, z) works
+    sep = nt.nodes.new("ShaderNodeSeparateXYZ")  # for walls facing either axis
+    add_ = nt.nodes.new("ShaderNodeMath")
+    comb = nt.nodes.new("ShaderNodeCombineXYZ")
+    nt.links.new(geo.outputs["Position"], sep.inputs[0])
+    nt.links.new(sep.outputs["X"], add_.inputs[0])
+    nt.links.new(sep.outputs["Y"], add_.inputs[1])
+    nt.links.new(add_.outputs[0], comb.inputs["X"])
+    nt.links.new(sep.outputs["Z"], comb.inputs["Y"])
+    br = nt.nodes.new("ShaderNodeTexBrick")
+    br.inputs["Scale"].default_value = 1.0
+    br.inputs["Mortar Size"].default_value = 0.006
+    br.inputs["Brick Width"].default_value = scale[0]
+    br.inputs["Row Height"].default_value = scale[1]
+    br.inputs["Color1"].default_value = (*paint, 1)
+    br.inputs["Color2"].default_value = tuple(c * 0.93 for c in paint) + (1,)
+    br.inputs["Mortar"].default_value = tuple(c * 0.72 for c in paint) + (1,)
+    bump = nt.nodes.new("ShaderNodeBump")
+    bump.inputs["Strength"].default_value = 0.25
+    nt.links.new(comb.outputs[0], br.inputs["Vector"])
+    nt.links.new(br.outputs["Color"], nt.nodes["Principled BSDF"].inputs["Base Color"])
+    nt.links.new(br.outputs["Fac"], bump.inputs["Height"])
+    nt.links.new(bump.outputs["Normal"], nt.nodes["Principled BSDF"].inputs["Normal"])
+    return m
+
+
+def scene_cell(kv, f0, f1):
+    """(Case 08) An empty punitive-segregation cell built to the DOJ report's figure: 6 x 8 ft
+    (1.83 x 2.44 m), painted block walls, a concrete bed slab with a thin mattress, a steel
+    toilet-sink, a steel door with a narrow wired window and a food slot, a narrow high window.
+    No one in it, no marks, no numbers. view=push (from the back of the cell toward the door) |
+    slot (low, from outside, through the open food slot) | window (up at the high window) |
+    door (close on the closed slot from inside)."""
+    W, L, H = 1.83, 2.44, 2.6
+    paint = mat_block("Block", (0.30, 0.32, 0.29))
+    conc = mat_principled("Concrete", (0.17, 0.17, 0.16), rough=0.45, coat=0.2)
+    steel = mat_principled("Steel", (0.55, 0.56, 0.57), metallic=1.0, rough=0.32)
+    door_m = mat_principled("DoorPaint", (0.13, 0.17, 0.2), metallic=0.4, rough=0.45)
+    vinyl = mat_principled("Mattress", (0.06, 0.12, 0.2), rough=0.5, coat=0.3)
+    glass = mat_principled("Wired", (0.6, 0.65, 0.65), rough=0.15, transmission=0.9)
+    sky = mat_principled("Day", (1, 1, 1), emission=(0.8, 0.88, 1.0), strength=5.0)
+
+    def box(name, loc, scale, m, bev=0.0):
+        o = add("cube", name, size=1, location=loc)
+        o.scale = scale
+        assign(o, m)
+        if bev:
+            bevel(o, bev)
+        return o
+
+    # door wall at y=0 (x from -W/2..W/2), window wall at y=L
+    box("Floor", (0, L / 2, -0.05), (W + 0.4, L + 0.4, 0.1), conc)
+    box("Ceil", (0, L / 2, H + 0.05), (W + 0.4, L + 0.4, 0.1), paint)
+    box("WallL", (-W / 2 - 0.1, L / 2, H / 2), (0.2, L + 0.4, H), paint)
+    box("WallR", (W / 2 + 0.1, L / 2, H / 2), (0.2, L + 0.4, H), paint)
+    # back wall with a narrow high window (0.12 x 0.9 m, sill at 1.8 m)
+    wx, ww, wz0, wz1 = 0.25, 0.12, 1.75, 2.35
+    box("WB_lo", (0, L + 0.1, wz0 / 2), (W + 0.4, 0.2, wz0), paint)
+    box("WB_hi", (0, L + 0.1, (wz1 + H) / 2 + 0.05), (W + 0.4, 0.2, H - wz1 + 0.1), paint)
+    box("WB_a", ((-W / 2 - 0.2 + wx - ww / 2) / 2, L + 0.1, (wz0 + wz1) / 2), (wx - ww / 2 + W / 2 + 0.2, 0.2, wz1 - wz0), paint)
+    box("WB_b", ((wx + ww / 2 + W / 2 + 0.2) / 2, L + 0.1, (wz0 + wz1) / 2), (W / 2 + 0.2 - wx - ww / 2, 0.2, wz1 - wz0), paint)
+    pane = box("Pane", (wx, L + 0.06, (wz0 + wz1) / 2), (ww, 0.01, wz1 - wz0), glass)
+    pane.visible_shadow = False  # no caustics in Cycles: let the sun through the glass
+    for k in range(4):
+        box(f"WinBar{k}", (wx, L + 0.03, wz0 + 0.12 + k * 0.12), (ww, 0.015, 0.012), steel)
+    outside = box("Outside", (wx, L + 1.5, 2.0), (2.5, 0.05, 2.5), sky)
+    outside.visible_shadow = False
+    win = bpy.data.lights.new("WinSun", "SUN")
+    win.energy = 9.0
+    win.angle = math.radians(0.8)
+    win.color = (0.88, 0.94, 1.0)
+    wo = bpy.data.objects.new("WinSun", win)
+    bpy.context.scene.collection.objects.link(wo)
+    wo.location = (wx + 0.3, L + 3, 4.5)
+    look_at(wo, (-0.2, 0.6, 0.0))
+    # door wall: a steel door 0.85 x 2.05 m with a vision panel and a food slot at 1.0 m
+    dx0, dx1, dz = -0.2, 0.65, 2.05
+    box("WF_l", ((-W / 2 - 0.2 + dx0) / 2, -0.1, H / 2), (dx0 + W / 2 + 0.2, 0.2, H), paint)
+    box("WF_r", ((dx1 + W / 2 + 0.2) / 2, -0.1, H / 2), (W / 2 + 0.2 - dx1, 0.2, H), paint)
+    box("WF_t", ((dx0 + dx1) / 2, -0.1, (dz + H) / 2 + 0.05), (dx1 - dx0, 0.2, H - dz + 0.1), paint)
+    cx = (dx0 + dx1) / 2
+    sz0, sz1, sw = 0.95, 1.07, 0.36   # food slot opening
+    vz0, vz1, vw = 1.45, 1.85, 0.1    # vision panel
+    slot_open = kv.get("view", "push") == "slot"
+    parts = [  # the door leaf as pieces around the two openings
+        ((cx, -0.05, sz0 / 2), (dx1 - dx0, 0.06, sz0)),
+        ((cx, -0.05, (sz1 + vz0) / 2), (dx1 - dx0, 0.06, vz0 - sz1)),
+        ((cx, -0.05, (vz1 + dz) / 2), (dx1 - dx0, 0.06, dz - vz1)),
+        (((dx0 + cx - sw / 2) / 2, -0.05, (sz0 + sz1) / 2), (cx - sw / 2 - dx0, 0.06, sz1 - sz0)),
+        (((cx + sw / 2 + dx1) / 2, -0.05, (sz0 + sz1) / 2), (dx1 - cx - sw / 2, 0.06, sz1 - sz0)),
+        (((dx0 + cx - vw / 2) / 2, -0.05, (vz0 + vz1) / 2), (cx - vw / 2 - dx0, 0.06, vz1 - vz0)),
+        (((cx + vw / 2 + dx1) / 2, -0.05, (vz0 + vz1) / 2), (dx1 - cx - vw / 2, 0.06, vz1 - vz0)),
+    ]
+    for k, (loc, sc_) in enumerate(parts):
+        box(f"Door{k}", loc, sc_, door_m, 0.004)
+    box("Vision", (cx, -0.05, (vz0 + vz1) / 2), (vw, 0.01, vz1 - vz0), glass)
+    flap = box("Flap", (cx, -0.05, (sz0 + sz1) / 2), (sw + 0.02, 0.03, sz1 - sz0 + 0.02), steel, 0.004)
+    if slot_open:  # hinged at the bottom, folded down outward into a shelf
+        flap.location = (cx, -0.05 - (sz1 - sz0) / 2 - 0.02, sz0 - 0.01)
+        flap.scale = (sw + 0.02, sz1 - sz0 + 0.02, 0.03)
+    for z in (0.3, 1.0, 1.75):  # hinges, frame
+        box(f"Hinge{z}", (dx1 - 0.02, -0.13, z), (0.03, 0.04, 0.14), steel)
+    box("FrameL", (dx0 - 0.03, -0.02, dz / 2), (0.06, 0.1, dz), steel)
+    box("FrameR", (dx1 + 0.03, -0.02, dz / 2), (0.06, 0.1, dz), steel)
+    box("FrameT", (cx, -0.02, dz + 0.03), (dx1 - dx0 + 0.12, 0.1, 0.06), steel)
+    # outside the door: a corridor wall lit green-white, so the slot view has depth
+    box("Corr", (cx, -1.6, 1.3), (4, 0.1, 2.6), paint)
+    area_light((cx + 1.2, -1.2, H - 0.1), (cx, -0.1, 0.5), 0.5, size=0.4, color=(0.85, 0.95, 0.9), name="CorrTube")
+    box("CorrFloor", (cx, -0.9, -0.05), (4, 1.6, 0.1), conc)
+    box("CorrCeil", (cx, -0.9, H + 0.05), (4, 1.6, 0.1), paint)
+    for sx in (-1, 1):
+        box(f"CorrSide{sx}", (cx + sx * 2, -0.9, H / 2), (0.1, 1.6, H), paint)
+    # the bed slab along the left wall, a thin mattress; steel toilet-sink in the far right corner
+    box("Slab", (-W / 2 + 0.4, L - 1.0, 0.42), (0.8, 1.95, 0.08), conc, 0.01)
+    box("SlabFace", (-W / 2 + 0.4, L - 1.0, 0.2), (0.78, 1.9, 0.38), paint)
+    box("Mattress", (-W / 2 + 0.4, L - 1.0, 0.5), (0.72, 1.85, 0.06), vinyl, 0.025)
+    box("Combo", (W / 2 - 0.28, L - 0.3, 0.45), (0.5, 0.42, 0.9), steel, 0.02)
+    box("Basin", (W / 2 - 0.28, L - 0.34, 0.91), (0.34, 0.24, 0.03), mat_principled("Dark", (0.02, 0.02, 0.02), rough=0.3))
+    # a caged ceiling fixture, cold and weak
+    fx = box("Fixture", (0, L / 2, H - 0.04), (0.5, 0.18, 0.05), mat_principled(
+        "Tube", (1, 1, 1), emission=(0.85, 0.95, 0.9), strength=1.5))
+    for k in range(5):
+        box(f"Cage{k}", (-0.24 + k * 0.12, L / 2, H - 0.09), (0.01, 0.22, 0.01), steel)
+    area_light((0, L / 2, H - 0.1), (0, L / 2, 0), 4, size=0.5, color=(0.85, 0.95, 0.9), name="Tube")
+    view = kv.get("view", "push")
+    push = float(kv.get("push", "0.35"))
+    if view == "slot":
+        a, b, tgt, lens = (cx, -0.42, 0.99), (cx, -0.42 + 0.5 * push, 1.0), (0.05, L, 1.2), 22
+    elif view == "window":
+        a, b, tgt, lens = (-0.2, 0.5, 0.9), (-0.05, 0.75, 0.95), (wx, L, 2.05), 24
+    elif view == "door":
+        a, b, tgt, lens = (cx - 0.25, 1.3, 1.25), (cx - 0.2, 1.0, 1.2), (cx, 0, 1.05), 30
+    else:
+        a, b, tgt, lens = (0.35, L - 0.25, 1.62), (0.25, L - 0.25 - 0.9 * push, 1.55), (cx - 0.05, 0, 1.15), 16
+    cam = camera(a, tgt, lens=lens)
+    for f in range(f0, f1 + 1):
+        u = G_ease((f - f0) / max(1, f1 - f0))
+        cam.location = tuple(a[i] + (b[i] - a[i]) * u for i in range(3))
+        look_at(cam, tgt)
+        cam.keyframe_insert("location", frame=f)
+        cam.keyframe_insert("rotation_euler", frame=f)
+
+
+def scene_tier(kv, f0, f1):
+    """(Case 08) A jail housing tier, empty: a long corridor of identical steel cell doors under caged
+    fluorescent tubes, a wall phone. Or a dormitory of steel bunks. No numbers, signs or people.
+    view=corridor (slow dolly down the tier) | phone (the wall phone, receiver on the hook) |
+    dorm (rows of empty bunks)."""
+    paint = mat_block("TBlock", (0.30, 0.31, 0.27))
+    conc = mat_principled("TConc", (0.15, 0.15, 0.14), rough=0.3, coat=0.4)
+    steel = mat_principled("TSteel", (0.5, 0.51, 0.52), metallic=1.0, rough=0.35)
+    door_m = mat_principled("TDoor", (0.13, 0.17, 0.2), metallic=0.4, rough=0.45)
+    stripe = mat_principled("Stripe", (0.55, 0.42, 0.08), rough=0.6)
+    tube = mat_principled("TTube", (1, 1, 1), emission=(0.85, 0.95, 0.9), strength=4.0)
+    black = mat_principled("Phone", (0.02, 0.02, 0.022), rough=0.35, coat=0.4)
+    vinyl = mat_principled("TMat", (0.06, 0.12, 0.2), rough=0.5, coat=0.3)
+
+    def box(name, loc, scale, m, bev=0.0):
+        o = add("cube", name, size=1, location=loc)
+        o.scale = scale
+        assign(o, m)
+        if bev:
+            bevel(o, bev)
+        return o
+
+    view = kv.get("view", "corridor")
+    if view == "dorm":
+        box("Floor", (0, 6, -0.05), (16, 20, 0.1), conc)
+        box("Ceil", (0, 6, 3.2), (16, 20, 0.1), paint)
+        box("WallB", (0, 16, 1.6), (16, 0.2, 3.2), paint)
+        box("WallL", (-8, 6, 1.6), (0.2, 20, 3.2), paint)
+        box("WallR", (8, 6, 1.6), (0.2, 20, 3.2), paint)
+        box("WallF", (0, -4, 1.6), (16, 0.2, 3.2), paint)
+        for r in range(7):
+            for c in (-5.4, -3.0, 3.0, 5.4):
+                y = 1.5 + r * 2.0
+                for z in (0.45, 1.45):
+                    box(f"Bunk{r}{c}{z}", (c, y, z), (0.9, 1.95, 0.05), steel, 0.005)
+                    box(f"BMat{r}{c}{z}", (c, y, z + 0.06), (0.82, 1.85, 0.07), vinyl, 0.025)
+                for dx in (-0.43, 0.43):
+                    for dy in (-0.95, 0.95):
+                        box(f"Post{r}{c}{dx}{dy}", (c + dx, y + dy, 0.85), (0.04, 0.04, 1.7), steel)
+        for k in range(5):
+            for x in (-4.2, 4.2):
+                box(f"DTube{k}{x}", (x, 0.5 + k * 3.2, 3.12), (0.2, 1.3, 0.05), tube)
+                area_light((x, 0.5 + k * 3.2, 3.05), (x, 0.5 + k * 3.2, 0), 60, size=1.2,
+                           color=(0.85, 0.95, 0.9), name=f"DL{k}{x}")
+        a, b, tgt, lens = (0, -3.4, 2.3), (0, -2.0, 2.15), (0, 12, 0.6), 22
+    else:
+        n = 14
+        box("Floor", (0, 14, -0.05), (3.2, 34, 0.1), conc)
+        box("Ceil", (0, 14, 3.0), (3.2, 34, 0.1), paint)
+        box("WallR", (1.6, 14, 1.5), (0.1, 34, 3.0), paint)
+        box("WallEnd", (0, 30.5, 1.5), (3.2, 0.1, 3.0), paint)
+        box("StripeR", (1.54, 14, 1.0), (0.01, 34, 0.08), stripe)
+        for k in range(n):  # the cell side: block piers between steel doors
+            y = k * 2.2
+            box(f"Pier{k}", (-1.6, y + 1.55, 1.5), (0.2, 1.3, 3.0), paint)
+            box(f"Over{k}", (-1.6, y + 0.45, 2.55), (0.2, 0.9, 0.9), paint)
+            box(f"TDoor{k}", (-1.55, y + 0.45, 1.05), (0.06, 0.86, 2.1), door_m, 0.004)
+            box(f"TVis{k}", (-1.52, y + 0.45, 1.65), (0.01, 0.1, 0.4), mat_principled(
+                f"Dark{k}", (0.02, 0.025, 0.03), rough=0.1))
+            box(f"TSlot{k}", (-1.51, y + 0.45, 1.0), (0.03, 0.38, 0.14), steel, 0.004)
+            for z in (0.3, 1.0, 1.75):
+                box(f"TH{k}{z}", (-1.5, y + 0.86, z), (0.04, 0.03, 0.14), steel)
+        for k in range(8):
+            y = 1 + k * 4
+            box(f"Tube{k}", (0, y, 2.93), (0.2, 1.3, 0.05), tube)
+            for j in range(4):
+                box(f"TC{k}{j}", (-0.1 + j * 0.067, y, 2.89), (0.008, 1.35, 0.008), steel)
+            area_light((0, y, 2.88), (0, y, 0), 22, size=1.0, color=(0.85, 0.95, 0.9), name=f"TL{k}")
+        # the phone on the right wall: steel plate, black handset on the hook, armoured cord
+        py = 5.6
+        box("PPlate", (1.53, py, 1.35), (0.04, 0.24, 0.42), steel, 0.01)
+        box("PKeys", (1.5, py + 0.02, 1.28), (0.02, 0.1, 0.13), mat_principled("Keys", (0.3, 0.3, 0.31), metallic=1.0, rough=0.5))
+        hs = add("cylinder", "Handset", radius=0.025, depth=0.22, location=(1.47, py - 0.07, 1.42))
+        assign(hs, black)
+        for dz in (-0.12, 0.12):
+            box(f"Cup{dz}", (1.47, py - 0.07, 1.42 + dz), (0.06, 0.06, 0.05), black, 0.015)
+        cord = add("cylinder", "Cord", radius=0.008, depth=0.3, location=(1.49, py - 0.02, 1.15),
+                   rotation=(math.radians(10), 0, 0))
+        assign(cord, steel)
+        if view == "phone":
+            a, b, tgt, lens = (0.3, py - 1.4, 1.5), (0.55, py - 0.9, 1.45), (1.5, py, 1.35), 40
+        else:
+            a, b, tgt, lens = (0.2, -2.0, 1.6), (0.2, 4.5, 1.6), (-0.1, 30, 1.2), 22
+    push = float(kv.get("push", "1.0"))
+    cam = camera(a, tgt, lens=lens)
+    for f in range(f0, f1 + 1):
+        u = G_ease((f - f0) / max(1, f1 - f0)) * push
+        cam.location = tuple(a[i] + (b[i] - a[i]) * u for i in range(3))
+        look_at(cam, tgt)
+        cam.keyframe_insert("location", frame=f)
+        cam.keyframe_insert("rotation_euler", frame=f)
+
+
 def main():
     scene, out, opts, kv = args()
     f0, f1 = (int(v) for v in opts["frames"].split(":"))
@@ -2254,7 +2523,8 @@ def main():
      "corridor": scene_corridor, "road": scene_road, "car": scene_car, "sea": scene_sea,
      "book": scene_book, "or": scene_or, "lot": scene_lot, "shelf": scene_shelf,
      "room": scene_room, "park": scene_park, "dome": scene_dome, "courtroom": scene_courtroom,
-     "desk": scene_desk, "ward": scene_ward, "tv": scene_tv}[scene](kv, f0, f1)
+     "desk": scene_desk, "ward": scene_ward, "tv": scene_tv,
+     "cell": scene_cell, "tier": scene_tier}[scene](kv, f0, f1)
     os.makedirs(out, exist_ok=True)
     tag = kv.get("name", scene)
     for f in range(f0, f1 + 1, int(opts.get("step", 1))):

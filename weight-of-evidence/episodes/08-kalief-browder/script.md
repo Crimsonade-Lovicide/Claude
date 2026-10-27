@@ -62,7 +62,7 @@ Care rules for this episode (research §J):
 
 ### S06 · Not rare
 **Picture:** `GFX: number` "450,700" in brass; above, mono "PEOPLE IN US JAILS NOT CONVICTED"; below, "68% of everyone in local jails · midyear 2024". Source "Bureau of Justice Statistics, 2026". [F6]
-> His case was extreme. Waiting in jail isn't. In mid-2024, about four hundred and fifty thousand people in American jails hadn't been convicted of anything. That's two in every three people inside.
+> His case was extreme. Waiting in jail isn't. In mid-2024, about four hundred and fifty thousand people in American jails hadn't been convicted. That's two in every three people inside.
 
 ### S07 · The question
 **Picture:** `3D: scale_empty` The Scale, empty and level.
@@ -88,11 +88,11 @@ Care rules for this episode (research §J):
 
 ### S12 · The stop
 **Picture:** `GFX: card` INFERENCE: "I didn't rob anybody … You can check my pockets." Kalief Browder, as he recalled the stop, The New Yorker, 2014. [A2, T4]
-> Early on Saturday, May the fifteenth, he and a friend were walking home from a party when police stopped them. A man in a squad car said they had robbed him. The police searched him and found nothing. As Browder remembers it, the man then said the robbery hadn't happened that night, but two weeks earlier.
+> Early on Saturday, May the fifteenth, he and a friend were walking home from a party when police stopped them. An officer said a man had just reported that they'd robbed him. The police searched him and found nothing. As Browder remembers it, the man then said the robbery hadn't happened that night, but two weeks earlier.
 
 ### S13 · On probation
 **Picture:** `GFX: card` INFERENCE: "…which insured that he wouldn't have a criminal record." On his earlier case, The New Yorker, 2014. [A3, J]
-> He was already on probation, for an earlier case that had left him no criminal record. That mattered more than anything else that night.
+> He was already on probation, for an earlier case that had left him no criminal record. That would matter more than anything else.
 
 ### S14 · The charge
 **Picture:** `GFX: rows` THE COMPLAINT · Chased him, pushed him against a fence, took his backpack / CHARGED · Robbery, grand larceny, assault / 17 HOURS LATER · Questioned again; says he's innocent. Label INFERENCE. Source "The New Yorker, 2014, summarizing the complaint". [T3, A4, A5]
@@ -126,16 +126,16 @@ Care rules for this episode (research §J):
 > His case went to the courts of the Bronx, which were overwhelmed. In 2011, nearly three quarters of the borough's felony cases were more than six months old. That year, a hundred and sixty-five felony cases went to trial. In almost four thousand, the defendant pleaded guilty.
 
 ### S21 · Six months
-**Picture:** `GFX: card` RECORD: "…within six months of the commencement of a criminal action…" N.Y. Criminal Procedure Law § 30.30 (felonies). [B2, B3]
+**Picture:** `GFX: card` RECORD: "…where the people are not ready for trial within: (a) six months of the commencement of a criminal action…" N.Y. Criminal Procedure Law § 30.30(1)(a). (The congestion rule in S22 is case law, People v. McKenna, 1990: no statute citation on screen for it.) [B2, B3]
 > New York has a rule meant to prevent long waits. For a felony, prosecutors have six months to be ready for trial. If they aren't, and the defense asks, the charges must be dismissed. Soon after the indictment, prosecutors told the court they were ready.
 
 ### S22 · Not ready
-**Picture:** `GFX: card` typed index card, Courier: "JAN 28, 2011 · People not ready. Requesting one week." then "NEXT DATE · MAR 9, 2011". Tag RECONSTRUCTION. Source "Court file, as quoted in The New Yorker, 2014". [B3]
+**Picture:** `GFX: card` typed docket note, Courier: "JAN 28, 2011 · People not ready. Requesting one week." then "NEXT DATE · MAR 9, 2011". Tag RECONSTRUCTION. Source "The New Yorker, 2014". [B3]
 > But once prosecutors have said they're ready, delays caused by a crowded court don't count against them. On January the twenty-eighth, 2011, his two hundred and fifty-eighth day, a prosecutor told the court: the People are not ready, we are requesting one week. The next date the court could offer was six weeks away. Only one of those weeks counted.
 
 ### S23 · The reasons
-**Picture:** `GFX: rows` "Prosecutor on trial" / "On jury duty" / "Conflicts in my schedule" / "The assigned assistant is currently on vacation". Label RECONSTRUCTION. Source "Court file, as quoted in The New Yorker, 2014". [B3]
-> The court file records the reasons: the prosecutor was on another trial, or on jury duty, or had a scheduling conflict, or was on vacation. Month after month, the case was put off. By the end of 2012, it had been before eight judges.
+**Picture:** `GFX: rows` "Prosecutor on trial" / "On jury duty" / "Conflicts in my schedule" / "The assigned assistant is currently on vacation". Label INFERENCE. Source "The New Yorker, 2014". [B3]
+> The reasons given in court: the prosecutor was on another trial, or on jury duty, or had a scheduling conflict, or was on vacation. Month after month, the case was put off. By the end of 2012, it had been before eight judges.
 
 ### S24 · Who was responsible
 **Picture:** `GFX: rows` THE DISTRICT ATTORNEY, 2014 · "These long delays … they're horrendous, but the D.A. is not really accountable" / THE LAWSUIT · Prosecutors said they were ready "when in fact, they never were". Label INFERENCE. Source "The New Yorker, 2014". [B5, D7]
@@ -154,7 +154,7 @@ Care rules for this episode (research §J):
 > On May the twenty-ninth, 2013, his thirty-first court date, Judge DiMango told him the prosecution couldn't go ahead. The man who had accused him had gone back to Mexico, and without him, prosecutors said, they couldn't prove the case. Browder was released the next day, after about eleven hundred days. The charges were dismissed. He was never tried.
 
 ### S28 · Fifteen times
-**Picture:** `GFX: number` "75 DAYS" in brass; above, mono "AVERAGE STAY · ADOLESCENTS ON RIKERS, 2013"; below, "his: about fifteen times as long". Source "U.S. Attorney, S.D.N.Y., 2014". [C5]
+**Picture:** `GFX: number` "75 DAYS" in brass; above, mono "AVERAGE STAY · ADOLESCENTS ON RIKERS, FY2013"; below, "his: about fifteen times as long". Source "U.S. Attorney, S.D.N.Y., 2014". [C5]
 > To put that in proportion: in 2013, the average teenager held on Rikers stayed about seventy-five days. He stayed about fifteen times as long.
 
 ### S29 · Second weight
@@ -182,7 +182,7 @@ Care rules for this episode (research §J):
 
 ### S34 · Six by eight
 **Picture:** `3D: cell` view=slot. Low angle through the door slot into the empty cell. Lower third "PUNITIVE SEGREGATION · 6 × 8 FT · 23 HOURS A DAY". Tag RECONSTRUCTION FROM DOJ REPORT DATA. [C4]
-> Punishment meant solitary confinement: a cell six feet by eight, for twenty-three hours a day, with an hour of recreation in a cage outside. On any given day in 2013, between fifteen and twenty-five percent of the teenagers were in it. On one day that July, nearly three quarters of them had been diagnosed with a mental illness.
+> Punishment meant solitary confinement: a cell six feet by eight, for twenty-three hours a day, with an hour of recreation in a cage outside. On any given day in 2013, between fifteen and twenty-five percent of the teenagers were in it. On one day that July, nearly three quarters of those in it had been diagnosed with a mental illness.
 
 ### S35 · About two years
 **Picture:** `GFX: number` "ABOUT 2 YEARS" in brass; above, mono "IN SOLITARY"; below, "his own estimate: 'seven hundred, eight hundred' days · no official count". Label INFERENCE. Source "The New Yorker, 2014 and 2015". [T8, C6]
@@ -205,7 +205,7 @@ Care rules for this episode (research §J):
 > He passed his high school equivalency exam on the first try, and started at Bronx Community College. In 2014 he decided to tell his story, because, the reporter wrote, he wanted the public to know what he'd been through, so that nobody else would have to go through it. He said: in my mind right now, I feel like I'm still in jail.
 
 ### S40 · Third weight
-**Picture:** `3D: scale_tip_right` The pan sinks further. Lower third "EVIDENCE · A JAIL FOUND VIOLENT TOWARD THE BOYS IT HELD, AND ABOUT TWO YEARS ALONE". [C1–D5]
+**Picture:** `3D: scale_tip_right` The pan sinks further. Lower third "EVIDENCE · A VIOLENT JAIL FOR BOYS, AND ABOUT TWO YEARS IN SOLITARY". [C1–D5]
 > So, the third weight. Waiting for trial meant waiting on Rikers: in a jail that federal investigators found was violent toward the very boys it held, and, by his account, about two years alone in a cell. He was never convicted of anything.
 
 ---
@@ -232,7 +232,7 @@ Care rules for this episode (research §J):
 > But in 1987, the Court also said a person can be held without bail for being dangerous, if the government proves at a hearing, by clear and convincing evidence, that no conditions of release would keep people safe. In our society, it wrote, liberty is the norm, and detention before trial is the carefully limited exception. Justice Marshall, dissenting, wrote that the shortcuts we take with those we believe guilty injure only the wrongfully accused, and, in the end, ourselves.
 
 ### S46 · New York changes
-**Picture:** `GFX: rows` 2018 · No one under 18 held on Rikers / 2019 · Cash bail ended for most misdemeanors and nonviolent felonies; "ready" requires handing over the evidence / 2020–2023 · Judges regain bail for more charges, including felonies while on probation. Label RECORD. Source "NYC Mayor's Office, 2018 · Data Collaborative for Justice, 2023 · CPL §§ 30.30, 510.10". [E5, E6, E7, B7, E8]
+**Picture:** `GFX: rows` 2018 · No one under 18 held on Rikers / 2019 · Cash bail ended for most misdemeanors and nonviolent felonies; "ready" requires handing over the evidence / 2020–22 · Judges regain bail for more charges, including felonies while on probation. Label RECORD. Source "NYC Mayor's Office, 2018 · Data Collaborative for Justice, 2023 · CPL §§ 30.30, 510.10". [E5, E6, E7, B7, E8]
 > New York has changed a lot since. From 2018, no one under eighteen has been held on Rikers. In 2019, the state ended cash bail for most misdemeanors and nonviolent felonies, and said prosecutors can't call themselves ready for trial until they've handed over their evidence. Since then, lawmakers have three times given judges back some power to set bail, including for felonies charged while someone is on probation. A sixteen-year-old charged today would not be sent to Rikers at all.
 
 ### S47 · Danger
@@ -249,10 +249,10 @@ Care rules for this episode (research §J):
 
 ### S50 · England
 **Picture:** `GFX: card` RECORD: "A person to whom this section applies shall be granted bail except as provided in Schedule 1." Bail Act 1976, s. 4 (England and Wales). Then `GFX: rows` HELD ONLY IF · Substantial grounds he'd run, offend, or interfere with witnesses / THE CLOCK · 182 days in custody before a Crown Court trial, unless a court extends it. Label RECORD. Source "Bail Act 1976 · Custody Time Limits Regulations 1987, reg. 5". [F7, F8, B9]
-> England starts from the other end. By law, a defendant shall be granted bail, unless there are substantial grounds to believe they'd run, commit an offense, or interfere with witnesses. Danger is a reason to hold someone, and it's said out loud. Release doesn't depend on posting a cash bond. And England's clock counts days in custody, not promises to be ready: a hundred and eighty-two before a trial in the Crown Court, unless a court extends it.
+> England starts from the other end. By law, a defendant shall be granted bail, unless, among a few other exceptions, there are substantial grounds to believe they'd run, commit an offense, or interfere with witnesses. Danger is a reason to hold someone, and it's said out loud. Release doesn't depend on posting a cash bond. And England's clock counts days in custody, not promises to be ready: a hundred and eighty-two before a trial in the Crown Court, unless a court extends it.
 
 ### S51 · Fourth weight
-**Picture:** `3D: scale_tip_left` The first pan recovers ground. Lower third "EVIDENCE · THE LAW CALLS IT THE EXCEPTION. TWO IN THREE PEOPLE IN JAIL ARE WAITING." [F1–G11]
+**Picture:** `3D: scale_tip_left` The first pan recovers ground. Lower third "EVIDENCE · THE LAW SAYS EXCEPTION. TWO IN THREE IN JAIL ARE UNCONVICTED" [F1–G11]
 > So, the fourth weight. The Supreme Court calls detention before trial the carefully limited exception. Yet two in three people in America's local jails haven't been convicted. Being held makes a conviction more likely. And where New York City released more people, re-arrests mostly fell, except among people with serious recent records.
 
 ---
@@ -275,7 +275,7 @@ Care rules for this episode (research §J):
 > Here's our verdict. On the clock: no one should wait years in jail for a trial. Time held before trial should have a hard limit, counted in days, not in excuses, that only a judge can extend, for a stated reason. Our confidence is eighty-five percent. What would change our mind: evidence that hard limits mostly free people who go on to seriously hurt someone, or rush trials until they're unfair.
 
 ### S56 · Verdict two
-**Picture:** `GFX: verdict` Kicker MONEY BAIL. VERDICT: "Not being able to pay should never be the reason someone is held. If a judge thinks someone is too dangerous or too likely to run, hold them openly, after a hearing, for that reason." CONFIDENCE 80%. WHAT WOULD CHANGE OUR MIND: "Evidence that hearing-based systems end up holding the same poor defendants, for as long as money bail did."
+**Picture:** `GFX: verdict` Kicker MONEY BAIL. VERDICT: "No one should be held because they can't pay. If someone is too dangerous or too likely to run, a judge should hold them openly, after a hearing, for that reason." CONFIDENCE 80%. WHAT WOULD CHANGE OUR MIND: "Evidence that hearing-based systems end up holding the same poor defendants, for as long as money bail did."
 > On money bail: not being able to pay should never be the reason someone is held. If a judge thinks someone is too dangerous, or too likely to run, they should hold them openly, after a hearing, for that reason. That means letting judges weigh danger, which New York still doesn't. Our confidence is eighty percent. What would change our mind: evidence that hearing-based systems end up holding the same poor defendants, for as long as money bail did.
 
 ### S57 · Verdict three
@@ -325,6 +325,14 @@ BJS *Jail Inmates in 2024*, and the research (Leslie & Pope 2017; Dobbie, Goldin
 Collaborative for Justice 2023).
 
 ## Before recording (from research §M and our own checks)
+
+**Checked 27 Oct 2026** against the New Yorker texts (2014, 2015), CPL §§ 30.30, 245.50, 510.10,
+People v. McKenna (1990), the SDNY findings letter (Aug 4, 2014), BJS NCJ 311504, the Bail Act 1976
+and the Custody Time Limits Regulations (reg. 5 last amended June 2021; no extension in force). All
+quotes match. Fixed: S06 "convicted" (BJS counts unconvicted on the current charge), S12 the officer
+relayed the report, S13 probation mattered at arraignment, S22/S23 the reasons were given in court
+(only "prosecutor on trial" is on the index cards), S34 "of those in it", S50 "among a few other
+exceptions", S28/S46/S51 picture labels.
 
 - **Quotes from The New Yorker (S12, S13, S16, S24, S25, S26, S27, S35, S37, S39):** spot-check each
   against the article text before recording; the research read the page in full, but quotes marked
