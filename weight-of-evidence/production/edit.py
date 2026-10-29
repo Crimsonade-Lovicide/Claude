@@ -209,7 +209,9 @@ def _render_one(args):
         framed(t, dur).save(os.path.join(prod, "stills", f"{sid}.jpg"), quality=88)
         return sid
     os.makedirs(os.path.join(prod, "shots"), exist_ok=True)
-    G.render(framed, dur, os.path.join(prod, "shots", f"{sid}.mp4"))
+    out = os.path.join(prod, "shots", f"{sid}.mp4")
+    G.render(framed, dur, out + ".part.mp4")  # renamed only when complete, so a killed render
+    os.replace(out + ".part.mp4", out)        # never leaves a truncated shot behind
     return sid
 
 
