@@ -28,12 +28,12 @@ done
 # name | scene | last frame (24 fps) | samples | key=value ...
 CLIPS=(
   "cell_push|cell|240|14|view=push push=0.35"
-  "cell_slot|cell|200|14|view=slot push=0.35"
-  "cell_window|cell|200|14|view=window"
-  "cell_door|cell|160|14|view=door"
-  "tier_corridor|tier|240|14|view=corridor push=1.0"
-  "tier_phone|tier|160|14|view=phone"
-  "tier_dorm|tier|200|14|view=dorm"
+  "cell_slot|cell|200|10|view=slot push=0.35"
+  "cell_window|cell|200|10|view=window"
+  "cell_door|cell|160|10|view=door"
+  "tier_corridor|tier|240|10|view=corridor push=1.0"
+  "tier_phone|tier|160|10|view=phone"
+  "tier_dorm|tier|200|10|view=dorm"
   "desk_cpl3030|desk|200|14|doc=cpl3030 view=push push=0.3"
   "desk_docket|desk|160|14|doc=docket view=push push=0.3"
   "desk_sdny|desk|160|14|doc=sdny view=stack push=0.3"
