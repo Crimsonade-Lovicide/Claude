@@ -27,7 +27,13 @@ no reference to his death (research §J).
 > The jail cell and the courtroom are simplified reconstructions, labelled on screen. The cell is built to the dimensions in the 2014 federal report.
 >
 > CHAPTERS
-> (generated from the final edit: weight_of_evidence_case08_chapters.txt)
+> 0:00 Rikers Island, 2010
+> 2:22 I. The arrest
+> 5:01 II. The clock
+> 8:32 III. The island
+> 11:50 IV. The rules
+> 16:14 V. The verdict
+> 19:35 Next case
 >
 > SOURCES
 > - J. Gonnerman, "Before the Law," The New Yorker, Oct 6, 2014; "Kalief Browder, 1993–2015," The New Yorker, June 7, 2015.
