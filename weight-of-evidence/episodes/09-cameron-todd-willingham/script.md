@@ -36,7 +36,7 @@ Care rules for this episode (research §K):
 ## COLD OPEN
 
 ### S01 · The fax
-**Picture:** `3D: fax` An old office fax machine on an empty desk at night, one desk lamp, a page feeding slowly out; slow push. Lower third "Austin, Texas · February 13, 2004". Tag RECONSTRUCTION. [T5, C5, C7]
+**Picture:** `3D: fax` An old office fax machine on an empty desk at night, one desk lamp, a page feeding slowly out; slow push. Lower third "Texas · February 13, 2004". Tag RECONSTRUCTION. [T5, C5, C7]
 > It's Friday, February the thirteenth, 2004. A five-page report arrives by fax at the Texas parole board and the governor's office. A fire scientist has read the evidence in a death penalty case, and he is writing to say most of it doesn't hold up. The execution is set for Tuesday.
 
 ### S02 · The report
@@ -49,7 +49,7 @@ Care rules for this episode (research §K):
 
 ### S04 · Fifteen to nothing
 **Picture:** `GFX: rows` FEB 13, 2004 · The parole board: 15–0 against clemency / FEB 17, 2004 · No reprieve from the governor; executed. Label RECORD. Source "Board of Pardons and Paroles, Feb 13, 2004 · TDCJ". [C7, C10, C11]
-> The parole board voted fifteen to nothing against clemency. The governor didn't grant a thirty-day reprieve. That Tuesday, Texas executed him. His last words were that he was innocent.
+> The parole board voted fifteen to nothing against clemency. The governor didn't grant a thirty-day reprieve. That Tuesday, Texas executed him. In his last statement, he said he was innocent.
 
 ### S05 · Since then
 **Picture:** `GFX: card` RECORD: "A finding of arson could not be sustained." Dr. Craig Beyler, for the Texas Forensic Science Commission, 2009. Then card ARGUMENT: "My ex-husband murdered my daughters, and just before he was executed, he told me he did it." Stacy Kuykendall, Oct 6, 2010. [T7, D6, I3]
@@ -78,15 +78,15 @@ Care rules for this episode (research §K):
 **Picture:** `GFX: title` I · THE FIRE
 
 ### S11 · The morning
-**Picture:** `GFX: rows` ABOUT 9:15 A.M. · Stacy leaves to buy Christmas presents / 10:34 A.M. · The fire is reported / HIS ACCOUNT · Woken by Amber calling; smoke; he couldn't reach the twins. Label INFERENCE. Source "Beyler, 2009 · The New Yorker, 2009". [A1]
-> On the morning of December the twenty-third, the girls' mother, Stacy, went out to buy Christmas presents. Willingham, who was out of work, stayed home with the children. His account was that he'd gone back to sleep, and woke to Amber calling him and the house full of smoke. He said he tried to reach the twins' room, his hair caught fire, and he couldn't find them.
+**Picture:** `GFX: rows` ABOUT 9:15 A.M. · Stacy goes out to pick up a Christmas present / 10:34 A.M. · The fire, by Beyler's timeline / HIS ACCOUNT · Woken by Amber calling; smoke; he couldn't reach the twins. Label INFERENCE. Source "Beyler, 2009 · The New Yorker, 2009". [A1]
+> On the morning of December the twenty-third, the girls' mother, Stacy, went out to pick up a Christmas present. Willingham, who was out of work, stayed home with the children. His account was that he'd gone back to sleep, and woke to Amber calling him and the house full of smoke. He said he tried to reach the twins' room, his hair caught fire, and he couldn't find them.
 
 ### S12 · Outside
-**Picture:** `GFX: card` INFERENCE: Neighbors saw smoke at the front door, then flames when the bedroom windows broke; then the room "flashed over". Dr. Craig Beyler's reading of the witness statements, 2009. [A2]
-> Neighbors saw smoke pouring from the front door. Flames only appeared when the children's windows broke, and then the whole room went up at once. Willingham was shouting that his babies were burning. Firefighters had to restrain him. He was treated in hospital for burns.
+**Picture:** `GFX: card` INFERENCE: Neighbors saw smoke at the front door, then flames when the bedroom windows broke; then the bedroom reached flashover. Dr. Craig Beyler's reading of the witness statements, 2009. [A2]
+> Neighbors saw smoke coming from the front door. Flames only appeared when the children's windows broke, and then the whole room went up at once. Willingham was shouting that his babies were burning. He had to be restrained. He was treated in hospital for burns.
 
 ### S13 · The fire tells a story
-**Picture:** `GFX: card` RECORD: "The fire tells a story. I am just the interpreter." Deputy State Fire Marshal Manuel Vasquez, trial testimony, 1992, as quoted by the Texas Forensic Science Commission. Then footnote: "The Commission found this phrasing was standard in fire-investigation training of the day." [A3, A5, K]
+**Picture:** `GFX: card` RECORD: "The fire tells a story. I am just the interpreter." Deputy State Fire Marshal Manuel Vasquez, trial testimony, 1992, as quoted by the Texas Forensic Science Commission. Then footnote: "The Commission noted this phrasing was commonly taught at training seminars of the day." [A3, A5, K]
 > Within days, the house was examined by a deputy state fire marshal, Manuel Vasquez, and Corsicana's assistant fire chief, Douglas Fogg. Vasquez had investigated more than a thousand fires. He later told the jury: the fire tells a story; I am just the interpreter. The state commission would later note that phrases like that came straight from the training of the day.
 
 ### S14 · The signs
@@ -98,7 +98,7 @@ Care rules for this episode (research §K):
 > Samples went to the lab. One came back positive: the one from the front doorway, with a residue consistent with charcoal lighter fluid. A barbecue grill had stood on that porch, with bottles of lighter fluid, and was moved while the fire was being fought. Nothing from the bedroom or the hallway, where the pour patterns were, tested positive.
 
 ### S16 · His feet
-**Picture:** `GFX: card` RECORD: "…entirely consistent with being exposed to a room fire environment." Dr. Craig Beyler, on Willingham's injuries, 2009. [A8]
+**Picture:** `GFX: card` RECORD: "…entirely consistent with being exposed to a room fire environment…" Dr. Craig Beyler, on Willingham's injuries, 2009. [A8]
 > Vasquez also said that if the hallway floor had been burning, Willingham couldn't have run out barefoot without burning his feet, so his story was a fabrication. A fire scientist later found his injuries entirely consistent with being caught in a burning room. One thing in his story did change. He later told his parents he had never actually crawled into the girls' room. He said he didn't want people to think he was a coward.
 
 ### S17 · The arrest
@@ -130,7 +130,7 @@ Care rules for this episode (research §K):
 
 ### S23 · The defense
 **Picture:** `GFX: rows` DEFENSE FIRE EXPERT · Agreed it was arson; didn't testify / DEFENSE WITNESSES · One: the babysitter / THE JURY · Out about an hour. Label INFERENCE. Source "The New Yorker, 2009 · AP, 2010". [B3]
-> His court-appointed lawyers hired their own fire expert, who agreed it was arson, so he never testified. They called one witness, the babysitter. The jury deliberated for about an hour, and on August the twenty-first, 1992, convicted him of capital murder.
+> His court-appointed lawyers consulted a fire expert, who agreed it was arson, so he never testified. They called one witness, the babysitter. The jury deliberated for about an hour, and on August the twenty-first, 1992, convicted him of capital murder.
 
 ### S24 · What the jury heard about him
 **Picture:** `GFX: rows` HIS RECORD · Burglary, theft and other offenses in Oklahoma / WITNESSES · Said he had beaten Stacy, including while she was pregnant / STACY · Testified for him at sentencing. Label RECORD. Source "Willingham v. State, 1995 · AP, 2009". [B6]
@@ -160,8 +160,8 @@ Care rules for this episode (research §K):
 > For eleven years, his appeals went through the state and federal courts. None of them challenged the fire science; no one had yet. And the Supreme Court, in a Texas case in 1993, had said that a claim of innocence after a fair trial isn't, on its own, a constitutional claim at all. The safety net, it said, was clemency: the fail-safe in a system run by fallible human beings.
 
 ### S30 · The chemist
-**Picture:** `GFX: rows` "CRAZED GLASS" · "an 'Old Wives Tale'" / "THE THRESHOLD" · liquid can't burn under it, "any more than … grease burn in a skillet" with a lid / "POUR PATTERNS" · can't be told apart after a room flashes over. Label RECORD. Source "Dr. Gerald Hurst, report, Feb 13, 2004". [C5, C6]
-> In early 2004, his lawyer sent the file to Gerald Hurst, a chemist with a doctorate from Cambridge who had spent his career on fire and explosives. Hurst worked for free, and fast. Crazed glass, he wrote, was an old wives' tale. A liquid can no more burn under a metal threshold than grease can burn in a skillet with a lid on. And once a room flashes over, the whole floor burns, and so-called pour patterns can't be told apart from ordinary fire.
+**Picture:** `GFX: rows` "CRAZED GLASS" · "an 'Old Wives Tale'" / "THE THRESHOLD" · "Liquid accelerants can no more burn under an aluminum threshold than can grease burn in a skillet even with a loose-fitting lid" / "POUR PATTERNS" · can't be told apart after a room flashes over. Label RECORD. Source "Dr. Gerald Hurst, report, Feb 13, 2004". [C5, C6]
+> In early 2004, his lawyer sent the file to Gerald Hurst, a chemist with a doctorate from Cambridge who had spent his career on fire and explosives. Hurst worked for free, and fast. Crazed glass, he wrote, was an old wives' tale. A liquid can no more burn under an aluminum threshold than grease can burn in a skillet, even with a loose-fitting lid. And once a room flashes over, the whole floor burns, and so-called pour patterns can't be told apart from ordinary fire.
 
 ### S31 · February 13
 **Picture:** `GFX: rows` FEB 3, 2004 · Clemency petition filed / FEB 13 · Hurst's report faxed to the Board and the governor's office / FEB 10–13 · The Board votes 15–0; four votes cast before the report was signed. Label RECORD. Source "Texas Forensic Science Commission, 2011 · Board of Pardons and Paroles, Feb 13, 2004". [C5, C7, C8]
@@ -169,7 +169,7 @@ Care rules for this episode (research §K):
 
 ### S32 · Simply an opinion
 **Picture:** `GFX: card` INFERENCE: The courts "agreed that the new opinion by Gerald Hurst was simply an opinion and did not merit reopening the case." Lucy Nashed, spokeswoman for Gov. Rick Perry, 2011. [C4, C10]
-> His lawyers also filed the report with Texas's highest criminal court, which ruled it didn't meet the legal test for new evidence of innocence. The governor, Rick Perry, could have granted a thirty-day reprieve on his own. He didn't. His office later said he'd been briefed on the report, and that the courts had found it was simply an opinion.
+> His lawyers also filed a challenge to the fire evidence with Texas's highest criminal court, which ruled it didn't meet the legal test for new evidence of innocence. The governor, Rick Perry, could have granted a thirty-day reprieve on his own. He didn't. His office later said he'd been briefed on the report, and that the courts had found it was simply an opinion.
 
 ### S33 · February 17
 **Picture:** `GFX: card` RECORD, typed: "Yeah. The only statement I want to make is that I am an innocent man - convicted of a crime I did not commit. I have been persecuted for 12 years for something I did not do. From God's dust I came and to dust I will return - so the earth shall become my throne. I gotta go, road dog. I love you Gabby." Last statement, Feb 17, 2004. Texas Department of Criminal Justice. Tag RECONSTRUCTION. No image of the chamber. [C11]
@@ -177,7 +177,7 @@ Care rules for this episode (research §K):
 
 ### S34 · Third weight
 **Picture:** `3D: scale_tip_right` The pan sinks further. Lower third "EVIDENCE · A WARNING IN TIME, AND NO ONE REQUIRED TO TEST IT". [C1–C11]
-> So, the third weight. A scientist's warning reached the people with the power to stop the execution, four days before it. The law didn't require anyone to test it. There's no record that anyone did.
+> So, the third weight. A scientist's warning reached the people with the power to stop the execution, four days before it. The law didn't require anyone to test it. The Innocence Project found no record that anyone did.
 
 ---
 
@@ -188,7 +188,7 @@ Care rules for this episode (research §K):
 
 ### S36 · Lime Street
 **Picture:** `3D: fireroom` An empty test room, a single couch, the floor darkening in patches as the room reaches flashover; slow push. Lower third "A TEST BURN · NO ACCELERANT". Tag ILLUSTRATION · NOT DATA. [F2, F4]
-> The science had been changing since 1990. That year in Jacksonville, Florida, investigators were sure a fatal fire had been set with a liquid. To check, they burned the empty house next door, with nothing but a couch to start it. In a few minutes the room flashed over: everything in it caught at once. Afterwards, the floor showed the same pour patterns, without a drop of accelerant. The charges in that case were dropped.
+> The science had been changing since 1990. That year in Jacksonville, Florida, investigators were sure a fatal fire had been set with a liquid. To check, they burned a condemned house next door, with nothing but a couch to start it. In a few minutes the room flashed over: everything in it caught at once. Afterwards, the floor showed the same pour patterns, without a drop of accelerant. The charges in that case were dropped.
 
 ### S37 · Then and now
 **Picture:** `GFX: rows` header "WHAT THE SIGNS MEAN NOW": POUR PATTERNS · Made by flashover and melting materials / LOW BURNS · Radiant heat; floors aren't hotter than ceilings / THREE ORIGINS · Burning debris dropping, separate patches / CRAZED GLASS · Water on hot glass; "no longer has any value" / THE THRESHOLD · Heat at doorways. Label RECORD. Source "Texas Forensic Science Commission, 2011 · Hurst, 2004". [F3]
@@ -196,31 +196,31 @@ Care rules for this episode (research §K):
 
 ### S38 · The twin case
 **Picture:** `GFX: rows` 1986 · A fire in West Texas kills two women / 1987 · Ernest Ray Willis sentenced to death on "pour patterns" / OCT 2004 · A new prosecutor has the science reviewed; Willis freed. Label RECORD. Source "National Registry of Exonerations · Texas Forensic Science Commission, 2011". [H1, H2, D2]
-> Eight months after Willingham's execution, Texas freed another man. Ernest Ray Willis had been sentenced to death for a fire on the same kinds of signs. A new prosecutor had the evidence reviewed, by experts including Gerald Hurst. They found no evidence of arson, and Willis walked out of prison. Same science, same scientist. Willis had a prosecutor willing to look.
+> Less than eight months after Willingham's execution, Texas freed another man. Ernest Ray Willis had been sentenced to death for a fire on the same kinds of signs. A new prosecutor had the evidence reviewed, by experts including Gerald Hurst. They found no evidence of arson, and Willis walked out of prison. Same science, same scientist. Willis had a prosecutor willing to look.
 
 ### S39 · The reviews
 **Picture:** `GFX: card` RECORD: "…each and every one of the indicators relied upon have since been scientifically proven to be invalid." Arson Review Committee, 2006. Then card RECORD: "…more characteristic of mystics or psychics." Dr. Craig Beyler, on the fire marshal's statements, for the Texas Forensic Science Commission, 2009. [D3, D5, D6]
-> In 2006, a five-member review panel, led by fire experts, looked at the case for the Innocence Project and found every sign the investigators relied on had been shown to be invalid. Texas had just created a Forensic Science Commission, and it hired its own expert, Craig Beyler. His report was blunter still. Vasquez's statements, he wrote, were more characteristic of mystics or psychics than of fire science. A finding of arson, he concluded, could not be sustained, by the standards of 2009 or of 1991.
+> In 2006, a five-member review panel, led by fire experts, looked at the case for the Innocence Project and found every sign the investigators relied on had been shown to be invalid. Texas had just created a Forensic Science Commission, and it hired its own expert, Craig Beyler. His report was blunter still. Vasquez's statements, he wrote, were hardly consistent with a scientific mindset, and more characteristic of mystics or psychics. A finding of arson, he concluded, could not be sustained, by the standards of 2009 or of 1991.
 
 ### S40 · Two days before
-**Picture:** `GFX: rows` SEPT 30, 2009 · The governor replaces the commission's chair and members / OCT 2, 2009 · The hearing on Beyler's report is cancelled. Label INFERENCE. Source "Dallas Morning News, via DPIC · CNN, 2011". Then card ARGUMENT: "Willingham was a monster." Gov. Rick Perry, Oct 14, 2009. Then card ARGUMENT: "…this kind of endless drumbeat of strategies and actions to stop this investigation." Sam Bassett, former commission chair, 2011. [D7–D9]
+**Picture:** `GFX: rows` SEPT 30, 2009 · The governor replaces the commission's chair and members / OCT 2, 2009 · The scheduled hearing on Beyler's report is called off. Label INFERENCE. Source "Dallas Morning News, via DPIC · CNN, 2011". Then card ARGUMENT: "Willingham was a monster." Gov. Rick Perry, Oct 14, 2009. Then card ARGUMENT: "…this kind of endless drumbeat of strategies and actions to stop this investigation." Sam Bassett, former commission chair, 2011. [D7–D9]
 > Two days before the commission was to hear Beyler, Governor Perry replaced its chair and other members. The new chair cancelled the hearing. Perry said their terms had expired, and that it was business as usual. He called Willingham a monster, and said witness after witness had testified to the facts of the case. The chair he replaced later described an endless drumbeat of efforts to stop the investigation.
 
 ### S41 · Untenable
 **Picture:** `GFX: card` RECORD: "In reviewing documents and standards in place then and now, we stand by the original investigator's report and conclusions." State Fire Marshal's Office, Aug 20, 2010. Then card RECORD: "…an untenable position in light of advances in fire science." Texas Forensic Science Commission, April 15, 2011. [D10, D11]
-> The State Fire Marshal's Office said it stood by the original findings. In 2011, the commission called that position untenable in light of the science. It found that the key signs had lost their value, and that nobody had told the courts or prosecutors that the standards had changed. But it made no finding of negligence, and said plainly that it was making no comment on anyone's guilt or innocence. The Attorney General then ruled that it had no power to look at evidence from before 2005 at all.
+> The State Fire Marshal's Office said it stood by the original findings. In 2011, the commission called that position untenable in light of the science. It found that the key signs had lost their value, and that neither the State Fire Marshal's Office nor the city's fire department had told the courts or prosecutors that the standards had changed. But it made no finding of negligence, and said plainly that it was making no comment on anyone's guilt or innocence. The Attorney General then ruled that it had no power to look at evidence from before 2005 at all.
 
 ### S42 · Webb
 **Picture:** `GFX: rows` 1992 · Testifies Willingham confessed / 2000 · Tries to recant; withdraws it / 2014 · Says he lied in exchange for help / 2017 · The prosecutor is cleared by a jury, 11–1. Label INFERENCE. Source "CNN, 2014 · The Intercept, 2017 · Marshall Project, 2017". [E1–E8]
-> The informant changed his story too. Johnny Webb tried to recant in 2000, then withdrew it. In 2014 he said he'd lied in exchange for help. Letters showed the prosecutor, John Jackson, had written on Webb's behalf after the trial, and an unsigned note in the prosecutor's file tied Webb's reduced charge to his cooperation in the case. Jackson denied any deal, and in 2017, a jury in the State Bar's case against him found, eleven to one, that he had not committed misconduct.
+> The informant changed his story too. Johnny Webb tried to recant in 2000, then withdrew it. In 2014 he said he'd lied in exchange for help. Letters showed the prosecutor, John Jackson, had written on Webb's behalf after the trial, and an unsigned note in the prosecutor's file, the Innocence Project says, linked Webb's reduced charge to his testimony. Jackson denied any deal, and in 2017, a jury in the State Bar's case against him found, eleven to one, that he had not committed misconduct.
 
 ### S43 · The pardon
 **Picture:** `GFX: rows` 2010 · A court of inquiry is stopped before any ruling / APR 3, 2014 · The parole board declines a posthumous pardon. Label INFERENCE. Source "Texas Tribune, 2014". [G9, T8]
 > His family asked for a court to declare him wrongly convicted. That inquiry was stopped before it ruled. In 2014, they asked for a posthumous pardon. The parole board said no. His conviction stands.
 
 ### S44 · The rules now
-**Picture:** `GFX: rows` 2011 · Fire investigators must reopen old cases when the science changes (recommendation) / 2013 · Texas lets courts overturn convictions built on discredited science / 1965 · England abolishes the death penalty for murder. Label RECORD. Source "Texas Forensic Science Commission, 2011 · Tex. Code Crim. Proc. art. 11.073 · Murder (Abolition of Death Penalty) Act 1965". [D12, G7, H6]
-> Texas has since changed some rules. The commission recommended that when the science changes, investigators have a duty to tell the people affected. In 2013, Texas let courts overturn a conviction if new science shows the person likely wouldn't have been convicted. It came nine years too late for Willingham. England took a different road long before: it abolished the death penalty for murder in 1965.
+**Picture:** `GFX: rows` 2011 · Investigators should tell those affected when new science changes old results (recommendation) / 2013 · Texas lets courts overturn convictions built on discredited science / 1965 · England abolishes the death penalty for murder. Label RECORD. Source "Texas Forensic Science Commission, 2011 · Tex. Code Crim. Proc. art. 11.073 · Murder (Abolition of Death Penalty) Act 1965". [D12, G7, H6]
+> Texas has since changed some rules. The commission recommended that when the science changes, investigators have a responsibility to tell the people affected. In 2013, Texas let courts overturn a conviction if new science shows the person likely wouldn't have been convicted. It came nine years too late for Willingham. England took a different road long before: it abolished the death penalty for murder in 1965.
 
 ### S45 · Fourth weight
 **Picture:** `3D: scale_tip_left` The first pan recovers ground. Lower third "EVIDENCE · THE SCIENCE CHANGED. THE CONVICTION DIDN'T." [D1–G10]
@@ -235,11 +235,11 @@ Care rules for this episode (research §K):
 
 ### S47 · The case for the State
 **Picture:** `3D: scale_tip_left` Lower third "THE STRONGEST CASE: THE VERDICT STOOD ON MORE THAN FIRE". Then card ARGUMENT: "My ex-husband murdered my daughters, and just before he was executed, he told me he did it." Stacy Kuykendall, 2010. [I1–I6, I13]
-> First, the strongest case for the State. The conviction never rested on the fire science alone, its defenders say: there was the informant, the neighbors' accounts, and a man with a violent past. His conviction was reviewed by court after court for eleven years. Fire investigators in 1991 did what they'd been trained to do, and his own lawyers couldn't find an expert to say otherwise. And the person who knew him best, the girls' mother, says he confessed to her. In 1992 and again in 1999 she had said she didn't believe he did it; she says now that he told her the truth on her last visit.
+> First, the strongest case for the State. The conviction never rested on the fire science alone, its defenders say: there was the informant, the neighbors' accounts, and a man with a violent past. His conviction was reviewed by court after court for eleven years. Fire investigators in 1991 did what they'd been trained to do, and his own lawyers couldn't find an expert to say otherwise. And the person who knew him best, the girls' mother, says he confessed to her. In 1992, and again years later, she said she didn't believe he did it; she says now that just before he was executed, he told her he did it.
 
 ### S48 · The case against
 **Picture:** `3D: scale_tip_right` Lower third "THE STRONGEST CASE: DEATH CAN'T BE CORRECTED". Then card RECORD: "The execution of a person who can show that he is innocent comes perilously close to simple murder." Justice Blackmun, dissenting, Herrera v. Collins, 1993. [I7–I12, I13]
-> Now the strongest case against. The only physical evidence that a crime happened at all didn't show arson. What remained was an informant who has told at least four versions of his story, and experts who diagnosed a man they'd never met. A credible scientist warned the people who could stop the execution, four days ahead, and nothing required them to test what he said. Whether Willingham set the fire, no one can now prove either way. But that's the point: the State executed him on evidence it can no longer stand behind.
+> Now the strongest case against. The only physical evidence that a crime happened at all didn't show arson. What remained was an informant who has told at least four versions of his story, and experts who diagnosed a man they'd never met. A credible scientist warned the people who could stop the execution, four days ahead, and nothing required them to test what he said. Whether Willingham set the fire, no one can now prove either way. But that's the point: the State executed him on evidence that no independent review has stood behind.
 
 ### S49 · Verdict one
 **Picture:** `GFX: verdict` Kicker THE FIRE EVIDENCE. VERDICT: "The signs the jury heard were not evidence of arson, by today's science or by the best fire science of 1991." CONFIDENCE 90%. WHAT WOULD CHANGE OUR MIND: "An independent fire scientist defending those signs on modern science, or lab results showing accelerant where the patterns were."
@@ -292,6 +292,17 @@ opinion GA-0866 (2011), *Herrera v. Collins* (1993), TDCJ's last-statement recor
 the National Registry of Exonerations on Ernest Ray Willis, and David Grann, "Trial by Fire" (2009).
 
 ## Before recording (from research §N and our own checks)
+
+**Checked 31 Oct 2026** against the TFSC 2011 report and exhibits, Hurst's report and the Board's voting
+sheet, the CCA opinion, TDCJ, Herrera v. Collins, Grann (2009), AP, CNN, the Intercept, DPIC, NRE,
+SB 344 / art. 11.073 and the 1965 Act. All on-screen quotes match except as fixed: S30 (Hurst's own
+threshold sentence), S12 (Beyler's "flashover" not a quote), S16 (sentence continues), S39 (Beyler's
+wording), S13 footnote ("noted"). Precision: S04 "last statement" (TDCJ omitted part), S11 "a
+Christmas present", S12 smoke and restraint, S23 "consulted", S32 "a challenge to the fire evidence",
+S34 attributed, S36 "condemned house", S38 "less than eight months", S40 "scheduled hearing", S41 who
+didn't tell, S42 note attributed (its wording not verified: not on screen), S44 "responsibility", S47
+her words, S48 "no independent review". S01 lower third "Texas" (Board members voted from several
+cities).
 
 - **Quotes via Grann, CNN, AP and the Intercept (S11, S12, S20, S31, S32, S40, S42, S47):** spot-check each
   against the page; items marked "via fetch" in the research must be re-read.

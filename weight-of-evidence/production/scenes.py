@@ -39,6 +39,10 @@ Scenes:
             it. k=v: view=push|slot|window|door, push (0..1)
   tier      (Case 08) An empty jail tier: steel cell doors under caged tubes, a wall phone; or a
             dormitory of empty bunks. No numbers or signs. k=v: view=corridor|phone|dorm, push
+  fax       (Case 09) An office fax machine on a night desk, a page feeding out; no names or logos.
+            k=v: view=push|page
+  fireroom  (Case 09) Flashover, illustrated: an empty test room with a couch; a glow builds, smoke
+            comes down and the carpet darkens in patches. Not any real fire. k=v: view=push|floor
   tv        (shared) An old CRT TV showing only static, for footage we choose not to show. k=v: push
   desk      (shared) A typed page on a dark desk under one lamp, a pen beside it. The text is
             verbatim from the record (DOCS) or a labelled generic form. k=v: doc=pl109_3|
@@ -2016,6 +2020,18 @@ DOCS = {
              "primarily through an increase in guilty pleas."]),
     "bjs": ("BUREAU OF JUSTICE STATISTICS", "2026", [],
             ["At midyear 2024, 68% of jail inmates (450,700) were unconvicted ..."]),
+    # Case 09: verbatim (checked 31 Oct 2026, script "Before recording"); "Marshall" is Hurst's spelling
+    "hurst": ("GERALD L. HURST, PH.D.", "FEB. 13, 2004", [],
+              ["... most of the conclusions reached by the Fire Marshall would be considered invalid in light "
+               "of current knowledge."]),
+    "vasquez": ("TEXAS FORENSIC SCIENCE COMMISSION", "2011", [],
+                ["\u201cThe fire tells a story. I am just the interpreter.\u201d"]),
+    "beyler": ("CRAIG L. BEYLER, PH.D.", "2009", [],
+               ["... hardly consistent with a scientific mindset and is more characteristic of mystics or "
+                "psychics.",
+                "A finding of arson could not be sustained."]),
+    "herrera": ("HERRERA v. COLLINS", "1993", [],
+                ["... a claim of \u2018actual innocence\u2019 is not itself a constitutional claim ..."]),
 }
 
 
@@ -2515,6 +2531,205 @@ def scene_tier(kv, f0, f1):
         cam.keyframe_insert("rotation_euler", frame=f)
 
 
+def fax_texture(path, w=860, h=1110):
+    """The page coming out of the fax: a thermal-paper page with the fax header line (date and
+    page number) and grey bars where the typed lines are. No words: the reader can't read it."""
+    from PIL import Image, ImageDraw, ImageFont, ImageFilter
+    import random
+    fonts = os.environ.get("WOE_FONTS", os.path.join(os.path.dirname(__file__), "fonts"))
+    f = ImageFont.truetype(os.path.join(fonts, "CourierPrime.ttf"), 22)
+    img = Image.new("RGB", (w, h), (236, 234, 226))
+    d = ImageDraw.Draw(img)
+    d.text((40, 24), "FEB-13-2004", font=f, fill=(70, 70, 70))
+    d.text((w - 40, 24), "P. 1", font=f, fill=(70, 70, 70), anchor="ra")
+    rng = random.Random(9)
+    y = 120
+    while y < h - 80:
+        if rng.random() < 0.12:
+            y += 34
+            continue
+        d.rectangle((70, y, 70 + rng.randint(420, w - 140), y + 9), fill=(120, 120, 118))
+        y += 26
+    img.filter(ImageFilter.GaussianBlur(1.2)).save(path)
+    return path
+
+
+def scene_fax(kv, f0, f1):
+    """(Case 09) An office fax machine of the early 2000s on an empty desk at night, one desk lamp,
+    a page feeding slowly out of it; a phone and a closed folder beside it. No names or logos.
+    view=push (slow push toward the machine) | page (close on the page as it feeds out);
+    page_out=0..1 fixes how far the page is out (for stills)."""
+    wood = mat_principled("FDesk", (0.035, 0.024, 0.017), rough=0.4, coat=0.2)
+    plastic = mat_principled("FaxBody", (0.62, 0.6, 0.55), rough=0.45)
+    dark = mat_principled("FaxDark", (0.05, 0.05, 0.055), rough=0.4)
+    lcd = mat_principled("LCD", (0.1, 0.13, 0.08), emission=(0.45, 0.6, 0.3), strength=0.8)
+    folder = mat_principled("Folder", (0.42, 0.33, 0.2), rough=0.8)
+    wall = mat_principled("FWall", (0.06, 0.06, 0.065), rough=0.9)
+    paper = mat_principled("FaxPage", (0.9, 0.9, 0.86), rough=0.85)
+    tex = fax_texture(os.path.join(bpy.app.tempdir or "/tmp", "fax_page.png"))
+    im = paper.node_tree.nodes.new("ShaderNodeTexImage")
+    im.image = bpy.data.images.load(tex)
+    paper.node_tree.links.new(im.outputs["Color"], paper.node_tree.nodes["Principled BSDF"].inputs["Base Color"])
+
+    def box(name, loc, scale, m, bev=0.0):
+        o = add("cube", name, size=1, location=loc)
+        o.scale = scale
+        assign(o, m)
+        if bev:
+            bevel(o, bev)
+        return o
+
+    box("Desk", (0, 0.1, -0.03), (2.4, 1.2, 0.06), wood)
+    box("Wall", (0, 0.75, 0.8), (3, 0.05, 2), wall)
+    # the machine: a sloped body, a paper feeder at the back, a panel with keys and a small screen
+    box("Body", (0, 0.12, 0.06), (0.38, 0.3, 0.12), plastic, 0.02)
+    hood = box("Hood", (0, 0.2, 0.135), (0.36, 0.14, 0.04), plastic, 0.015)
+    hood.rotation_euler = (math.radians(-12), 0, 0)
+    box("Panel", (0, 0.03, 0.125), (0.34, 0.1, 0.02), dark, 0.006)
+    box("Screen", (-0.08, 0.03, 0.137), (0.1, 0.03, 0.004), lcd)
+    for i in range(4):
+        for j in range(3):
+            box(f"Key{i}{j}", (0.04 + i * 0.03, 0.005 + j * 0.022, 0.138), (0.018, 0.014, 0.006), plastic, 0.002)
+    feeder = box("Feeder", (0, 0.31, 0.2), (0.24, 0.01, 0.16), dark, 0.004)
+    feeder.rotation_euler = (math.radians(-25), 0, 0)
+    box("Slot", (0, -0.03, 0.05), (0.24, 0.01, 0.012), dark)
+    # the page: slides out of the front slot onto the desk over the clip
+    page = add("plane", "Page", size=1, location=(0, -0.03, 0.045))
+    page.scale = (0.216, 0.279, 1)
+    assign(page, paper)
+    # a desk phone, a folder, the lamp
+    box("Phone", (-0.5, 0.05, 0.035), (0.2, 0.22, 0.07), dark, 0.02)
+    hs = add("cylinder", "Handset", radius=0.025, depth=0.2, location=(-0.5, 0.05, 0.085), rotation=(math.radians(90), 0, 0))
+    assign(hs, dark)
+    box("Folder", (0.48, -0.05, 0.004), (0.24, 0.31, 0.008), folder, 0.002).rotation_euler = (0, 0, math.radians(8))
+    stem = add("cylinder", "LampStem", radius=0.01, depth=0.45, location=(0.55, 0.38, 0.22))
+    assign(stem, dark)
+    shade = add("cone", "LampShade", radius1=0.1, radius2=0.04, depth=0.12, location=(0.5, 0.3, 0.45),
+                rotation=(math.radians(35), 0, math.radians(25)))
+    assign(shade, mat_principled("Shade", (0.05, 0.16, 0.08), rough=0.3, coat=0.5))
+    spot((0.45, 0.22, 0.42), (0.0, -0.05, 0.0), 60, angle=55, blend=0.8, color=(1.0, 0.8, 0.58), name="Lamp")
+    area_light((-1.0, -0.8, 1.2), (0, 0, 0), 2.0, size=2.0, color=(0.45, 0.55, 0.8), name="Window")
+    view = kv.get("view", "push")
+    if view == "page":
+        a, b, tgt, lens = (0.18, -0.52, 0.3), (0.12, -0.42, 0.24), (0, -0.12, 0.02), 50
+    else:
+        a, b, tgt, lens = (0.35, -1.05, 0.55), (0.22, -0.72, 0.4), (0, 0.05, 0.08), 45
+    cam = camera(a, tgt, lens=lens)
+    for f in range(f0, f1 + 1):
+        u = G_ease((f - f0) / max(1, f1 - f0))
+        cam.location = tuple(a[i] + (b[i] - a[i]) * u for i in range(3))
+        look_at(cam, tgt)
+        cam.keyframe_insert("location", frame=f)
+        cam.keyframe_insert("rotation_euler", frame=f)
+        out = min(1.0, (f - f0) / max(1, f1 - f0) * 1.15)  # the page creeps out, then rests
+        if "page_out" in kv:  # a still with the page part-way out (thumbnails)
+            out = float(kv["page_out"])
+        page.location = (0, -0.03 - 0.17 * out, 0.045 - 0.04 * max(0.0, out - 0.6) / 0.4)
+        page.rotation_euler = (math.radians(-8 * (1 - out)), 0, 0)
+        page.keyframe_insert("location", frame=f)
+        page.keyframe_insert("rotation_euler", frame=f)
+
+
+def scene_fireroom(kv, f0, f1):
+    """(Case 09) An illustration of flashover, not a model of any real fire: an empty test room, open on
+    one side, with a single couch. Over the clip a glow builds behind the couch, a dark smoke layer
+    comes down from the ceiling, and the carpet darkens in irregular patches that look like 'pour
+    patterns' though nothing was poured. No flames as objects, no people. view=push | floor."""
+    wallm = mat_principled("Gypsum", (0.55, 0.54, 0.5), rough=0.9)
+    fabric = mat_principled("Couch", (0.2, 0.17, 0.13), rough=0.95)
+    smoke = mat_principled("Smoke", (0.01, 0.01, 0.01), rough=1.0, alpha=0.55)
+    # the carpet: base colour mixed toward char by a noise mask whose threshold follows "Burn"
+    carpet = mat_principled("Carpet", (0.32, 0.26, 0.2), rough=0.95)
+    nt = carpet.node_tree
+    bsdf = nt.nodes["Principled BSDF"]
+    tc = nt.nodes.new("ShaderNodeTexCoord")
+    nz = nt.nodes.new("ShaderNodeTexNoise")
+    nz.inputs["Scale"].default_value = 4.5
+    nz.inputs["Detail"].default_value = 8.0
+    nz.inputs["Roughness"].default_value = 0.6
+    burn = nt.nodes.new("ShaderNodeValue")
+    burn.outputs[0].default_value = 0.0
+    sub = nt.nodes.new("ShaderNodeMath")
+    sub.operation = "SUBTRACT"
+    mul = nt.nodes.new("ShaderNodeMath")
+    mul.operation = "MULTIPLY"
+    mul.use_clamp = True
+    mul.inputs[1].default_value = 9.0
+    inv = nt.nodes.new("ShaderNodeMath")
+    inv.operation = "SUBTRACT"
+    inv.inputs[0].default_value = 0.78
+    mix = nt.nodes.new("ShaderNodeMix")
+    mix.data_type = "RGBA"
+    mix.inputs["A"].default_value = (0.32, 0.26, 0.2, 1)
+    mix.inputs["B"].default_value = (0.015, 0.012, 0.01, 1)
+    nt.links.new(tc.outputs["Object"], nz.inputs["Vector"])
+    nt.links.new(burn.outputs[0], inv.inputs[1])          # 0.78 - burn*: the threshold falls
+    nt.links.new(nz.outputs["Fac"], sub.inputs[0])
+    nt.links.new(inv.outputs[0], sub.inputs[1])
+    nt.links.new(sub.outputs[0], mul.inputs[0])
+    nt.links.new(mul.outputs[0], mix.inputs["Factor"])
+    nt.links.new(mix.outputs["Result"], bsdf.inputs["Base Color"])
+
+    def box(name, loc, scale, m, bev=0.0):
+        o = add("cube", name, size=1, location=loc)
+        o.scale = scale
+        assign(o, m)
+        if bev:
+            bevel(o, bev)
+        return o
+
+    W, D, H = 3.6, 3.0, 2.4
+    fl = box("Floor", (0, D / 2, -0.02), (W, D, 0.04), carpet)
+    fl.data.uv_layers.new()
+    box("Back", (0, D + 0.05, H / 2), (W + 0.2, 0.1, H), wallm)
+    box("Left", (-W / 2 - 0.05, D / 2, H / 2), (0.1, D, H), wallm)
+    box("Right", (W / 2 + 0.05, D / 2, H / 2), (0.1, D, H), wallm)
+    box("Ceil", (0, D / 2, H + 0.05), (W + 0.2, D, 0.1), wallm)
+    box("Soffit", (0, 0.05, H - 0.2), (W + 0.2, 0.1, 0.4), wallm)  # the open side's header
+    # the couch against the back wall
+    box("Seat", (0.3, D - 0.55, 0.25), (1.9, 0.85, 0.4), fabric, 0.05)
+    box("SBack", (0.3, D - 0.2, 0.6), (1.9, 0.25, 0.75), fabric, 0.06)
+    for x in (-0.65, 1.25):
+        box(f"Arm{x}", (x, D - 0.55, 0.42), (0.22, 0.85, 0.5), fabric, 0.05)
+    sm = box("SmokeLayer", (0, D / 2, H - 0.05), (W - 0.02, D - 0.02, 0.1), smoke)
+    ember = mat_principled("Ember", (0.1, 0.05, 0.02), emission=(1.0, 0.42, 0.12), strength=0.0)
+    seat_glow = box("SeatGlow", (0.3, D - 0.55, 0.455), (1.7, 0.7, 0.01), ember)
+    glow = bpy.data.lights.new("Glow", "AREA")
+    glow.size = 1.4
+    glow.color = (1.0, 0.45, 0.15)
+    go = bpy.data.objects.new("Glow", glow)
+    bpy.context.scene.collection.objects.link(go)
+    go.location = (0.3, D - 0.6, 1.25)
+    look_at(go, (0.3, 0.6, 0.0))
+    area_light((0, -2.5, 2.0), (0, 1.5, 0.5), 25, size=3.0, color=(0.75, 0.8, 0.9), name="Work")
+    view = kv.get("view", "push")
+    if view == "floor":
+        a, b, tgt, lens = (-1.3, -0.6, 0.75), (-0.9, -0.2, 0.6), (0.2, 1.3, 0.0), 30
+    else:
+        a, b, tgt, lens = (0.0, -2.6, 1.35), (0.0, -1.6, 1.25), (0.1, 1.8, 0.6), 26
+    cam = camera(a, tgt, lens=lens)
+    for f in range(f0, f1 + 1):
+        u = (f - f0) / max(1, f1 - f0)
+        e = G_ease(u)
+        cam.location = tuple(a[i] + (b[i] - a[i]) * e for i in range(3))
+        look_at(cam, tgt)
+        cam.keyframe_insert("location", frame=f)
+        cam.keyframe_insert("rotation_euler", frame=f)
+        k = u ** 1.6  # slow start, then the room goes quickly
+        burn.outputs[0].default_value = 0.3 * k  # threshold 0.78 -> 0.48: about half the floor
+        burn.outputs[0].keyframe_insert("default_value", frame=f)
+        glow.energy = 10 + 320 * k + 25 * math.sin(f * 1.3) * k
+        glow.keyframe_insert("energy", frame=f)
+        em = ember.node_tree.nodes["Principled BSDF"].inputs["Emission Strength"]
+        em.default_value = 6.0 * k * (1 + 0.15 * math.sin(f * 2.1))
+        em.keyframe_insert("default_value", frame=f)
+        depth = 0.1 + 1.0 * k  # the smoke layer thickens downward from the ceiling
+        sm.scale = (W - 0.02, D - 0.02, depth)
+        sm.location = (0, D / 2, H - depth / 2)
+        sm.keyframe_insert("scale", frame=f)
+        sm.keyframe_insert("location", frame=f)
+
+
 def main():
     scene, out, opts, kv = args()
     f0, f1 = (int(v) for v in opts["frames"].split(":"))
@@ -2524,7 +2739,7 @@ def main():
      "book": scene_book, "or": scene_or, "lot": scene_lot, "shelf": scene_shelf,
      "room": scene_room, "park": scene_park, "dome": scene_dome, "courtroom": scene_courtroom,
      "desk": scene_desk, "ward": scene_ward, "tv": scene_tv,
-     "cell": scene_cell, "tier": scene_tier}[scene](kv, f0, f1)
+     "cell": scene_cell, "tier": scene_tier, "fax": scene_fax, "fireroom": scene_fireroom}[scene](kv, f0, f1)
     os.makedirs(out, exist_ok=True)
     tag = kv.get("name", scene)
     for f in range(f0, f1 + 1, int(opts.get("step", 1))):

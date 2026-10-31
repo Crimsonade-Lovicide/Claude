@@ -24,5 +24,6 @@ if [ -n "$missing" ]; then
   (cd "$HERE" && nice -n 5 "$PY" "$EP" "$PROD" --only "$missing" -j "$JOBS")
 fi
 (cd "$HERE" && "$PY" "$EP" "$PROD" --remux)
+rm -f "$PROD"/video_*.mp4  # the joined pre-master video (~3 GB); the shots can rebuild it
 touch "$PROD/pipeline.done"
 echo "pipeline done"
