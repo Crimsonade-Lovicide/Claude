@@ -77,8 +77,8 @@ for _c in ("court_push", "court_bench", "court_witness", "court_gallery", "court
     TAGS[_c] = ILL
 
 # when each card lands: card_after() delays (footage plays clean first)
-CARD_AT = {"S02": 3.0, "S12": 3.0, "S13": 3.0, "S16": 3.0, "S21": 3.0, "S22": 3.0, "S25": 3.0, "S29": 3.0,
-           "S32": 3.0, "S39": 3.0, "S41": 3.0}
+CARD_AT = {"S02": 3.0, "S05": 3.0, "S12": 3.0, "S13": 3.0, "S16": 3.0, "S21": 3.0, "S22": 3.0, "S25": 3.0,
+           "S29": 3.0, "S32": 3.0, "S39": 3.0, "S41": 3.0}
 
 
 # ---------------------------------------------------------------- the graphics
@@ -96,6 +96,11 @@ def graphics(ctx):
     stack = E1.stacked_words_shot
     shots = {}
 
+    def handoff(sid, phrase):
+        """When the second card of a two-card shot takes over: the narration time, less the delay
+        build() puts before the whole card shot (CARD_AT), so it lands on the words."""
+        return max(0.5, at(sid, phrase) - CARD_AT[sid])
+
     # COLD OPEN
     shots["S01"] = E.clip_shot(C("fax_push"), tag="RECONSTRUCTION",
                                overlay=lower("Texas", "FEBRUARY 13, 2004", 2.4))
@@ -110,7 +115,7 @@ def graphics(ctx):
                          ("FEB 17, 2004", "No reprieve from the governor; executed")],
                         [at("S04", "The parole board"), at("S04", "The governor")],
                         label="RECORD", source="Board of Pardons and Paroles, Feb 13, 2004 · TDCJ")
-    t_st = at("S05", "And the girls'")
+    t_st = handoff("S05", "And the girls'")
     shots["S05"] = G.seq((card("“A finding of arson could not be sustained.”", "RECORD", BEY), t_st),
                          (card("“My ex-husband murdered my daughters, and just before he was executed, he told me "
                                "he did it.”", "ARGUMENT", "Stacy Kuykendall, Oct 6, 2010"), 1))
@@ -131,7 +136,7 @@ def graphics(ctx):
                         label="INFERENCE", source="Beyler, 2009 · " + NY)
     shots["S12"] = card("Neighbors saw smoke at the front door, then flames when the bedroom windows broke; then the "
                         "bedroom reached flashover.", "INFERENCE", "Dr. Craig Beyler's reading of the witness statements, 2009")
-    t_fn = at("S13", "The state commission")
+    t_fn = handoff("S13", "The state commission")
     shots["S13"] = G.seq((card("“The fire tells a story. I am just the interpreter.”", "RECORD",
                                "Manuel Vasquez, trial testimony, 1992, as quoted by the commission"), t_fn),
                          (card("The commission noted this phrasing was commonly taught at training seminars of the day.",
@@ -173,7 +178,7 @@ def graphics(ctx):
                          ("STACY", "Testified for him at sentencing")],
                         [at("S24", "He had a record"), at("S24", "Witnesses said"), at("S24", "Stacy herself")],
                         label="RECORD", source="Willingham v. State, 1995 · AP, 2009")
-    t_fn = at("S25", "Neither of them")
+    t_fn = handoff("S25", "Neither of them")
     shots["S25"] = G.seq((card("“…fits the profile of an extremely severe sociopath…”", "RECORD",
                                "Dr. James Grigson's testimony, as summarized by the Court of Criminal Appeals"), t_fn),
                          (card("Neither expert had examined him. The American Psychiatric Association expelled "
@@ -184,7 +189,7 @@ def graphics(ctx):
 
     # III. THE LAST FOUR DAYS
     shots["S28"] = G.title_shot("III · THE LAST FOUR DAYS")
-    t_fs = at("S29", "The safety net")
+    t_fs = handoff("S29", "The safety net")
     shots["S29"] = G.seq((card("“…a claim of ‘actual innocence’ is not itself a constitutional claim…”", "RECORD",
                                "Herrera v. Collins, U.S. Supreme Court, 1993"), t_fs),
                          (card("“Executive clemency has provided the ‘fail safe’ in our criminal justice system.”",
@@ -224,7 +229,7 @@ def graphics(ctx):
                          ("OCT 2004", "A new prosecutor has the science reviewed; Willis freed")],
                         [at("S38", "Ernest Ray Willis"), at("S38", "had been sentenced"), at("S38", "A new prosecutor")],
                         label="RECORD", source="National Registry of Exonerations · " + TFSC)
-    t_bey = at("S39", "Texas had just")
+    t_bey = handoff("S39", "Texas had just")
     shots["S39"] = G.seq((card("“…each and every one of the indicators relied upon have since been scientifically "
                                "proven to be invalid.”", "RECORD", "Arson Review Committee, 2006"), t_bey),
                          (card("“…more characteristic of mystics or psychics.”", "RECORD",
@@ -237,7 +242,7 @@ def graphics(ctx):
                          (card("“Willingham was a monster.”", "ARGUMENT", "Gov. Rick Perry, Oct 14, 2009"), t_dr - t_mon),
                          (card("“…this kind of endless drumbeat of strategies and actions to stop this "
                                "investigation.”", "ARGUMENT", "Sam Bassett, former commission chair, 2011"), 1))
-    t_un = at("S41", "In 2011")
+    t_un = handoff("S41", "In 2011")
     shots["S41"] = G.seq((card("“In reviewing documents and standards in place then and now, we stand by the original "
                                "investigator's report and conclusions.”", "RECORD",
                                "State Fire Marshal's Office, Aug 20, 2010"), t_un),
@@ -333,8 +338,7 @@ def build(ctx):
     shots["S03"] = under("S03", ("ai_tx_town", c1 + 4), "ai_tx_road", clear=c1)
     c1, c2 = at("S04", "The parole board"), at("S04", "The governor")
     shots["S04"] = under("S04", ("ai_hearing", c2), ("ai_capitol", 5), "ai_razor_wire", clear=c1)
-    shots["S05"] = F.over(Bq(("ai_fire_lab", 6), ("desk_beyler", 7), "ai_tx_road"), F.delay(old["S05"], 3.0),
-                          clear_until=3.0)
+    shots["S05"] = card_after("S05", ("ai_fire_lab", 6), ("desk_beyler", 7), "ai_tx_road")
     c1 = at("S06", "at least four")
     shots["S06"] = under("S06", ("ai_razor_wire", c1 + 2), "tier_corridor", clear=c1)
     q = [at("S08", p) for p in ("the fire reports", "the clemency file", "the state commission's", "and what the law",

@@ -105,6 +105,11 @@ def graphics(ctx):
     stack = E1.stacked_words_shot
     shots = {}
 
+    def handoff(sid, phrase):
+        """When the second card of a two-card shot takes over: the narration time, less the delay
+        build() puts before the whole card shot (CARD_AT), so it lands on the words."""
+        return max(0.5, at(sid, phrase) - CARD_AT[sid])
+
     # COLD OPEN
     shots["S01"] = E.clip_shot(C("cell_push"), tag=DOJR,
                                overlay=lower("Rikers Island, New York", "MAY 2010", 2.4))
@@ -184,12 +189,12 @@ def graphics(ctx):
                                label="INFERENCE", source=NY), t_om),
                          (card("“Ninety-nine out of a hundred would take the offer that gets you out of jail.”",
                                "INFERENCE", "Brendan O'Meara, his lawyer, 2014"), 1))
-    t_he = at("S26", "He said: I'm")
+    t_he = handoff("S26", "He said: I'm")
     shots["S26"] = G.seq((card("“If you want that, I will do that today.”", "INFERENCE",
                                "Judge DiMango, March 13, 2013, court transcript · " + NY), t_he),
                          (card("“I'm all right … I did not do it. I'm all right.”", "INFERENCE",
                                "Kalief Browder, the same day, as quoted in " + NY), 1))
-    t_rel = at("S27", "Browder was released")
+    t_rel = handoff("S27", "Browder was released")
     shots["S27"] = G.seq((card("“The District Attorney is really in a position right now where they cannot "
                                "proceed.”", "INFERENCE", "Judge DiMango, May 29, 2013, as quoted in " + NY), t_rel),
                          (num("1,110", "DAYS HELD", "never tried", "our count from The New Yorker's dates", at=0.4), 1))
@@ -240,7 +245,7 @@ def graphics(ctx):
     shots["S44"] = card("“Unless this right to bail before trial is preserved, the presumption of innocence, secured "
                         "only after centuries of struggle, would lose its meaning.”", "RECORD",
                         "Chief Justice Vinson, Stack v. Boyle, U.S. Supreme Court, 1951")
-    t_mar = at("S45", "Justice Marshall")
+    t_mar = handoff("S45", "Justice Marshall")
     shots["S45"] = G.seq((card("“In our society liberty is the norm, and detention prior to trial or without trial is "
                                "the carefully limited exception.”", "RECORD",
                                "Chief Justice Rehnquist, United States v. Salerno, 1987"), t_mar),
@@ -269,7 +274,7 @@ def graphics(ctx):
                                        "Data Collaborative for Justice, 2023 (New York City)"), t_not),
                          (card("Release “tended to increase recidivism for people with more substantial recent "
                                "criminal histories.”", "RECORD", "Data Collaborative for Justice, 2023"), 1))
-    t_clk = at("S50", "And England's clock")
+    t_clk = handoff("S50", "And England's clock")
     shots["S50"] = G.seq((card("“A person to whom this section applies shall be granted bail except as provided in "
                                "Schedule 1.”", "RECORD", "Bail Act 1976, s. 4 (England and Wales)"), t_clk),
                          (rows([("HELD ONLY IF", "Substantial grounds he'd run, offend, or interfere with witnesses "
