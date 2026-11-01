@@ -130,7 +130,7 @@ def graphics(ctx):
                        "Bureau of Justice Statistics, 2026", colour=G.BRASS, at=at("S06", "In mid-2024"))
     shots["S07"] = E.clip_shot(C("scale_empty"), tag=None)
     shots["S08"] = G.words_shot("We'll give you a verdict, and tell you how sure we are.", size=64,
-                                emphasis={"how", "sure"}, per_word=0.3, start=at("S08", "At the end"))
+                                emphasis={"how", "sure"}, per_word=0.3, start=0.2)  # build() cuts to it
     shots["S09"] = G.title_shot("KALIEF BROWDER", "Should anyone be jailed for years before a trial?",
                                 "WEIGHT OF EVIDENCE · CASE 08")
 

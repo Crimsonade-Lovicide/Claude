@@ -123,7 +123,7 @@ def graphics(ctx):
                        "Gross, O'Brien, Hu & Kennedy, PNAS, 2014", colour=G.BRASS, at=at("S06", "at least four"))
     shots["S07"] = E.clip_shot(C("scale_empty"), tag=None)
     shots["S08"] = G.words_shot("We'll give you a verdict, and tell you how sure we are.", size=64,
-                                emphasis={"how", "sure"}, per_word=0.3, start=at("S08", "At the end"))
+                                emphasis={"how", "sure"}, per_word=0.3, start=0.2)  # build() cuts to it
     shots["S09"] = G.title_shot("CAMERON TODD WILLINGHAM", "Should a state execute someone when the evidence is "
                                 "disputed?", "WEIGHT OF EVIDENCE · CASE 09")
 
@@ -340,7 +340,7 @@ def build(ctx):
     shots["S04"] = under("S04", ("ai_hearing", c2), ("ai_capitol", 5), "ai_razor_wire", clear=c1)
     shots["S05"] = card_after("S05", ("ai_fire_lab", 6), ("desk_beyler", 7), "ai_tx_road")
     c1 = at("S06", "at least four")
-    shots["S06"] = under("S06", ("ai_razor_wire", c1 + 2), "tier_corridor", clear=c1)
+    shots["S06"] = under("S06", ("ai_razor_wire", c1 + 2), "tier_corridor")  # label lands at 0.3: keep it readable
     q = [at("S08", p) for p in ("the fire reports", "the clemency file", "the state commission's", "and what the law",
                                 "At the end")]
     shots["S08"] = G.seq((B(("ai_archive", q[0]), ("ai_lab_cans", q[1] - q[0]), ("fax_page", q[2] - q[1]),

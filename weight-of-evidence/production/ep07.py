@@ -87,7 +87,7 @@ def build(ctx):
                        "Yadav et al., Health Affairs, 2017", colour=G.BRASS, at=at("S06", "only about"))
     shots["S07"] = E.clip_shot(C("scale_empty"), tag=None)
     shots["S08"] = G.words_shot("We'll give you a verdict, and tell you how sure we are.", size=64,
-                                emphasis={"how", "sure"}, per_word=0.3, start=at("S08", "At the end"))
+                                emphasis={"how", "sure"}, per_word=0.3, start=0.2)  # build() cuts to it
     shots["S09"] = G.title_shot("TERRI SCHIAVO", "Who should decide when to stop keeping someone alive?",
                                 "WEIGHT OF EVIDENCE · CASE 07")
 
