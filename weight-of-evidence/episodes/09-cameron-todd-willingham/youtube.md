@@ -22,10 +22,16 @@ anyone involved; no image of the house, the fire or an execution chamber (resear
 >
 > Content note: this episode discusses the deaths of young children in a fire, and capital punishment. Nothing graphic is described or shown. No images of the family, the house or the execution are shown.
 >
-> The fax machine, the courtroom and the test room are reconstructions or illustrations, labelled on screen.
+> The fax machine, the courtroom and the test room are reconstructions or illustrations, labelled on screen. Clips marked AI-GENERATED are illustrative places, never archival footage.
 >
 > CHAPTERS
-> (generated from the final edit: weight_of_evidence_case09_chapters.txt)
+> 0:00 Texas, 2004
+> 2:19 I. The fire
+> 5:25 II. The trial
+> 7:43 III. The last four days
+> 10:12 IV. The science
+> 15:03 V. The verdict
+> 18:15 Next case
 >
 > SOURCES
 > - Willingham v. State, 897 S.W.2d 351 (Tex. Crim. App. 1995).

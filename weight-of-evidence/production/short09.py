@@ -80,7 +80,7 @@ def build(ctx):
     s = {}
     s["S02"] = S4.card_v(ctx, "S02", "“…most of the conclusions reached by the Fire Marshall would be considered "
                          "invalid in light of current knowledge.”", "RECORD",
-                         "Dr. Gerald Hurst, report for the clemency petition, Feb 13, 2004")
+                         "Dr. Gerald Hurst, clemency report, Feb 13, 2004")
     s["S03"] = S4.type_v(ctx, "S03", [("DEC 23, 1991", mono, G.BRASS, "The fire was"),
                                       ("A house fire in Corsicana, Texas", sans, G.INK, "The fire was"),
                                       ("AUG 1992", mono, G.BRASS, "Their father"),
@@ -94,7 +94,8 @@ def build(ctx):
                                       ("No reprieve from the governor; executed", sans, G.INK, "The governor")],
                          source="Board of Pardons and Paroles · TDCJ", label="RECORD", y0=420)
     t_st = max(0.5, at("S05", "And the girls'") - CARD)  # the whole shot is delayed by CARD
-    s["S05"] = G.seq((S4.card_v(ctx, "S05", "“A finding of arson could not be sustained.”", "RECORD", ep09.BEY), t_st),
+    s["S05"] = G.seq((S4.card_v(ctx, "S05", "“A finding of arson could not be sustained.”", "RECORD",
+                                "Craig Beyler, Texas Forensic Science Commission, 2009"), t_st),
                      (S4.card_v(ctx, "S05", "“My ex-husband murdered my daughters, and just before he was executed, "
                                 "he told me he did it.”", "ARGUMENT", "Stacy Kuykendall, Oct 6, 2010"), 1))
     s["S06"] = S4.type_v(ctx, "S06", [("DEATH SENTENCES THAT ARE FALSE CONVICTIONS", mono, G.DIM, 0.3),
