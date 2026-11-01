@@ -1,85 +1,105 @@
 # Case 11: candidates (for the owner's choice)
 
-Proposed 31 Oct 2026. Case 10 (Tarasoff) ends on a "next case" teaser (S52), so its script waits on
-this choice. Key facts below are from the primary sources listed; every line is checked again in the
-chosen case's research §0 before recording.
+Round 2, 1 Nov 2026. The owner turned down round 1 (Moore v. Regents, He Jiankui, Apple v. FBI) as "not
+compelling enough" and asked for "a more visceral, dangerous, exciting case". All three below are life
+or death in hours, with a real decision made under pressure and a court that had to judge it. Case 10
+(Tarasoff) ends on a "next case" teaser (S52), so its script waits on this choice. Key facts are from the
+sources listed; every line is checked again in the chosen case's research §0 before recording.
 
-## 1. Moore v. Regents (recommended)
+## 1. Shoot it down? Frankfurt, 2003 (recommended)
 
-**Question:** Should you have a say in, and a share of, what's made from your cells?
+**Question:** Should a government shoot down a hijacked plane full of innocent passengers to save more
+people on the ground?
 
-**Case:** John Moore, treated for hairy-cell leukaemia at UCLA from 5 Oct 1976, had his spleen
-removed on 20 Oct 1976; for seven years his doctor had him fly back from Seattle for more samples,
-without, Moore alleged, telling him about the research or his own financial interest. In March 1984
-the doctor and a colleague were named inventors on a patent for a cell line grown from Moore's cells
-(US 4,438,032), assigned to the University of California Regents. On 9 Jul 1990 the California Supreme
-Court held Moore had no property right in his removed cells, but that his doctor owed him disclosure;
-Justice Mosk dissented.
+**Case:** On 5 Jan 2003 a man took a small motor glider and circled Frankfurt's towers for about two
+hours, threatening to crash into the European Central Bank. The airport closed, towers were evacuated,
+military jets flew overhead; he landed and was arrested (no one hurt). With 9/11 sixteen months
+earlier, Germany passed the Aviation Security Act (in force Jan 2005): § 14(3) let the air force shoot
+down a hijacked aircraft about to be used to kill people. On 15 Feb 2006 the Federal Constitutional Court
+struck that section down: the state may not deliberately kill innocent passengers, treating them as
+means to save others (1 BvR 357/05). On 9/11 itself, the shoot-down order was given after United 93 had
+already crashed. In Oct 2016, German TV staged a fictional trial of a pilot who did it anyway and let
+viewers decide: about 87% voted to acquit, against their own highest court.
 
-**Strongest case for a right:** your body shouldn't become someone else's patent without your
-knowledge; Mosk's dissent; the Lacks family's 2013 agreement with the NIH.
-**Strongest case against:** property in tissue would put a lawsuit behind every sample and stall
-research; consent, not ownership, is the protection (the majority; *Washington University v. Catalona*,
-2007); most of the value is the scientists' work.
+**Strongest case for shooting:** the passengers die either way; thousands on the ground don't have to;
+every hour of delay is a choice too; armies already accept civilian deaths.
+**Strongest case against:** the state choosing to kill its own innocent citizens; no one is ever certain
+in time (Flight 93's passengers fought back; a plane can be a false alarm); the court's human-dignity
+line.
 
-**Sources:** Moore v. Regents, 51 Cal.3d 120 (1990); US Patent 4,438,032; Washington Univ. v. Catalona
-(8th Cir. 2007); Hudson & Collins, Nature 2013; the Common Rule, 45 CFR 46.
+**Look:** the most cinematic of the three. Blender: fighter, airliner, skyline, radar scopes, an empty
+cockpit. Higgsfield: the Frankfurt skyline, the ECB tower, the Karlsruhe court (real places).
+**Care:** no 9/11 footage, no images of the victims; the 2003 pilot not named or shown (he was described
+as mentally disturbed, and no one was hurt).
 
-**Care:** no surgery or organs on screen (vials, freezers, the patent on a desk). Henrietta Lacks, if
-mentioned, as context only, no photograph.
+**Link from Tarasoff:** Tarasoff asked when you must act to protect a stranger; this asks whether the state
+may kill some strangers to protect others.
 
-**Link from Tarasoff:** the same court, the same defendant (the Regents); Tarasoff was decided 1 Jul
-1976, and Moore walked into UCLA three months later.
+**Draft teaser:** "Next case: Frankfurt, 2003. A man steals a small plane and circles the city's towers,
+threatening to crash into the European Central Bank. Military jets go up. Two years later, Germany
+passes a law: if a hijacked airliner is about to be used as a weapon, the air force can shoot it down,
+passengers and all. A year after that, its highest court strikes the law down. Should a state kill
+innocent people to save more?"
 
-**Draft teaser:** "Next case: Los Angeles, 1976. A man with leukaemia has his spleen removed at the
-University of California. For seven years his doctor has him fly back from Seattle for more samples. In
-1984, the university receives a patent on cells grown from his body. Should you have a say, and a share,
-when someone profits from your cells?"
+**Sources:** BVerfG, 1 BvR 357/05 (15 Feb 2006, official English summary); Luftsicherheitsgesetz § 14(3);
+Reuters/CNN, 5–6 Jan 2003; 9/11 Commission Report, ch. 1; ARD, *Terror – Ihr Urteil*, 17 Oct 2016;
+O. Lepsius, German Law Journal 7 (2006).
 
-## 2. He Jiankui
+## 2. The Mignonette, 1884
 
-**Question:** Should we ever edit the genes of a baby?
+**Question:** Can killing one person ever be justified to save the others?
 
-**Case:** In Shenzhen, He Jiankui edited the CCR5 gene in human embryos to try to make the children
-resistant to HIV; he announced the births of twin girls on 25–26 Nov 2018 and presented the work at the
-Hong Kong summit on 28 Nov, whose organising committee called it "irresponsible". On 30 Dec 2019 a
-Shenzhen court sentenced him to three years and a 3 million yuan fine.
+**Case:** In July 1884 the yacht *Mignonette* sank in the South Atlantic on its way to Australia. Four men
+got into a 13-foot dinghy with two tins of turnips and no water. After about nineteen days, the captain,
+Tom Dudley, killed the 17-year-old cabin boy, Richard Parker, who was already very ill, and the three
+survivors lived on his body until a ship picked them up days later. Back in England they told the truth,
+believing the "custom of the sea" protected them. They were tried for murder; the court ruled that
+necessity is no defence to murder (R v Dudley and Stephens, 1884) and sentenced them to death. Public
+sympathy was such that the sentence was cut to six months. It is still the law across the common-law
+world.
 
-**For (in principle):** editing could end inherited diseases; the 2020 NAS/Royal Society report sets out
-a narrow, regulated route. **Against:** the children can't consent, changes pass to descendants, unknown
-long-term risks, eugenics; WHO (2021) and the 2023 summit say it is not safe today.
+**For necessity:** all four would have died; Parker was dying; no law can demand that people choose death.
+**Against:** who chooses, and why always the weakest; a law that allows it can't be limited; the court's
+point that the law must set a standard even if it can't be met.
 
-**Care:** the children are never shown or identified; the retracted 2019 Nature Medicine CCR5 paper is
-not used; the verdict is reported mainly via Xinhua and tagged so.
+**Look:** the sea, a small boat, weather, a Victorian courtroom: Blender-strong, few real places.
+**Care:** the killing and cannibalism described plainly but never shown.
+**Timely:** Adam Cohen's book *Captain's Dinner* (2025) brought the case back into the news.
 
-**Link:** Tarasoff asked what a professional owes someone who isn't their patient; here that someone
-isn't born yet (weaker than Moore's).
+**Draft teaser:** "Next case: the South Atlantic, 1884. Four men in a thirteen-foot boat, no water, nineteen
+days adrift. The captain kills the seventeen-year-old cabin boy, and the others survive on his body.
+Rescued, they tell the truth, sure the custom of the sea protects them. They're sentenced to death. Can
+killing one person ever be justified to save the rest?"
 
-## 3. Apple v. FBI
+**Sources:** R v Dudley and Stephens (1884) 14 QBD 273; A. W. B. Simpson, *Cannibalism and the Common Law*
+(1984); A. Cohen, *Captain's Dinner* (2025).
 
-**Question:** Should a company be forced to unlock your phone?
+## 3. Memorial Medical Center, New Orleans, 2005
 
-**Case:** After the 2 Dec 2015 San Bernardino attack, the FBI couldn't unlock one attacker's county-issued
-iPhone 5c. On 16 Feb 2016 a magistrate judge ordered Apple to help get around its auto-erase; Apple
-refused the same day. On 28 Mar the government said an outside party had unlocked it and the order was
-vacated. The DOJ Inspector General (2018) found FBI units hadn't checked all their own options first.
+**Question:** In a disaster, should doctors be allowed to decide who gets saved, and who doesn't?
 
-**For:** a warrant should reach everything; victims are owed the investigation. **Against:** software
-that breaks one phone breaks all of them; compelled code; the IG report suggests the FBI wanted a
-precedent.
+**Case:** Hurricane Katrina flooded Memorial Medical Center. The power failed, the heat rose, and
+evacuation was slow and chaotic. When a mortuary team came in on 11 Sept 2005, they recovered 45 bodies.
+Louisiana's attorney general said some patients had been given lethal doses of morphine and midazolam,
+and in July 2006 arrested a doctor, Anna Pou, and two nurses. In July 2007 a grand jury declined to
+indict Pou; she has always said she gave drugs to ease suffering, not to kill. Sheri Fink's reporting
+(ProPublica/NYT Magazine 2009; *Five Days at Memorial*, 2013) won a Pulitzer.
 
-**Care:** no description of the attack; attackers not named; a generic phone, no logo. Close to the
-police themes of Cases 05, 06, 08 and 09.
+**For:** triage is medicine's oldest rule; staff abandoned by the system had to choose; no prosecutor
+should judge from a dry office. **Against:** some patients who died were conscious and might have been
+evacuated; "comfort" and "killing" can't be told apart in that heat; no one had the authority to decide.
+
+**Care:** heaviest of the three. Living people, never charged: every claim tagged and both sides given in
+full; no patients shown. Overlaps Case 07 (end of life).
 
 ## Ranking
 
-1. **Moore**: tightest link to Tarasoff, a new field (biotech, consent, property), clean care profile,
-   genuinely two-sided. Weakness: less name recognition than HeLa, so the title leads with the hook
-   ("You don't own your cells").
-2. **He Jiankui**: biggest search interest, but on the specific case nearly everyone agrees he was
-   wrong, so the debate moves to the general question.
-3. **Apple v. FBI**: strongly two-sided and popular, but comes straight after a run of police and
-   criminal-justice cases.
+1. **Frankfurt / shoot-down**: the most dangerous and cinematic, a question the audience is genuinely
+   split on (the TV vote against the court), no victims to exploit, a strong link from Tarasoff, and
+   timely (drones, airspace security).
+2. **The Mignonette**: the most visceral, and a perfect two-sided question, but 140 years old.
+3. **Memorial**: very powerful, but repeats Case 07's theme and carries the highest legal and
+   care risk.
 
-Considered and dropped: Germanwings 9525 (repeats Tarasoff's confidentiality question; centres on the
-person who caused 150 deaths).
+Dropped in round 1 (owner: not compelling enough): Moore v. Regents (cells and consent), He Jiankui
+(gene-edited babies), Apple v. FBI (unlocking a phone).

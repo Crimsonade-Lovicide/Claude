@@ -24,7 +24,7 @@ no reference to his death (research §J).
 >
 > If you're struggling, call or text 988 (US), or find a helpline in your country at findahelpline.com.
 >
-> The jail cell and the courtroom are simplified reconstructions, labelled on screen. The cell is built to the dimensions in the 2014 federal report.
+> The jail cell and the courtroom are simplified reconstructions, labelled on screen. The cell is built to the dimensions in the 2014 federal report. Clips marked AI-GENERATED are illustrative places, never archival footage.
 >
 > CHAPTERS
 > 0:00 Rikers Island, 2010
